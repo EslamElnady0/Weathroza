@@ -5,6 +5,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 sealed class Route {
     @Serializable
-    object HomeScreen : Route()
+    object HomeRoute : Route()
 
 }

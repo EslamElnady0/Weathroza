@@ -1,19 +1,11 @@
-package com.example.workmanagerproducts.data.repo
+package com.eslamdev.weathroza.data.repo
 
 import android.content.Context
-import com.example.workmanagerproducts.data.datasources.local.WeatherLocalDataSource
-import com.example.workmanagerproducts.data.datasources.remote.WeatherRemoteDataSource
-import com.example.workmanagerproducts.data.models.Product
+import com.eslamdev.weathroza.data.datasources.local.WeatherLocalDataSource
+import com.eslamdev.weathroza.data.datasources.remote.WeatherRemoteDataSource
 
 class WeatherRepo(val context: Context) {
     val localDataSource = WeatherLocalDataSource(context)
     val remoteDataSource = WeatherRemoteDataSource()
 
-    suspend fun getProducts() = remoteDataSource.getProducts()
-
-    fun getFavProducts() = localDataSource.getFavProducts()
-
-    suspend fun insertProductInFav(product: Product) = localDataSource.insertProduct(product)
-
-    suspend fun removeProductFromFav(product: Product) = localDataSource.removeProduct(product)
 }

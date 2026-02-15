@@ -1,4 +1,4 @@
-package com.eslamdev.weathroza.data.core.network
+package com.eslamdev.weathroza.data.config.network
 
 import com.eslamdev.weathroza.data.datasources.remote.WeatherService
 import retrofit2.Retrofit
