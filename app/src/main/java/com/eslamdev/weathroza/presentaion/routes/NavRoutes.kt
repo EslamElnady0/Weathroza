@@ -1,4 +1,4 @@
-package com.eslamdev.weathroza.routes
+package com.eslamdev.weathroza.presentaion.routes
 
 import kotlinx.serialization.Serializable
 
