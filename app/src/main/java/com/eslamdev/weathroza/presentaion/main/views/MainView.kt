@@ -1,0 +1,57 @@
+package com.eslamdev.weathroza.presentaion.main.views
+
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.eslamdev.weathroza.presentaion.alerts.views.AlertsView
+import com.eslamdev.weathroza.presentaion.favourite.view.FavView
+import com.eslamdev.weathroza.presentaion.home.view.HomeBody
+import com.eslamdev.weathroza.presentaion.main.components.BottomNavBar
+import com.eslamdev.weathroza.presentaion.routes.BottomRoute
+import com.eslamdev.weathroza.presentaion.settings.view.SettingsView
+
+@Composable
+fun MainView(
+    controller: NavController,
+    modifier: Modifier = Modifier
+) {
+
+    val bottomController = rememberNavController()
+
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        bottomBar = {
+            BottomNavBar(bottomController)
+        }
+    ) { padding ->
+
+        NavHost(
+            navController = bottomController,
+            startDestination = BottomRoute.Home,
+            modifier = Modifier.padding(padding)
+        ) {
+
+            composable<BottomRoute.Home> {
+                HomeBody(controller)
+            }
+
+            composable<BottomRoute.Favourites> {
+                FavView(bottomController)
+            }
+
+            composable<BottomRoute.Alerts> {
+                AlertsView(bottomController)
+            }
+
+            composable<BottomRoute.Settings> {
+                SettingsView(bottomController)
+            }
+        }
+    }
+}
