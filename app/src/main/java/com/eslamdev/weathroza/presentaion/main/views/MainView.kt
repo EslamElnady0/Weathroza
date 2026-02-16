@@ -2,9 +2,12 @@ package com.eslamdev.weathroza.presentaion.main.views
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -53,5 +56,14 @@ fun MainView(
                 SettingsView(bottomController)
             }
         }
+    }
+}
+
+
+@Preview(showBackground = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun HomeBodyPreview(modifier: Modifier = Modifier) {
+    MaterialTheme(colorScheme = darkColorScheme()) {
+        MainView(controller = rememberNavController())
     }
 }
