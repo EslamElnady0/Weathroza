@@ -5,4 +5,30 @@
     <string name="favourites">المفضلة</string>
     <string name="alerts">التنبيهات</string>
     <string name="settings">الإعدادات</string>
+
+    <!-- Home Body Strings -->
+    <string name="miami">ميامي</string>
+    <string name="date_placeholder">الاثنين، ٢٣ أكتوبر</string>
+    <string name="time_placeholder">١٠:٠٠ ص</string>
+    <string name="weather_icon_desc">أيقونة الطقس</string>
+    <string name="clear_sky">سماء صافية</string>
+    <string name="temp_placeholder">٧٥</string>
+    <string name="humidity">الرطوبة</string>
+    <string name="humidity_value_placeholder">٤٠٪</string>
+    <string name="humidity_icon_desc">أيقونة الرطوبة</string>
+    <string name="wind">الرياح</string>
+    <string name="wind_value_placeholder">٥ ميل/س</string>
+    <string name="wind_icon_desc">أيقونة الرياح</string>
+    <string name="pressure">الضغط</string>
+    <string name="pressure_value_placeholder">١٠١٢</string>
+    <string name="pressure_icon_desc">أيقونة الضغط</string>
+    <string name="clouds">الغيوم</string>
+    <string name="clouds_value_placeholder">١٢٪</string>
+    <string name="clouds_icon_desc">أيقونة الغيوم</string>
+    <string name="sunrise">الشروق</string>
+    <string name="sunrise_time_placeholder">٠٦:٤٥ ص</string>
+    <string name="sunrise_icon_desc">أيقونة الشروق</string>
+    <string name="sunset">الغروب</string>
+    <string name="sunset_time_placeholder">٠٦:٤٥ م</string>
+    <string name="sunset_icon_desc">أيقونة الغروب</string>
 </resources>
