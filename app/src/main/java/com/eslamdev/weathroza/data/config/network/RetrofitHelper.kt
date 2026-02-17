@@ -1,6 +1,6 @@
 package com.eslamdev.weathroza.data.config.network
 
-import com.eslamdev.weathroza.data.datasources.remote.WeatherService
+import com.eslamdev.weathroza.data.datasources.remote.service.WeatherService
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 

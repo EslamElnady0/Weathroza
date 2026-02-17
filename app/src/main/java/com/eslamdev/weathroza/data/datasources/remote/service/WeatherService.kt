@@ -1,4 +1,4 @@
-package com.eslamdev.weathroza.data.datasources.remote
+package com.eslamdev.weathroza.data.datasources.remote.service
 
 import com.eslamdev.weathroza.data.models.forecast.DailyForecastResponseDto
 import com.eslamdev.weathroza.data.models.forecast.HourlyForecastResponseDto

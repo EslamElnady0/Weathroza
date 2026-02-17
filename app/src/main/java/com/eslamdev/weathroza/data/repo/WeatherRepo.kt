@@ -113,7 +113,6 @@ class WeatherRepo(val context: Context) {
         )
         if (forecasts.isNotEmpty()) {
             val cityId = forecasts.first().cityId
-            localDataSource.deleteDailyForecastsByCity(cityId)
             localDataSource.insertDailyForecasts(forecasts)
         }
         return forecasts
