@@ -3,7 +3,6 @@ package com.eslamdev.weathroza.presentaion.home.view
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -31,7 +30,7 @@ import com.eslamdev.weathroza.core.components.DegreeText
 import com.eslamdev.weathroza.core.components.HeightSpacer
 import com.eslamdev.weathroza.core.components.WidthSpacer
 import com.eslamdev.weathroza.core.helpers.AppColors
-import com.eslamdev.weathroza.presentaion.home.view.components.CardWithBoarder
+import com.eslamdev.weathroza.core.components.CardWithBoarder
 import com.eslamdev.weathroza.presentaion.home.view.components.DailyForecast
 import com.eslamdev.weathroza.presentaion.home.view.components.HourlyForecast
 import com.eslamdev.weathroza.presentaion.home.view.components.HourlyForecastList

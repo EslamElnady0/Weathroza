@@ -3,6 +3,7 @@ package com.eslamdev.weathroza.presentaion.home.view.components
 import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.eslamdev.weathroza.core.components.CardWithBoarder
 
 @Composable
 fun StatusItem(

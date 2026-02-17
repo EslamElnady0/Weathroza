@@ -1,4 +1,4 @@
-package com.eslamdev.weathroza.presentaion.home.view.components
+package com.eslamdev.weathroza.core.components
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.ColumnScope
