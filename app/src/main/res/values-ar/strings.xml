@@ -31,4 +31,11 @@
     <string name="sunset">الغروب</string>
     <string name="sunset_time_placeholder">٠٦:٤٥ م</string>
     <string name="sunset_icon_desc">أيقونة الغروب</string>
+
+    <string name="hourly_forecast">التوقعات بالساعة</string>
+    <string name="next_24h">الـ ٢٤ ساعة القادمة</string>
+
+    <string name="seven_day_forecast">توقعات الـ ٧ أيام</string>
+    <string name="feels_like">تشعر وكأنها %1$s°م</string>
+
 </resources>

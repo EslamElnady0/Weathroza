@@ -30,4 +30,13 @@
     <string name="sunset">Sunset</string>
     <string name="sunset_time_placeholder">06:45 PM</string>
     <string name="sunset_icon_desc">sunset icon</string>
+
+    <!-- Hourly Forecast Strings -->
+    <string name="hourly_forecast">HOURLY FORECAST</string>
+    <string name="next_24h">Next 24h</string>
+
+    <!-- 7-Day Forecast Strings -->
+    <string name="seven_day_forecast">7-DAY FORECAST</string>
+    <string name="feels_like">Feels like %1$s°C</string>
+
 </resources>
