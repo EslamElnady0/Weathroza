@@ -23,7 +23,7 @@ import androidx.navigation.NavController
 import com.eslamdev.weathroza.core.components.HeightSpacer
 import com.eslamdev.weathroza.core.helpers.AppColors
 import com.eslamdev.weathroza.presentaion.settings.view.components.LocationSelector
-import com.eslamdev.weathroza.presentaion.settings.view.components.UnitSelector
+import com.eslamdev.weathroza.presentaion.settings.view.components.UnitsSection
 
 @Composable
 fun SettingsView(bottomController: NavController, modifier: Modifier = Modifier) {
@@ -49,6 +49,7 @@ fun HomeBodyPreview(modifier: Modifier = Modifier) {
 fun SettingsViewImpl(modifier: Modifier = Modifier) {
     var selectedLocationIndex by remember { mutableIntStateOf(0) }
     var selectedUnitIndex by remember { mutableIntStateOf(0) }
+    var selectedTempIndex by remember { mutableIntStateOf(0) }
     Column(
         modifier
             .fillMaxSize()
@@ -82,9 +83,11 @@ fun SettingsViewImpl(modifier: Modifier = Modifier) {
         HeightSpacer(20.0)
         Text("Unit", fontSize = 14.sp, fontWeight = FontWeight.SemiBold, color = AppColors.primary)
         HeightSpacer(12.0)
-        UnitSelector(
-            selectedOptionIndex = selectedUnitIndex,
-            onOptionSelected = { selectedUnitIndex = it }
+        UnitsSection(
+            selectedTempUnitIndex = selectedUnitIndex,
+            onTempOptionSelected = { selectedUnitIndex = it },
+            selectedWindUnitIndex = selectedTempIndex,
+            onWindOptionSelected = { selectedTempIndex = it }
         )
 
     }

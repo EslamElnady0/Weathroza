@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.eslamdev.weathroza.core.components.CardWithBoarder
 import com.eslamdev.weathroza.core.components.HeightSpacer
 import com.eslamdev.weathroza.core.helpers.AppColors
@@ -75,7 +76,8 @@ fun RowScope.SettingSelectorItem(
             text = title,
             style = MaterialTheme.typography.titleMedium.copy(
                 fontWeight = FontWeight.Bold,
-                color = titleColor
+                color = titleColor,
+                fontSize = 12.sp
             )
         )
         subtitle?.let {
@@ -92,16 +94,18 @@ fun RowScope.SettingSelectorItem(
 
 @Composable
 fun SettingsSelector(
+    modifier: Modifier = Modifier,
     selectedOptionIndex: Int = 0,
+    horizontalPadding: androidx.compose.ui.unit.Dp = 16.dp,
     onOptionSelected: (Int) -> Unit = {},
     content: @Composable (RowScope.() -> Unit)
 ) {
-    CardWithBoarder {
+    CardWithBoarder(modifier = modifier) {
         Spacer(modifier = Modifier.size(8.dp))
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp),
+                .padding(horizontal = horizontalPadding),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             content()
