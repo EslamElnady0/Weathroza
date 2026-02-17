@@ -23,6 +23,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.eslamdev.weathroza.core.components.CardWithBoarder
@@ -34,6 +35,7 @@ fun RowScope.SettingSelectorItem(
     title: String,
     isSelected: Boolean,
     modifier: Modifier = Modifier,
+    contentPadding: Dp = 8.dp,
     subtitle: String? = null,
     icon: ImageVector? = null,
     onClick: () -> Unit,
@@ -55,11 +57,10 @@ fun RowScope.SettingSelectorItem(
     Column(
         modifier = modifier
             .weight(1f)
-            .padding(vertical = 4.dp)
             .clip(RoundedCornerShape(8.dp))
             .background(backgroundColor)
             .clickable { onClick() }
-            .padding(12.dp),
+            .padding(contentPadding),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -70,7 +71,7 @@ fun RowScope.SettingSelectorItem(
                 tint = contentColor,
                 modifier = Modifier.size(28.dp)
             )
-            HeightSpacer(8.0)
+            HeightSpacer(4.0)
         }
         Text(
             text = title,
@@ -95,9 +96,7 @@ fun RowScope.SettingSelectorItem(
 @Composable
 fun SettingsSelector(
     modifier: Modifier = Modifier,
-    selectedOptionIndex: Int = 0,
-    horizontalPadding: androidx.compose.ui.unit.Dp = 16.dp,
-    onOptionSelected: (Int) -> Unit = {},
+    horizontalPadding: Dp = 16.dp,
     content: @Composable (RowScope.() -> Unit)
 ) {
     CardWithBoarder(modifier = modifier) {

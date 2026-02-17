@@ -1,6 +1,9 @@
 package com.eslamdev.weathroza.presentaion.settings.view
 
 import android.content.res.Configuration
+import androidx.compose.ui.res.stringResource
+import com.eslamdev.weathroza.R
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -57,18 +60,17 @@ fun SettingsViewImpl(modifier: Modifier = Modifier) {
     var selectedTempIndex by remember { mutableIntStateOf(0) }
     var selectedLanguage by remember { mutableStateOf(AppLanguage.SYSTEM) }
 
-    LazyColumn(
+    Column(
         modifier
             .fillMaxSize()
             .padding(horizontal = 16.dp)
             .verticalScroll(rememberScrollState())
     ) {
-        item {
-            HeightSpacer(48.0)
-            Text("Settings", fontSize = 30.sp, fontWeight = FontWeight.Bold)
-            HeightSpacer(40.0)
+            HeightSpacer(32.0)
+            Text(stringResource(R.string.settings), fontSize = 30.sp, fontWeight = FontWeight.Bold)
+            HeightSpacer(16.0)
             Text(
-                "Location",
+                stringResource(R.string.location),
                 fontSize = 14.sp,
                 fontWeight = FontWeight.SemiBold,
                 color = AppColors.primary
@@ -81,17 +83,16 @@ fun SettingsViewImpl(modifier: Modifier = Modifier) {
             )
             HeightSpacer(12.0)
             Text(
-                "Switch between automatic device positioning or manual location " +
-                        "selection for accurate weather data.",
-                fontSize = 12.sp,
+                stringResource(R.string.location_description),
+                fontSize = 11.sp,
                 fontWeight = FontWeight.Normal,
                 color = AppColors.darkGray
             )
-            HeightSpacer(16.0)
+            HeightSpacer(12.0)
             HorizontalDivider()
-            HeightSpacer(20.0)
+            HeightSpacer(16.0)
             Text(
-                "Unit",
+                stringResource(R.string.unit),
                 fontSize = 14.sp,
                 fontWeight = FontWeight.SemiBold,
                 color = AppColors.primary
@@ -103,11 +104,11 @@ fun SettingsViewImpl(modifier: Modifier = Modifier) {
                 selectedWindUnitIndex = selectedTempIndex,
                 onWindOptionSelected = { selectedTempIndex = it }
             )
-            HeightSpacer(16.0)
+            HeightSpacer(12.0)
             HorizontalDivider()
-            HeightSpacer(20.0)
+            HeightSpacer(16.0)
             Text(
-                "Preferences",
+                stringResource(R.string.preferences),
                 fontSize = 14.sp,
                 fontWeight = FontWeight.SemiBold,
                 color = AppColors.primary
@@ -118,7 +119,7 @@ fun SettingsViewImpl(modifier: Modifier = Modifier) {
                 onLanguageSelected = { selectedLanguage = it }
             )
             HeightSpacer(32.0)
-        }
+
     }
 }
 

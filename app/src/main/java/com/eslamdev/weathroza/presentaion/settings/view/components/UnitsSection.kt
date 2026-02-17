@@ -25,6 +25,8 @@ import androidx.compose.ui.unit.dp
 import com.eslamdev.weathroza.core.components.CardWithBoarder
 import com.eslamdev.weathroza.core.components.HeightSpacer
 import com.eslamdev.weathroza.core.helpers.AppColors
+import androidx.compose.ui.res.stringResource
+import com.eslamdev.weathroza.R
 
 @Composable
 fun UnitsSection(
@@ -37,7 +39,7 @@ fun UnitsSection(
     CardWithBoarder(modifier = modifier) {
         Column {
             UnitSectionContent(
-                title = "Temperature",
+                title = stringResource(R.string.temperature),
                 icon = Icons.Default.DeviceThermostat,
                 content = {
                     UnitSelector(
@@ -49,25 +51,28 @@ fun UnitsSection(
             )
 
             HorizontalDivider(
-                modifier = Modifier.padding(horizontal = 16.dp),
+                modifier = Modifier.padding(horizontal = 12.dp),
                 color = AppColors.primary.copy(alpha = 0.1f)
             )
 
             UnitSectionContent(
-                title = "Wind Speed",
+                title = stringResource(R.string.wind_speed),
                 icon = Icons.Default.Air,
                 content = {
                     SettingsSelector(
                         horizontalPadding = 8.dp
                     ) {
                         SettingSelectorItem(
-                            title = "m/s",
+                            title = stringResource(R.string.unit_ms),
                             isSelected = selectedWindUnitIndex == 0,
+                            contentPadding = 4.dp,
                             onClick = { onWindOptionSelected(0) }
                         )
                         SettingSelectorItem(
-                            title = "mph",
+                            title = stringResource(R.string.unit_mph),
                             isSelected = selectedWindUnitIndex == 1,
+                            contentPadding = 4.dp,
+
                             onClick = { onWindOptionSelected(1) }
                         )
                     }
@@ -86,7 +91,7 @@ private fun UnitSectionContent(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp)
+            .padding(12.dp)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -118,7 +123,7 @@ private fun UnitSectionContent(
             )
         }
 
-        HeightSpacer(16.0)
+        HeightSpacer(12.0)
 
         content()
     }

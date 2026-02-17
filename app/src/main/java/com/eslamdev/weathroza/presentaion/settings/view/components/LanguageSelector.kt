@@ -29,15 +29,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.eslamdev.weathroza.R
 import com.eslamdev.weathroza.core.components.CardWithBoarder
 import com.eslamdev.weathroza.core.helpers.AppColors
 
-enum class AppLanguage(val code: String, val displayName: String) {
-    SYSTEM("system", "System Default"),
-    ENGLISH("en", "English"),
-    ARABIC("ar", "Arabic")
+enum class AppLanguage(val code: String, val titleResId: Int) {
+    SYSTEM("system", R.string.system_default),
+    ENGLISH("en", R.string.english),
+    ARABIC("ar", R.string.arabic)
 }
 
 @Composable
@@ -77,14 +79,14 @@ fun LanguageSelector(
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = "App Language",
+                    text = stringResource(R.string.app_language),
                     style = MaterialTheme.typography.titleMedium.copy(
                         fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.onSurface
                     )
                 )
                 Text(
-                    text = if (selectedLanguage == AppLanguage.SYSTEM) "System Default" else selectedLanguage.displayName,
+                    text = stringResource(selectedLanguage.titleResId),
                     style = MaterialTheme.typography.bodySmall.copy(
                         color = AppColors.lightGray,
                         fontWeight = FontWeight.Medium
@@ -102,7 +104,7 @@ fun LanguageSelector(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = selectedLanguage.displayName,
+                        text = stringResource(selectedLanguage.titleResId),
                         style = MaterialTheme.typography.bodyMedium.copy(
                             fontWeight = FontWeight.SemiBold,
                             color = AppColors.primary
@@ -111,7 +113,7 @@ fun LanguageSelector(
                     Spacer(modifier = Modifier.width(4.dp))
                     Icon(
                         imageVector = Icons.Default.KeyboardArrowDown,
-                        contentDescription = "Select Language",
+                        contentDescription = stringResource(R.string.select_language),
                         tint = AppColors.primary,
                         modifier = Modifier.size(16.dp)
                     )
@@ -126,7 +128,7 @@ fun LanguageSelector(
                         DropdownMenuItem(
                             text = {
                                 Text(
-                                    text = language.displayName,
+                                    text = stringResource(language.titleResId),
                                     color = if (language == selectedLanguage) AppColors.primary else MaterialTheme.colorScheme.onSurface
                                 )
                             },
