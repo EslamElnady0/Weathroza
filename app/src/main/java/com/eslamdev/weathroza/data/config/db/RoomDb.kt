@@ -5,9 +5,9 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.eslamdev.weathroza.data.datasources.local.WeatherDao
-import com.eslamdev.weathroza.data.models.WeatherDto
+import com.eslamdev.weathroza.data.models.weather.WeatherEntity
 
-@Database(entities = [WeatherDto::class], version = 1)
+@Database(entities = [WeatherEntity::class], version = 1)
 abstract class WeatherDataBase : RoomDatabase() {
     abstract fun getWeatherDao(): WeatherDao
 
