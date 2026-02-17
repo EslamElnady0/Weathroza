@@ -33,5 +33,11 @@ data class WeatherEntity(
     val sunrise: Long,
     val sunset: Long,
     
-    val dt: Long
+    val dt: Long,
+
+    val formattedFullDate: String = "",
+    val formattedSunrise: String = "",
+    val formattedSunset: String = "",
+    val formattedTemp: String = "",
+    val iconUrl: String = ""
 )

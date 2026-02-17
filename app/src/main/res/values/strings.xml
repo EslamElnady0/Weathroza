@@ -59,5 +59,7 @@
     <string name="unit_ms">m/s</string>
     <string name="unit_mph">mph</string>
     <string name="fahrenheit_symbol">F</string>
+    <string name="celsius_symbol">C</string>
+    <string name="pressure_unit">hPa</string>
 
 </resources>

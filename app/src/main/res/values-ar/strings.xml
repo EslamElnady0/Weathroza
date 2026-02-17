@@ -39,7 +39,6 @@
     <string name="feels_like">تشعر وكأنها %1$s°م</string>
 
 
-
     <!-- Settings Strings -->
     <string name="location">الموقع</string>
     <string name="location_description">التبديل بين تحديد الموقع التلقائي للجهاز أو اختيار الموقع يدويًا للحصول على بيانات طقس دقيقة.</string>
@@ -60,5 +59,7 @@
     <string name="unit_ms">م/ث</string>
     <string name="unit_mph">ميل/س</string>
     <string name="fahrenheit_symbol">ف</string>
+    <string name="celsius_symbol">د</string>
+    <string name="pressure_unit">ه.ب</string>
 
 </resources>

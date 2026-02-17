@@ -8,5 +8,9 @@ data class HourlyForecastEntity(
     @PrimaryKey
     val dt: Long,
     val temp: Double,
-    val icon: String
+    val icon: String,
+    val formattedTime: String = "",
+    val formattedTemp: String = "",
+    val iconResId: Int = 0,
+    val iconUrl: String = ""
 )

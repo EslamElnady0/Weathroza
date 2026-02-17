@@ -1,7 +1,7 @@
 package com.eslamdev.weathroza.data.models.mapper
 
-import com.eslamdev.weathroza.data.models.forecast.DailyForecastResponseDto
 import com.eslamdev.weathroza.data.models.forecast.DailyForecastEntity
+import com.eslamdev.weathroza.data.models.forecast.DailyForecastResponseDto
 
 object DailyForecastMapper {
     fun toEntityList(response: DailyForecastResponseDto): List<DailyForecastEntity> {
@@ -15,7 +15,17 @@ object DailyForecastMapper {
                 feelsLikeDay = dto.feelsLike.day,
                 weatherMain = weather?.main ?: "",
                 weatherDescription = weather?.description ?: "",
-                weatherIcon = weather?.icon ?: ""
+                weatherIcon = weather?.icon ?: "",
+                formattedDayName = com.eslamdev.weathroza.core.helpers.DateTimeHelper.formatDayName(
+                    dto.dt
+                ),
+                formattedDate = com.eslamdev.weathroza.core.helpers.DateTimeHelper.formatShortDate(
+                    dto.dt
+                ),
+                formattedTemp = dto.temp.day.toString(),
+                formattedFeelsLike = dto.feelsLike.day.toString(),
+                iconResId = com.eslamdev.weathroza.R.drawable.dummy_sun_image,
+                iconUrl = "https://openweathermap.org/img/wn/${weather?.icon}@4x.png"
             )
         }
     }

@@ -29,17 +29,13 @@ import androidx.compose.ui.unit.sp
 import com.eslamdev.weathroza.R
 import com.eslamdev.weathroza.core.components.DegreeText
 import com.eslamdev.weathroza.core.helpers.AppColors
-
-data class HourlyForecast(
-    val time: String,
-    val icon: Int,
-    val temperature: String,
-    val description: String
-)
+import com.eslamdev.weathroza.data.models.forecast.HourlyForecastEntity
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
 
 @Composable
 fun HourlyForecastList(
-    forecasts: List<HourlyForecast>,
+    forecasts: List<HourlyForecastEntity>,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
@@ -74,9 +70,12 @@ fun HourlyForecastList(
     }
 }
 
+
+
+@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun HourlyForecastItem(
-    forecast: HourlyForecast,
+    forecast: HourlyForecastEntity,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -96,18 +95,18 @@ fun HourlyForecastItem(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text(
-                text = forecast.time,
+                text = forecast.formattedTime,
                 fontSize = 12.sp,
                 color = AppColors.lightGray,
                 fontWeight = FontWeight.Medium
             )
-            Image(
-                painter = painterResource(id = forecast.icon),
-                contentDescription = forecast.description,
+            GlideImage(
+                model = forecast.iconUrl,
+                contentDescription = "",
                 modifier = Modifier.size(40.dp)
             )
             DegreeText(
-                forecast.temperature,
+                forecast.formattedTemp,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
                 color = AppColors.gray
@@ -124,11 +123,22 @@ fun HourlyForecastItem(
 fun HourlyForecastListPreview() {
     MaterialTheme(colorScheme = darkColorScheme()) {
         val sampleForecasts = listOf(
-            HourlyForecast("10 AM", R.drawable.dummy_sun_image, "62", "Sunny"),
-            HourlyForecast("11 AM", R.drawable.dummy_sun_image, "60", "Sunny"),
-            HourlyForecast("12 PM", R.drawable.dummy_sun_image, "59", "Sunny"),
-            HourlyForecast("01 PM", R.drawable.dummy_sun_image, "61", "Sunny"),
-            HourlyForecast("02 PM", R.drawable.dummy_sun_image, "63", "Sunny")
+            HourlyForecastEntity(
+                dt = 1634983200,
+                temp = 62.0,
+                icon = "01d",
+                formattedTime = "10 AM",
+                formattedTemp = "62",
+                iconResId = R.drawable.dummy_sun_image
+            ),
+            HourlyForecastEntity(
+                dt = 1634986800,
+                temp = 60.0,
+                icon = "01d",
+                formattedTime = "11 AM",
+                formattedTemp = "60",
+                iconResId = R.drawable.dummy_sun_image
+            )
         )
         
         HourlyForecastList(

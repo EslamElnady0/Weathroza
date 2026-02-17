@@ -27,6 +27,22 @@ class WeatherRepo(val context: Context) {
         )
     }
 
+    suspend fun getHourlyForecastFromApi(
+        latitude: Double,
+        longitude: Double,
+        language: AppLanguage = AppLanguage.ENGLISH,
+        units: Units = Units.METRIC
+    ): List<HourlyForecastEntity> {
+        val forecasts = remoteDataSource.getHourlyForecast(
+            latitude = latitude,
+            longitude = longitude,
+            language = language,
+            units = units
+        )
+        return forecasts
+    }
+
+
     suspend fun fetchAndSaveWeather(
         latitude: Double,
         longitude: Double,
@@ -97,6 +113,21 @@ class WeatherRepo(val context: Context) {
         return localForecasts.ifEmpty {
             fetchAndSaveHourlyForecast(latitude, longitude, language, units)
         }
+    }
+
+    suspend fun getDailyForecastFromApi(
+        latitude: Double,
+        longitude: Double,
+        language: AppLanguage = AppLanguage.ENGLISH,
+        units: Units = Units.METRIC
+    ): List<DailyForecastEntity> {
+        val forecasts = remoteDataSource.getDailyForecast(
+            latitude = latitude,
+            longitude = longitude,
+            language = language,
+            units = units
+        )
+        return forecasts
     }
 
     suspend fun fetchAndSaveDailyForecast(
