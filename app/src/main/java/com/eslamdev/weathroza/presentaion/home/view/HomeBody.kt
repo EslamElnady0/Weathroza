@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.Text
@@ -33,6 +34,8 @@ import com.eslamdev.weathroza.core.components.DegreeText
 import com.eslamdev.weathroza.core.components.HeightSpacer
 import com.eslamdev.weathroza.core.components.WidthSpacer
 import com.eslamdev.weathroza.core.helpers.AppColors
+import com.eslamdev.weathroza.core.helpers.DateTimeHelper
+import com.eslamdev.weathroza.core.langmanager.LanguageManager
 import com.eslamdev.weathroza.data.models.forecast.DailyForecastEntity
 import com.eslamdev.weathroza.data.models.forecast.HourlyForecastEntity
 import com.eslamdev.weathroza.data.models.weather.WeatherEntity
@@ -155,7 +158,7 @@ private fun HeaderSection(weather: WeatherEntity) {
     HeightSpacer(2.0)
 
     Text(
-        weather.formattedFullDate,
+        DateTimeHelper.formatFullDateTime(weather.dt),
         color = AppColors.lightGray
     )
 
@@ -235,7 +238,7 @@ private fun SunCycleSection(weather: WeatherEntity) {
             StatsRow(
                 icon = R.drawable.sunrise_ic,
                 label = stringResource(R.string.sunrise),
-                value = weather.formattedSunrise,
+                value = DateTimeHelper.formatTime(weather.sunrise),
                 contentDesc = stringResource(R.string.sunrise_icon_desc)
             )
 
@@ -252,7 +255,7 @@ private fun SunCycleSection(weather: WeatherEntity) {
             StatsRow(
                 icon = R.drawable.sunset,
                 label = stringResource(R.string.sunset),
-                value = weather.formattedSunset,
+                value = DateTimeHelper.formatTime(weather.sunset),
                 contentDesc = stringResource(R.string.sunset_icon_desc)
             )
         }

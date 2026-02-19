@@ -72,9 +72,7 @@ class HomeViewModel(
 
     init {
         loadWeather(
-
-
-                latitude = 67.452792,
+            latitude = 67.452792,
             longitude = 29.394130,
             language = AppLanguage.ENGLISH,
             units = Units.METRIC

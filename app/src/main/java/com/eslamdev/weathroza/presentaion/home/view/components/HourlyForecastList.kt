@@ -32,6 +32,7 @@ import com.eslamdev.weathroza.core.helpers.AppColors
 import com.eslamdev.weathroza.data.models.forecast.HourlyForecastEntity
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
+import com.eslamdev.weathroza.core.helpers.DateTimeHelper
 
 @Composable
 fun HourlyForecastList(
@@ -95,7 +96,7 @@ fun HourlyForecastItem(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text(
-                text = forecast.formattedTime,
+                text = DateTimeHelper.formatHour(forecast.dt),
                 fontSize = 12.sp,
                 color = AppColors.lightGray,
                 fontWeight = FontWeight.Medium

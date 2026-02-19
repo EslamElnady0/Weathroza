@@ -20,6 +20,7 @@ import com.eslamdev.weathroza.R
 import com.eslamdev.weathroza.core.components.CardWithBoarder
 import com.eslamdev.weathroza.core.components.DegreeText
 import com.eslamdev.weathroza.core.helpers.AppColors
+import com.eslamdev.weathroza.core.helpers.DateTimeHelper
 import com.eslamdev.weathroza.data.models.forecast.DailyForecastEntity
 
 
@@ -42,13 +43,13 @@ fun DailyForecastItem(
                 verticalArrangement = Arrangement.spacedBy(2.dp)
             ) {
                 Text(
-                    text = forecast.formattedDayName,
+                    text = DateTimeHelper.formatDayName(forecast.dt),
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Medium,
                     color = AppColors.gray
                 )
                 Text(
-                    text = forecast.formattedDate,
+                    text = DateTimeHelper.formatShortDate(forecast.dt),
                     fontSize = 12.sp,
                     color = AppColors.lightGray
                 )
