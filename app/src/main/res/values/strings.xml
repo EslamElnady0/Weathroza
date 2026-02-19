@@ -4,4 +4,62 @@
     <string name="favourites">Favourites</string>
     <string name="alerts">Alerts</string>
     <string name="settings">Settings</string>
+
+    <!-- Home Body Strings -->
+    <string name="miami">Miami</string>
+    <string name="date_placeholder">Monday, Oct 23</string>
+    <string name="time_placeholder">10:00 AM</string>
+    <string name="weather_icon_desc">weather icon</string>
+    <string name="clear_sky">Clear Sky</string>
+    <string name="temp_placeholder">75</string>
+    <string name="humidity">Humidity</string>
+    <string name="humidity_value_placeholder">40%</string>
+    <string name="humidity_icon_desc">humidity icon</string>
+    <string name="wind">Wind</string>
+    <string name="wind_value_placeholder">5mph</string>
+    <string name="wind_icon_desc">wind icon</string>
+    <string name="pressure">Pressure</string>
+    <string name="pressure_value_placeholder">1012</string>
+    <string name="pressure_icon_desc">pressure icon</string>
+    <string name="clouds">Clouds</string>
+    <string name="clouds_value_placeholder">12%</string>
+    <string name="clouds_icon_desc">clouds icon</string>
+    <string name="sunrise">Sunrise</string>
+    <string name="sunrise_time_placeholder">06:45 AM</string>
+    <string name="sunrise_icon_desc">sunrise icon</string>
+    <string name="sunset">Sunset</string>
+    <string name="sunset_time_placeholder">06:45 PM</string>
+    <string name="sunset_icon_desc">sunset icon</string>
+
+    <!-- Hourly Forecast Strings -->
+    <string name="hourly_forecast">HOURLY FORECAST</string>
+    <string name="next_24h">Next 24h</string>
+
+    <!-- 7-Day Forecast Strings -->
+    <string name="seven_day_forecast">7-DAY FORECAST</string>
+    <string name="feels_like">Feels like %1$s°C</string>
+
+    <!-- Settings Strings -->
+    <string name="location">Location</string>
+    <string name="location_description">Switch between automatic device positioning or manual location selection for accurate weather data.</string>
+    <string name="unit">Unit</string>
+    <string name="preferences">Preferences</string>
+    <string name="app_language">App Language</string>
+    <string name="select_language">Select Language</string>
+    <string name="system_default">System Default</string>
+    <string name="english">English</string>
+    <string name="arabic">Arabic</string>
+    <string name="gps_automatic">GPS (Automatic)</string>
+    <string name="map_manual">Map (Manual)</string>
+    <string name="celsius">Celsius</string>
+    <string name="fahrenheit">Fahrenheit</string>
+    <string name="kelvin">Kelvin</string>
+    <string name="temperature">Temperature</string>
+    <string name="wind_speed">Wind Speed</string>
+    <string name="unit_ms">m/s</string>
+    <string name="unit_mph">mph</string>
+    <string name="fahrenheit_symbol">F</string>
+    <string name="celsius_symbol">C</string>
+    <string name="pressure_unit">hPa</string>
+
 </resources>

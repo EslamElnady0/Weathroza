@@ -5,4 +5,61 @@
     <string name="favourites">المفضلة</string>
     <string name="alerts">التنبيهات</string>
     <string name="settings">الإعدادات</string>
+
+    <!-- Home Body Strings -->
+    <string name="miami">ميامي</string>
+    <string name="date_placeholder">الاثنين، ٢٣ أكتوبر</string>
+    <string name="time_placeholder">١٠:٠٠ ص</string>
+    <string name="weather_icon_desc">أيقونة الطقس</string>
+    <string name="clear_sky">سماء صافية</string>
+    <string name="temp_placeholder">٧٥</string>
+    <string name="humidity">الرطوبة</string>
+    <string name="humidity_value_placeholder">٤٠٪</string>
+    <string name="humidity_icon_desc">أيقونة الرطوبة</string>
+    <string name="wind">الرياح</string>
+    <string name="wind_value_placeholder">٥ ميل/س</string>
+    <string name="wind_icon_desc">أيقونة الرياح</string>
+    <string name="pressure">الضغط</string>
+    <string name="pressure_value_placeholder">١٠١٢</string>
+    <string name="pressure_icon_desc">أيقونة الضغط</string>
+    <string name="clouds">الغيوم</string>
+    <string name="clouds_value_placeholder">١٢٪</string>
+    <string name="clouds_icon_desc">أيقونة الغيوم</string>
+    <string name="sunrise">الشروق</string>
+    <string name="sunrise_time_placeholder">٠٦:٤٥ ص</string>
+    <string name="sunrise_icon_desc">أيقونة الشروق</string>
+    <string name="sunset">الغروب</string>
+    <string name="sunset_time_placeholder">٠٦:٤٥ م</string>
+    <string name="sunset_icon_desc">أيقونة الغروب</string>
+
+    <string name="hourly_forecast">التوقعات بالساعة</string>
+    <string name="next_24h">الـ ٢٤ ساعة القادمة</string>
+
+    <string name="seven_day_forecast">توقعات الـ ٧ أيام</string>
+    <string name="feels_like">تشعر وكأنها %1$s°م</string>
+
+
+    <!-- Settings Strings -->
+    <string name="location">الموقع</string>
+    <string name="location_description">التبديل بين تحديد الموقع التلقائي للجهاز أو اختيار الموقع يدويًا للحصول على بيانات طقس دقيقة.</string>
+    <string name="unit">الوحدة</string>
+    <string name="preferences">التفضيلات</string>
+    <string name="app_language">لغة التطبيق</string>
+    <string name="select_language">اختر اللغة</string>
+    <string name="system_default">افتراضي النظام</string>
+    <string name="english">الإنجليزية</string>
+    <string name="arabic">العربية</string>
+    <string name="gps_automatic">GPS (تلقائي)</string>
+    <string name="map_manual">الخريطة (يدوي)</string>
+    <string name="celsius">مئوية</string>
+    <string name="fahrenheit">فهرنهايت</string>
+    <string name="kelvin">كلفن</string>
+    <string name="temperature">درجة الحرارة</string>
+    <string name="wind_speed">سرعة الرياح</string>
+    <string name="unit_ms">م/ث</string>
+    <string name="unit_mph">ميل/س</string>
+    <string name="fahrenheit_symbol">ف</string>
+    <string name="celsius_symbol">د</string>
+    <string name="pressure_unit">ه.ب</string>
+
 </resources>
