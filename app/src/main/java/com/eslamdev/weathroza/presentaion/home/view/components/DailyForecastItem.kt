@@ -95,8 +95,7 @@ fun DailyForecastItem(
                         forecast
                         .feelsLikeDay
                         .convertTemp(settings.temperatureUnit)
-                        .toTwoDigitString(),
-                        settings.temperatureUnit.label()),
+                        .toTwoDigitString()) + settings.temperatureUnit.label(),
                     fontSize = 10.sp,
                     color = AppColors.lightGray
                 )
