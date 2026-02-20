@@ -77,5 +77,10 @@
     <string name="map_latitude">Latitude</string>
     <string name="map_longitude">Longitude</string>
     <string name="map_select_as_location">Select as Location</string>
+    <string name="map_weather_at">Weather at selected location</string>
+    <string name="map_feels_like">Feels like %1$s</string>
+    <string name="map_loading_weather">Fetching weather…</string>
+    <string name="map_tap_hint">Tap anywhere on the map to select a location</string>
+    <string name="feels_like_minimal">Feels like</string>
 
 </resources>
