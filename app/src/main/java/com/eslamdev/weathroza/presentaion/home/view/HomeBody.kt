@@ -41,6 +41,7 @@ import com.eslamdev.weathroza.core.helpers.label
 import com.eslamdev.weathroza.core.helpers.toTwoDigitString
 import com.eslamdev.weathroza.core.langmanager.LanguageManager
 import com.eslamdev.weathroza.core.settings.UserSettings
+import com.eslamdev.weathroza.core.settings.toLocale
 import com.eslamdev.weathroza.data.models.forecast.DailyForecastEntity
 import com.eslamdev.weathroza.data.models.forecast.HourlyForecastEntity
 import com.eslamdev.weathroza.data.models.weather.WeatherEntity
@@ -122,7 +123,7 @@ fun HomeBodyImpl(
 
             HeightSpacer(12.0)
 
-            SunCycleSection(weather)
+            SunCycleSection(weather, settings)
 
             HeightSpacer(20.0)
 
@@ -166,7 +167,7 @@ private fun HeaderSection(weather: WeatherEntity,settings: UserSettings) {
     HeightSpacer(2.0)
 
     Text(
-        DateTimeHelper.formatFullDateTime(weather.dt),
+        DateTimeHelper.formatFullDateTime(weather.dt, settings.language.toLocale()),
         color = AppColors.lightGray
     )
 
@@ -235,7 +236,8 @@ private fun WeatherDetailsSection(weather: WeatherEntity,settings: UserSettings)
 }
 
 @Composable
-private fun SunCycleSection(weather: WeatherEntity) {
+private fun SunCycleSection(weather: WeatherEntity, settings: UserSettings) {
+    val locale = settings.language.toLocale()
     CardWithBoarder {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -246,7 +248,7 @@ private fun SunCycleSection(weather: WeatherEntity) {
             StatsRow(
                 icon = R.drawable.sunrise_ic,
                 label = stringResource(R.string.sunrise),
-                value = DateTimeHelper.formatTime(weather.sunrise),
+                value = DateTimeHelper.formatTime(weather.sunrise, locale),
                 contentDesc = stringResource(R.string.sunrise_icon_desc)
             )
 
@@ -263,7 +265,7 @@ private fun SunCycleSection(weather: WeatherEntity) {
             StatsRow(
                 icon = R.drawable.sunset,
                 label = stringResource(R.string.sunset),
-                value = DateTimeHelper.formatTime(weather.sunset),
+                value = DateTimeHelper.formatTime(weather.sunset, locale),
                 contentDesc = stringResource(R.string.sunset_icon_desc)
             )
         }

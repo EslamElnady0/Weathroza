@@ -1,5 +1,6 @@
 package com.eslamdev.weathroza.presentaion.main.views
 
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
@@ -25,11 +26,12 @@ import com.eslamdev.weathroza.presentaion.main.components.BottomNavBar
 import com.eslamdev.weathroza.presentaion.routes.BottomRoute
 import com.eslamdev.weathroza.presentaion.settings.view.SettingsView
 import com.eslamdev.weathroza.presentaion.settings.viewmodel.SettingsViewModel
+import com.eslamdev.weathroza.presentaion.settings.viewmodel.SettingsViewModelFactory
+import kotlin.getValue
 
 @Composable
 fun MainView(
     controller: NavController,
-    settingsViewModel: SettingsViewModel,
     modifier: Modifier = Modifier
 ) {
 
@@ -72,6 +74,9 @@ fun MainView(
             }
 
             composable<BottomRoute.Settings> {
+                val context = LocalContext.current
+                val settingsViewModel=
+                    viewModel<SettingsViewModel>(factory = SettingsViewModelFactory(context))
                 SettingsView(bottomController, settingsViewModel)
             }
         }

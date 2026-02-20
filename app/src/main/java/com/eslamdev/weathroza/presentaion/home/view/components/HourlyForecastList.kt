@@ -34,6 +34,7 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.eslamdev.weathroza.core.helpers.DateTimeHelper
 import com.eslamdev.weathroza.core.settings.UserSettings
+import com.eslamdev.weathroza.core.settings.toLocale
 
 @Composable
 fun HourlyForecastList(
@@ -99,7 +100,7 @@ fun HourlyForecastItem(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text(
-                text = DateTimeHelper.formatHour(forecast.dt),
+                text = DateTimeHelper.formatHour(forecast.dt, settings.language.toLocale()),
                 fontSize = 12.sp,
                 color = AppColors.lightGray,
                 fontWeight = FontWeight.Medium

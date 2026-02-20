@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -19,30 +20,13 @@ import com.eslamdev.weathroza.presentaion.settings.viewmodel.SettingsViewModelFa
 import com.eslamdev.weathroza.ui.theme.WeathrozaTheme
 import java.util.Locale
 
-class MainActivity : ComponentActivity() {
-    private val settingsViewModel by viewModels<SettingsViewModel> {
-        SettingsViewModelFactory(applicationContext)
-    }
+class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             WeathrozaTheme(darkTheme = true) {
-
-                val settings by settingsViewModel.settings.collectAsStateWithLifecycle()
-
-                val resolvedLanguage = when (settings.language) {
-                    AppLanguage.SYSTEM  -> Locale.getDefault().language
-                    AppLanguage.ENGLISH -> "en"
-                    AppLanguage.ARABIC  -> "ar"
-                }
-
-                LaunchedEffect(resolvedLanguage) {
-                    LanguageManager.currentLanguage = resolvedLanguage
-                }
-                AppLocaleWrapper(language = LanguageManager.currentLanguage) {
-                    App(settingsViewModel)
-                }
+                App()
             }
         }
     }
