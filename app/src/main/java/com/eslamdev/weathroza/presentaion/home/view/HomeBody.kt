@@ -1,5 +1,6 @@
 package com.eslamdev.weathroza.presentaion.home.view
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -7,18 +8,23 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DividerDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -48,6 +54,7 @@ import com.eslamdev.weathroza.data.models.weather.WeatherEntity
 import com.eslamdev.weathroza.presentaion.home.model.HomeViewData
 import com.eslamdev.weathroza.presentaion.home.view.components.DailyForecastItem
 import com.eslamdev.weathroza.presentaion.home.view.components.HourlyForecastList
+import com.eslamdev.weathroza.presentaion.home.view.components.RefreshBanner
 import com.eslamdev.weathroza.presentaion.home.view.components.StatsRow
 import com.eslamdev.weathroza.presentaion.home.view.components.StatusItem
 import com.eslamdev.weathroza.presentaion.home.viewmodel.HomeViewModel
@@ -60,6 +67,7 @@ fun HomeBody(
 
     val state by viewModel.uiState.collectAsState()
     val settings by viewModel.settings.collectAsStateWithLifecycle()
+    val isRefreshing by viewModel.isRefreshing.collectAsStateWithLifecycle()
 
     when (state) {
 
@@ -88,7 +96,9 @@ fun HomeBody(
                 weather = data.weather,
                 hourly = data.hourlyForecast,
                 daily = data.dailyForecast,
-                settings= settings
+                settings = settings,
+                isRefreshing = isRefreshing,
+                onRefresh = viewModel::refresh
             )
         }
 
@@ -96,65 +106,72 @@ fun HomeBody(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeBodyImpl(
     weather: WeatherEntity,
     hourly: List<HourlyForecastEntity>,
     daily: List<DailyForecastEntity>,
     settings: UserSettings,
-    modifier: Modifier = Modifier
-) {
-
-    LazyColumn(
-        modifier
-            .fillMaxSize()
-            .padding(horizontal = 16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+    onRefresh: () -> Unit,
+    modifier: Modifier = Modifier,
+    isRefreshing: Boolean = false,
     ) {
+    PullToRefreshBox(
+        isRefreshing = isRefreshing,
+        onRefresh = onRefresh,
+        modifier = modifier.fillMaxSize()
+    ) {
+        LazyColumn(
+            Modifier
+                .fillMaxSize()
+                .padding(horizontal = 16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            item {
+                RefreshBanner(isRefreshing = isRefreshing)
 
-        item {
-            HeightSpacer(30.0)
+                HeightSpacer(30.0)
 
-            HeaderSection(weather,settings)
+                HeaderSection(weather, settings)
 
-            HeightSpacer(16.0)
+                HeightSpacer(16.0)
 
-            WeatherDetailsSection(weather, settings)
+                WeatherDetailsSection(weather, settings)
 
-            HeightSpacer(12.0)
+                HeightSpacer(12.0)
 
-            SunCycleSection(weather, settings)
+                SunCycleSection(weather, settings)
 
-            HeightSpacer(20.0)
+                HeightSpacer(20.0)
 
-            HourlyForecastList(hourly, settings)
+                HourlyForecastList(hourly, settings)
 
-            HeightSpacer(24.0)
+                HeightSpacer(24.0)
 
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = stringResource(R.string.seven_day_forecast),
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,
-                color = AppColors.gray,
-                textAlign = TextAlign.Start
-            )
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = stringResource(R.string.seven_day_forecast),
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = AppColors.gray,
+                    textAlign = TextAlign.Start
+                )
 
-            HeightSpacer(12.0)
-        }
+                HeightSpacer(12.0)
+            }
 
-        items(daily) { forecast ->
-            DailyForecastItem(forecast, settings)
-            HeightSpacer(12.0)
-        }
+            items(daily) { forecast ->
+                DailyForecastItem(forecast, settings)
+                HeightSpacer(12.0)
+            }
 
-        item {
-            HeightSpacer(24.0)
+            item {
+                HeightSpacer(24.0)
+            }
         }
     }
 }
-
-
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 private fun HeaderSection(weather: WeatherEntity,settings: UserSettings) {

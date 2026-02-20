@@ -39,6 +39,9 @@ class HomeViewModel(
     private val _uiState = MutableStateFlow<UiState<HomeViewData>>(UiState.Loading)
     val uiState: StateFlow<UiState<HomeViewData>> = _uiState.asStateFlow()
 
+    private val _isRefreshing = MutableStateFlow(false)
+    val isRefreshing: StateFlow<Boolean> = _isRefreshing.asStateFlow()
+
     private val latitude = 30.599405
     private val longitude = 31.489460
 
@@ -67,6 +70,7 @@ class HomeViewModel(
     }
 
     private suspend fun refreshFromNetwork() {
+        _isRefreshing.value = true
         try {
             val currentSettings = settings.value
             val (weather, hourly, daily) = repo.refreshHomeData(
@@ -79,6 +83,8 @@ class HomeViewModel(
             if (_uiState.value is UiState.Loading) {
                 _uiState.value = UiState.Error(e.message ?: "Unknown error")
             }
+        } finally {
+            _isRefreshing.value = false
         }
     }
 

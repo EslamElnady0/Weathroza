@@ -38,6 +38,7 @@
     <!-- 7-Day Forecast Strings -->
     <string name="seven_day_forecast">7-DAY FORECAST</string>
     <string name="feels_like">Feels like %1$s°</string>
+    <string name="getting_latest_data">Getting latest data…</string>
 
     <!-- Settings Strings -->
     <string name="location">Location</string>
