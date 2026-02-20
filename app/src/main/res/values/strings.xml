@@ -54,6 +54,10 @@
     <string name="arabic">Arabic</string>
     <string name="gps_automatic">GPS (Automatic)</string>
     <string name="map_manual">Map (Manual)</string>
+    <string name="pick_from_map">Pick from Map?</string>
+    <string name="pick_from_map_desc">Open the interactive map to precisely select your weather location. This allows you to choose any spot worldwide.</string>
+    <string name="cancel">CANCEL</string>
+    <string name="proceed">PROCEED</string>
     <string name="celsius">Celsius</string>
     <string name="fahrenheit">Fahrenheit</string>
     <string name="kelvin">Kelvin</string>

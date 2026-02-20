@@ -10,10 +10,10 @@ fun Double.toFahrenheit(): Double = this * 9.0 / 5.0 + 32
 fun Double.toKelvin(): Double = this + 273.15
 fun Double.toMph(): Double = this * 2.23694
 
-fun Double.convertTemp(unit: TemperatureUnit): Double = when (unit) {
-    TemperatureUnit.CELSIUS    -> this
-    TemperatureUnit.FAHRENHEIT -> toFahrenheit()
-    TemperatureUnit.KELVIN     -> toKelvin()
+fun Double.convertTemp(unit: TemperatureUnit): Int = when (unit) {
+    TemperatureUnit.CELSIUS    -> this.roundToInt()
+    TemperatureUnit.FAHRENHEIT -> toFahrenheit().roundToInt()
+    TemperatureUnit.KELVIN     -> toKelvin().roundToInt()
 }
 
 fun Double.convertWind(unit: WindSpeedUnit): Double = when (unit) {

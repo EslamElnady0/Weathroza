@@ -54,6 +54,10 @@
     <string name="arabic">العربية</string>
     <string name="gps_automatic">GPS (تلقائي)</string>
     <string name="map_manual">الخريطة (يدوي)</string>
+    <string name="pick_from_map">اختر من الخريطة؟</string>
+    <string name="pick_from_map_desc">افتح الخريطة التفاعلية لتحديد موقع الطقس بدقة. يتيح لك ذلك اختيار أي مكان في العالم.</string>
+    <string name="cancel">إلغاء</string>
+    <string name="proceed">متابعة</string>
     <string name="celsius">مئوية</string>
     <string name="fahrenheit">فهرنهايت</string>
     <string name="kelvin">كلفن</string>

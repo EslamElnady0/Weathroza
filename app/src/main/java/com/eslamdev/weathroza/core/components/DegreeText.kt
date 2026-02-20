@@ -10,6 +10,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 import com.eslamdev.weathroza.R
 import com.eslamdev.weathroza.core.helpers.convertTemp
+import com.eslamdev.weathroza.core.helpers.formatLocalized
 import com.eslamdev.weathroza.core.helpers.label
 import com.eslamdev.weathroza.core.helpers.toTwoDigitString
 import com.eslamdev.weathroza.core.settings.UserSettings
@@ -25,7 +26,11 @@ fun DegreeText(
     fontWeight: FontWeight = FontWeight.Normal
 ) {
     Text(
-        "${degree.convertTemp(settings.temperatureUnit).toTwoDigitString(settings.language.toLocale())}°${settings.temperatureUnit.label()}",
+        "${degree.convertTemp(settings.temperatureUnit)
+            .formatLocalized(
+                locale = settings.language.toLocale(),
+                pattern = "%d"
+            )}°${settings.temperatureUnit.label()}",
         fontSize = fontSize,
         color = color,
         fontWeight = fontWeight,

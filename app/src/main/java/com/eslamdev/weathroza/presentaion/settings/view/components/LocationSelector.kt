@@ -3,6 +3,10 @@ package com.eslamdev.weathroza.presentaion.settings.view.components
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Map
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import com.eslamdev.weathroza.R
 import androidx.compose.runtime.Composable
@@ -16,6 +20,15 @@ fun LocationSelector(
     selectedOptionIndex: Int = 0,
     onOptionSelected: (Int) -> Unit = {}
 ) {
+    var showMapDialog by remember { mutableStateOf(false) }
+
+    if (showMapDialog) {
+        PickFromMapDialog(
+            onDismiss = { showMapDialog = false },
+            onProceed = { onOptionSelected(1) }
+        )
+    }
+
     SettingsSelector(horizontalPadding = 8.dp) {
         SettingSelectorItem(
             title = stringResource(R.string.gps_automatic),
@@ -27,7 +40,7 @@ fun LocationSelector(
             title = stringResource(R.string.map_manual),
             icon = Icons.Default.Map,
             isSelected = selectedOptionIndex == 1,
-            onClick = { onOptionSelected(1) }
+            onClick = { showMapDialog = true }
         )
     }
 }

@@ -96,8 +96,7 @@ fun DailyForecastItem(
                     text = stringResource(R.string.feels_like,
                         forecast
                         .feelsLikeDay
-                        .convertTemp(settings.temperatureUnit)
-                        .toTwoDigitString(settings.language.toLocale())) + settings.temperatureUnit.label(),
+                        .convertTemp(settings.temperatureUnit)) + settings.temperatureUnit.label(),
                     fontSize = 10.sp,
                     color = AppColors.lightGray
                 )

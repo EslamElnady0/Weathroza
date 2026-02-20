@@ -35,9 +35,7 @@ fun SettingsView(bottomController: NavController,
                  settingsViewModel: SettingsViewModel,
                  modifier: Modifier = Modifier) {
 
-    val context = LocalContext.current
     val settings by settingsViewModel.settings.collectAsStateWithLifecycle()
-
     SettingsViewImpl(
         settings = settings,
         onTemperatureUnitChanged = settingsViewModel::onTemperatureUnitChanged,
