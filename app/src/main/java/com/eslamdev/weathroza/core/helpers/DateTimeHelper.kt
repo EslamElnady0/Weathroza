@@ -30,8 +30,14 @@ object DateTimeHelper {
     fun formatShortDate(timestamp: Long) =
         formatUnixTimestamp(timestamp, "MMM dd")
 
+    fun formatShortDate(timestamp: Long, locale: Locale) =
+        formatUnixTimestamp(timestamp, "MMM dd", locale)
+
     fun formatDayName(timestamp: Long) =
         formatUnixTimestamp(timestamp, "EEEE")
+
+    fun formatDayName(timestamp: Long, locale: Locale) =
+        formatUnixTimestamp(timestamp, "EEEE", locale)
 
     fun formatHour(timestamp: Long) =
         formatUnixTimestamp(timestamp, "hh a")

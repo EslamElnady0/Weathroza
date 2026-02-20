@@ -25,6 +25,7 @@ import com.eslamdev.weathroza.core.helpers.convertTemp
 import com.eslamdev.weathroza.core.helpers.label
 import com.eslamdev.weathroza.core.helpers.toTwoDigitString
 import com.eslamdev.weathroza.core.settings.UserSettings
+import com.eslamdev.weathroza.core.settings.toLocale
 import com.eslamdev.weathroza.data.models.forecast.DailyForecastEntity
 
 
@@ -43,18 +44,19 @@ fun DailyForecastItem(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
+            val locale = settings.language.toLocale()
             Column(
                 modifier = Modifier.weight(0.8f),
                 verticalArrangement = Arrangement.spacedBy(2.dp)
             ) {
                 Text(
-                    text = DateTimeHelper.formatDayName(forecast.dt),
+                    text = DateTimeHelper.formatDayName(forecast.dt, locale),
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Medium,
                     color = AppColors.gray
                 )
                 Text(
-                    text = DateTimeHelper.formatShortDate(forecast.dt),
+                    text = DateTimeHelper.formatShortDate(forecast.dt, locale),
                     fontSize = 12.sp,
                     color = AppColors.lightGray
                 )

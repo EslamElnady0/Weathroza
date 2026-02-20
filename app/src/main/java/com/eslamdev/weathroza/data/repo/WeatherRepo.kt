@@ -165,4 +165,23 @@ class WeatherRepo(val context: Context) {
             fetchAndSaveDailyForecast(latitude, longitude, language, units)
         }
     }
+
+    suspend fun getCachedHomeData(): Triple<WeatherEntity, List<HourlyForecastEntity>, List<DailyForecastEntity>>? {
+        val weather = localDataSource.getAllWeather().firstOrNull() ?: return null
+        val hourly = localDataSource.getHourlyForecasts()
+        val daily = localDataSource.getDailyForecasts(weather.id.toLong())
+        return Triple(weather, hourly, daily)
+    }
+
+    suspend fun refreshHomeData(
+        latitude: Double,
+        longitude: Double,
+        language: AppLanguage = AppLanguage.ENGLISH,
+        units: Units = Units.METRIC
+    ): Triple<WeatherEntity, List<HourlyForecastEntity>, List<DailyForecastEntity>> {
+        val weather = fetchAndSaveWeather(latitude, longitude, language, units)
+        val hourly = fetchAndSaveHourlyForecast(latitude, longitude, language, units)
+        val daily = fetchAndSaveDailyForecast(latitude, longitude, language, units)
+        return Triple(weather, hourly, daily)
+    }
 }

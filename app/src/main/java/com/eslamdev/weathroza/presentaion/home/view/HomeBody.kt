@@ -180,7 +180,7 @@ private fun HeaderSection(weather: WeatherEntity,settings: UserSettings) {
     )
 
     Text(
-        weather.weatherMain,
+        weather.weatherDescription,
         fontSize = 20.sp,
         fontWeight = FontWeight.Medium,
         color = AppColors.gray

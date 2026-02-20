@@ -6,16 +6,18 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.eslamdev.weathroza.core.common.UiState
 import com.eslamdev.weathroza.core.enums.Units
+import com.eslamdev.weathroza.core.network.NetworkObserver
 import com.eslamdev.weathroza.core.settings.AppLanguage
 import com.eslamdev.weathroza.core.settings.SettingsDataStore
 import com.eslamdev.weathroza.core.settings.UserSettings
 import com.eslamdev.weathroza.data.repo.WeatherRepo
 import com.eslamdev.weathroza.presentaion.home.model.HomeViewData
-import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -25,6 +27,7 @@ class HomeViewModel(
 ) : ViewModel() {
 
     private val dataStore = SettingsDataStore(context)
+    private val networkObserver = NetworkObserver(context)
 
     val settings: StateFlow<UserSettings> = dataStore.settingsFlow
         .stateIn(
@@ -33,68 +36,56 @@ class HomeViewModel(
             initialValue = UserSettings()
         )
 
-    private val _uiState =
-        MutableStateFlow<UiState<HomeViewData>>(UiState.Idle)
+    private val _uiState = MutableStateFlow<UiState<HomeViewData>>(UiState.Loading)
+    val uiState: StateFlow<UiState<HomeViewData>> = _uiState.asStateFlow()
 
-    val uiState: StateFlow<UiState<HomeViewData>> =
-        _uiState.asStateFlow()
+    private val latitude = 30.599405
+    private val longitude = 31.489460
 
-    private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
-        _uiState.value =
-            UiState.Error(throwable.message ?: "Unknown error")
+    init {
+        loadHomeData()
     }
 
-    fun loadWeather(
-        latitude: Double,
-        longitude: Double,
-        language: AppLanguage = AppLanguage.ENGLISH,
-        units: Units = Units.METRIC
-    ) {
-        viewModelScope.launch(exceptionHandler) {
+    private fun loadHomeData() {
+        viewModelScope.launch {
+            val cached = repo.getCachedHomeData()
+            if (cached != null) {
+                val (weather, hourly, daily) = cached
+                _uiState.value = UiState.Success(HomeViewData(weather, hourly, daily))
+            } else {
+                _uiState.value = UiState.Loading
+            }
 
-            _uiState.value = UiState.Loading
-
-            val weather = repo.fetchWeatherFromApi(
-                latitude,
-                longitude,
-                language,
-                units
-            )
-
-            val hourly = repo.getHourlyForecastFromApi(
-                latitude,
-                longitude,
-                language,
-                units
-            )
-
-            val daily = repo.getDailyForecastFromApi(
-                latitude,
-                longitude,
-                language,
-                units
-            )
-
-            val homeData = HomeViewData(
-                weather = weather,
-                hourlyForecast = hourly,
-                dailyForecast = daily
-            )
-
-            _uiState.value = UiState.Success(homeData)
+            networkObserver.isConnected
+                .onEach { isOnline ->
+                    if (isOnline) {
+                        refreshFromNetwork()
+                    }
+                }
+                .launchIn(viewModelScope)
         }
     }
 
-    init {
-        loadWeather(
-            latitude = 67.452792,
-            longitude = 29.394130,
-            language = AppLanguage.ENGLISH,
-            units = Units.METRIC
-        )
+    private suspend fun refreshFromNetwork() {
+        try {
+            val currentSettings = settings.value
+            val (weather, hourly, daily) = repo.refreshHomeData(
+                latitude = latitude,
+                longitude = longitude,
+                language = currentSettings.language,
+            )
+            _uiState.value = UiState.Success(HomeViewData(weather, hourly, daily))
+        } catch (e: Exception) {
+            if (_uiState.value is UiState.Loading) {
+                _uiState.value = UiState.Error(e.message ?: "Unknown error")
+            }
+        }
+    }
+
+    fun refresh() {
+        viewModelScope.launch { refreshFromNetwork() }
     }
 }
-
 
 class HomeViewModelFactory(
     private val repo: WeatherRepo,
