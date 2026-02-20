@@ -13,6 +13,7 @@ import com.eslamdev.weathroza.core.helpers.convertTemp
 import com.eslamdev.weathroza.core.helpers.label
 import com.eslamdev.weathroza.core.helpers.toTwoDigitString
 import com.eslamdev.weathroza.core.settings.UserSettings
+import com.eslamdev.weathroza.core.settings.toLocale
 
 @Composable
 fun DegreeText(
@@ -24,7 +25,7 @@ fun DegreeText(
     fontWeight: FontWeight = FontWeight.Normal
 ) {
     Text(
-        "${degree.convertTemp(settings.temperatureUnit).toTwoDigitString()}°${settings.temperatureUnit.label()}",
+        "${degree.convertTemp(settings.temperatureUnit).toTwoDigitString(settings.language.toLocale())}°${settings.temperatureUnit.label()}",
         fontSize = fontSize,
         color = color,
         fontWeight = fontWeight,

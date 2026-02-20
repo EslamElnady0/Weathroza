@@ -97,7 +97,7 @@ fun DailyForecastItem(
                         forecast
                         .feelsLikeDay
                         .convertTemp(settings.temperatureUnit)
-                        .toTwoDigitString()) + settings.temperatureUnit.label(),
+                        .toTwoDigitString(settings.language.toLocale())) + settings.temperatureUnit.label(),
                     fontSize = 10.sp,
                     color = AppColors.lightGray
                 )
@@ -105,4 +105,3 @@ fun DailyForecastItem(
         }
     }
 }
-

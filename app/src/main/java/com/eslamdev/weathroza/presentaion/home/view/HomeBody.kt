@@ -45,9 +45,9 @@ import com.eslamdev.weathroza.core.components.WidthSpacer
 import com.eslamdev.weathroza.core.helpers.AppColors
 import com.eslamdev.weathroza.core.helpers.DateTimeHelper
 import com.eslamdev.weathroza.core.helpers.convertWind
+import com.eslamdev.weathroza.core.helpers.formatLocalized
 import com.eslamdev.weathroza.core.helpers.label
-import com.eslamdev.weathroza.core.helpers.toTwoDigitString
-import com.eslamdev.weathroza.core.langmanager.LanguageManager
+import com.eslamdev.weathroza.core.helpers.toLocalizedPercentage
 import com.eslamdev.weathroza.core.settings.UserSettings
 import com.eslamdev.weathroza.core.settings.toLocale
 import com.eslamdev.weathroza.data.models.forecast.DailyForecastEntity
@@ -226,12 +226,13 @@ private fun HeaderSection(weather: WeatherEntity,settings: UserSettings) {
 }
 
 @Composable
-private fun WeatherDetailsSection(weather: WeatherEntity,settings: UserSettings) {
+private fun WeatherDetailsSection(weather: WeatherEntity, settings: UserSettings) {
+    val locale = settings.language.toLocale()
     Row {
         StatusItem(
             icon = R.drawable.humidity_ic,
             label = stringResource(R.string.humidity),
-            value = "${weather.humidity}%",
+            value = weather.humidity.toLocalizedPercentage(locale),
             contentDesc = stringResource(R.string.humidity_icon_desc),
             modifier = Modifier.weight(1f)
         )
@@ -239,7 +240,9 @@ private fun WeatherDetailsSection(weather: WeatherEntity,settings: UserSettings)
         StatusItem(
             icon = R.drawable.wind_ic,
             label = stringResource(R.string.wind),
-            value = "${weather.windSpeed.convertWind(settings.windSpeedUnit).toTwoDigitString()} ${settings.windSpeedUnit.label()}",
+            value = "${
+                weather.windSpeed.convertWind(settings.windSpeedUnit).formatLocalized(locale, "%.2f")
+            } ${settings.windSpeedUnit.label()}",
             contentDesc = stringResource(R.string.wind_icon_desc),
             modifier = Modifier.weight(1f)
         )
@@ -251,7 +254,9 @@ private fun WeatherDetailsSection(weather: WeatherEntity,settings: UserSettings)
         StatusItem(
             icon = R.drawable.pressure,
             label = stringResource(R.string.pressure),
-            value = "${weather.pressure} ${stringResource(R.string.pressure_unit)}",
+            value = "${
+                weather.pressure.formatLocalized(locale, "%d")
+            } ${stringResource(R.string.pressure_unit)}",
             contentDesc = stringResource(R.string.pressure_icon_desc),
             modifier = Modifier.weight(1f)
         )
@@ -259,7 +264,7 @@ private fun WeatherDetailsSection(weather: WeatherEntity,settings: UserSettings)
         StatusItem(
             icon = R.drawable.cloud_ic,
             label = stringResource(R.string.clouds),
-            value = "${weather.cloudsAll}%",
+            value = weather.cloudsAll.toLocalizedPercentage(locale),
             contentDesc = stringResource(R.string.clouds_icon_desc),
             modifier = Modifier.weight(1f)
         )

@@ -2,6 +2,7 @@ package com.eslamdev.weathroza.core.helpers
 import com.eslamdev.weathroza.core.langmanager.LanguageManager
 import com.eslamdev.weathroza.core.settings.TemperatureUnit
 import com.eslamdev.weathroza.core.settings.WindSpeedUnit
+import java.util.Locale
 import kotlin.math.roundToInt
 
 
@@ -19,6 +20,11 @@ fun Double.convertWind(unit: WindSpeedUnit): Double = when (unit) {
     WindSpeedUnit.MS  -> this
     WindSpeedUnit.MPH -> toMph()
 }
+fun Double.toTwoDigitString(locale: Locale): String =
+    String.format(locale, "%.2f", this)
 
-fun Double.toTwoDigitString(): String =
-    String.format(LanguageManager.currentLocale, "%.2f", this)
+fun Int.toLocalizedPercentage(locale: Locale): String =
+    String.format(locale, "%d%%", this)
+
+fun Number.formatLocalized(locale: Locale, pattern: String): String =
+    String.format(locale, pattern, this)

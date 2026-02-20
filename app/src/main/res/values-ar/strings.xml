@@ -36,7 +36,7 @@
     <string name="next_24h">الـ ٢٤ ساعة القادمة</string>
 
     <string name="seven_day_forecast">توقعات الـ ٧ أيام</string>
-    <string name="feels_like">تشعر وكأنها %1$s°م</string>
+    <string name="feels_like">تشعر وكأنها %1$s°</string>
     <string name="getting_latest_data">جارٍ تحديث البيانات…</string>
     <string name="pull_to_refresh">اسحب للتحديث</string>
     <string name="release_to_refresh">أفلت للتحديث</string>
@@ -62,7 +62,7 @@
     <string name="unit_ms">م/ث</string>
     <string name="unit_mph">ميل/س</string>
     <string name="fahrenheit_symbol">ف</string>
-    <string name="celsius_symbol">د</string>
+    <string name="celsius_symbol">م</string>
     <string name="pressure_unit">ه.ب</string>
     <string name="kelvin_symbol">ك</string>
 
