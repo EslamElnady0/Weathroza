@@ -7,15 +7,19 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.eslamdev.weathroza.presentaion.main.views.MainView
+import com.eslamdev.weathroza.presentaion.map.views.MapView
 import com.eslamdev.weathroza.presentaion.settings.viewmodel.SettingsViewModel
 
 @Composable
 fun App( modifier: Modifier = Modifier) {
     val controller = rememberNavController()
     val context = LocalContext.current
-    NavHost(navController = controller, startDestination = Route.MainRoute) {
+    NavHost(navController = controller, startDestination = Route.MapRoute) {
         composable<Route.MainRoute> {
             MainView(controller)
+        }
+        composable<Route.MapRoute> {
+            MapView(controller)
         }
     }
 }

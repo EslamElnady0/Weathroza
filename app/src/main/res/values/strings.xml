@@ -70,4 +70,12 @@
     <string name="pressure_unit">hPa</string>
     <string name="kelvin_symbol">K</string>
 
+    <!-- Map Screen Strings -->
+    <string name="map_back">Back</string>
+    <string name="map_search_hint">Search cities…</string>
+    <string name="map_selected_location">Selected Location</string>
+    <string name="map_latitude">Latitude</string>
+    <string name="map_longitude">Longitude</string>
+    <string name="map_select_as_location">Select as Location</string>
+
 </resources>

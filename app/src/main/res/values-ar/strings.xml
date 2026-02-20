@@ -70,4 +70,12 @@
     <string name="pressure_unit">ه.ب</string>
     <string name="kelvin_symbol">ك</string>
 
+    <!-- Map Screen Strings -->
+    <string name="map_back">رجوع</string>
+    <string name="map_search_hint">ابحث عن مدن…</string>
+    <string name="map_selected_location">الموقع المحدد</string>
+    <string name="map_latitude">خط العرض</string>
+    <string name="map_longitude">خط الطول</string>
+    <string name="map_select_as_location">تحديد كموقع</string>
+
 </resources>
