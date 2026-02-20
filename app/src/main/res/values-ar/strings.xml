@@ -38,6 +38,8 @@
     <string name="seven_day_forecast">توقعات الـ ٧ أيام</string>
     <string name="feels_like">تشعر وكأنها %1$s°م</string>
     <string name="getting_latest_data">جارٍ تحديث البيانات…</string>
+    <string name="pull_to_refresh">اسحب للتحديث</string>
+    <string name="release_to_refresh">أفلت للتحديث</string>
 
 
     <!-- Settings Strings -->

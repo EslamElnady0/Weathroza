@@ -19,12 +19,14 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -117,10 +119,24 @@ fun HomeBodyImpl(
     modifier: Modifier = Modifier,
     isRefreshing: Boolean = false,
     ) {
+    val pullToRefreshState = rememberPullToRefreshState()
     PullToRefreshBox(
         isRefreshing = isRefreshing,
         onRefresh = onRefresh,
-        modifier = modifier.fillMaxSize()
+        state = pullToRefreshState,
+        modifier = modifier.fillMaxSize(),
+        indicator = {
+            val pullProgress = pullToRefreshState.distanceFraction
+            RefreshBanner(
+                isRefreshing = isRefreshing,
+                pullProgress = pullProgress,
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .graphicsLayer {
+                        translationY = (pullProgress * 80.dp.toPx()) - size.height
+                    }
+            )
+        }
     ) {
         LazyColumn(
             Modifier
@@ -129,8 +145,6 @@ fun HomeBodyImpl(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             item {
-                RefreshBanner(isRefreshing = isRefreshing)
-
                 HeightSpacer(30.0)
 
                 HeaderSection(weather, settings)

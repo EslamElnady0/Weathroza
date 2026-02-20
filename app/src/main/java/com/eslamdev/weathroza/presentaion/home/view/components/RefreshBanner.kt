@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -27,33 +28,42 @@ import com.eslamdev.weathroza.core.helpers.AppColors
 @Composable
 fun RefreshBanner(
     isRefreshing: Boolean,
+    pullProgress: Float,
     modifier: Modifier = Modifier
 ) {
+    val isVisible = isRefreshing || pullProgress > 0f
+    
+    val text = when {
+        isRefreshing -> stringResource(R.string.getting_latest_data)
+        pullProgress >= 1f -> stringResource(R.string.release_to_refresh)
+        else -> stringResource(R.string.pull_to_refresh)
+    }
+
     AnimatedVisibility(
-        visible = isRefreshing,
+        visible = isVisible,
         enter = slideInVertically(initialOffsetY = { -it }) + fadeIn(),
         exit = slideOutVertically(targetOffsetY = { -it }) + fadeOut(),
-        modifier = modifier
+        modifier = modifier.padding(horizontal = 16.dp)
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 12.dp, top = 12.dp)
                 .clip(RoundedCornerShape(50))
-                .background(AppColors.primary.copy(alpha = 0.15f))
-                .padding(horizontal = 16.dp, vertical = 8.dp),
+                .background(AppColors.primary.copy(alpha = 0.95f))
+                .padding(horizontal = 16.dp, vertical = 10.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
             CircularProgressIndicator(
                 modifier = Modifier.size(14.dp),
                 strokeWidth = 2.dp,
-                color = AppColors.primary
+                color = Color.White,
+                progress = { if (isRefreshing) -1f else pullProgress.coerceIn(0f, 1f) }
             )
             Text(
-                text = stringResource(R.string.getting_latest_data),
+                text = text,
                 fontSize = 12.sp,
-                color = AppColors.primary,
+                color = Color.White,
                 modifier = Modifier.padding(start = 8.dp)
             )
         }
