@@ -1,8 +1,8 @@
 package com.eslamdev.weathroza.data.repo
 
 import android.content.Context
-import com.eslamdev.weathroza.core.enums.AppLanguage
 import com.eslamdev.weathroza.core.enums.Units
+import com.eslamdev.weathroza.core.settings.AppLanguage
 import com.eslamdev.weathroza.data.datasources.local.WeatherLocalDataSource
 import com.eslamdev.weathroza.data.datasources.remote.WeatherRemoteDataSource
 import com.eslamdev.weathroza.data.models.forecast.DailyForecastEntity

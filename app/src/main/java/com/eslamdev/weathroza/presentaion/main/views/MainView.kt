@@ -24,10 +24,12 @@ import com.eslamdev.weathroza.presentaion.home.viewmodel.HomeViewModelFactory
 import com.eslamdev.weathroza.presentaion.main.components.BottomNavBar
 import com.eslamdev.weathroza.presentaion.routes.BottomRoute
 import com.eslamdev.weathroza.presentaion.settings.view.SettingsView
+import com.eslamdev.weathroza.presentaion.settings.viewmodel.SettingsViewModel
 
 @Composable
 fun MainView(
     controller: NavController,
+    settingsViewModel: SettingsViewModel,
     modifier: Modifier = Modifier
 ) {
 
@@ -70,17 +72,17 @@ fun MainView(
             }
 
             composable<BottomRoute.Settings> {
-                SettingsView(bottomController)
+                SettingsView(bottomController, settingsViewModel)
             }
         }
     }
 }
 
-
-@Preview(showBackground = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
-@Composable
-fun HomeBodyPreview(modifier: Modifier = Modifier) {
-    MaterialTheme(colorScheme = darkColorScheme()) {
-        MainView(controller = rememberNavController())
-    }
-}
+//
+//@Preview(showBackground = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
+//@Composable
+//fun HomeBodyPreview(modifier: Modifier = Modifier) {
+//    MaterialTheme(colorScheme = darkColorScheme()) {
+//        MainView(controller = rememberNavController())
+//    }
+//}

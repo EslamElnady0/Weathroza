@@ -15,6 +15,7 @@ class SettingsDataStore(private val context: Context) {
     companion object {
         val TEMP_UNIT = stringPreferencesKey("temp_unit")
         val WIND_UNIT = stringPreferencesKey("wind_unit")
+        val LANGUAGE = stringPreferencesKey("language")
     }
 
     val settingsFlow: Flow<UserSettings> = context.dataStore.data
@@ -26,6 +27,9 @@ class SettingsDataStore(private val context: Context) {
                 ),
                 windSpeedUnit = WindSpeedUnit.valueOf(
                     prefs[WIND_UNIT] ?: WindSpeedUnit.MS.name
+                ),
+                language = AppLanguage.valueOf(
+                    prefs[LANGUAGE] ?: AppLanguage.SYSTEM.name
                 )
             )
         }
@@ -36,5 +40,9 @@ class SettingsDataStore(private val context: Context) {
 
     suspend fun saveWindSpeedUnit(unit: WindSpeedUnit) {
         context.dataStore.edit { it[WIND_UNIT] = unit.name }
+    }
+
+    suspend fun saveLanguage(language: AppLanguage) {
+        context.dataStore.edit { it[LANGUAGE] = language.name }
     }
 }

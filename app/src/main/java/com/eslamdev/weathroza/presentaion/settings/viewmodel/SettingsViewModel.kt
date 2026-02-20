@@ -20,16 +20,19 @@ class SettingsViewModel(
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = UserSettings()
         )
-
     fun onTemperatureUnitChanged(index: Int) {
         viewModelScope.launch {
             dataStore.saveTemperatureUnit(TemperatureUnit.entries[index])
         }
     }
-
     fun onWindSpeedUnitChanged(index: Int) {
         viewModelScope.launch {
             dataStore.saveWindSpeedUnit(WindSpeedUnit.entries[index])
+        }
+    }
+    fun onLanguageChanged(language: AppLanguage) {
+        viewModelScope.launch {
+            dataStore.saveLanguage(language)
         }
     }
 }

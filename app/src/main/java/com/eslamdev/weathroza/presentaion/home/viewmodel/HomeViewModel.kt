@@ -5,8 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.eslamdev.weathroza.core.common.UiState
-import com.eslamdev.weathroza.core.enums.AppLanguage
 import com.eslamdev.weathroza.core.enums.Units
+import com.eslamdev.weathroza.core.settings.AppLanguage
 import com.eslamdev.weathroza.core.settings.SettingsDataStore
 import com.eslamdev.weathroza.core.settings.UserSettings
 import com.eslamdev.weathroza.data.repo.WeatherRepo
