@@ -33,10 +33,12 @@ import com.eslamdev.weathroza.data.models.forecast.HourlyForecastEntity
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.eslamdev.weathroza.core.helpers.DateTimeHelper
+import com.eslamdev.weathroza.core.settings.UserSettings
 
 @Composable
 fun HourlyForecastList(
     forecasts: List<HourlyForecastEntity>,
+    settings: UserSettings,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
@@ -65,7 +67,7 @@ fun HourlyForecastList(
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             items(forecasts) { forecast ->
-                HourlyForecastItem(forecast = forecast)
+                HourlyForecastItem(forecast, settings = settings)
             }
         }
     }
@@ -77,6 +79,7 @@ fun HourlyForecastList(
 @Composable
 fun HourlyForecastItem(
     forecast: HourlyForecastEntity,
+    settings: UserSettings,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -107,44 +110,12 @@ fun HourlyForecastItem(
                 modifier = Modifier.size(40.dp)
             )
             DegreeText(
-                forecast.formattedTemp,
+                forecast.temp,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
+                settings = settings,
                 color = AppColors.gray
             )
         }
-    }
-}
-
-@Preview(
-    showBackground = true,
-    uiMode = Configuration.UI_MODE_NIGHT_YES
-)
-@Composable
-fun HourlyForecastListPreview() {
-    MaterialTheme(colorScheme = darkColorScheme()) {
-        val sampleForecasts = listOf(
-            HourlyForecastEntity(
-                dt = 1634983200,
-                temp = 62.0,
-                icon = "01d",
-                formattedTime = "10 AM",
-                formattedTemp = "62",
-                iconResId = R.drawable.dummy_sun_image
-            ),
-            HourlyForecastEntity(
-                dt = 1634986800,
-                temp = 60.0,
-                icon = "01d",
-                formattedTime = "11 AM",
-                formattedTemp = "60",
-                iconResId = R.drawable.dummy_sun_image
-            )
-        )
-        
-        HourlyForecastList(
-            forecasts = sampleForecasts,
-            modifier = Modifier.padding(16.dp)
-        )
     }
 }

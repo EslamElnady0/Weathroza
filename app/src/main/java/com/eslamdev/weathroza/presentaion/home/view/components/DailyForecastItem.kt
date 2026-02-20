@@ -21,6 +21,10 @@ import com.eslamdev.weathroza.core.components.CardWithBoarder
 import com.eslamdev.weathroza.core.components.DegreeText
 import com.eslamdev.weathroza.core.helpers.AppColors
 import com.eslamdev.weathroza.core.helpers.DateTimeHelper
+import com.eslamdev.weathroza.core.helpers.convertTemp
+import com.eslamdev.weathroza.core.helpers.label
+import com.eslamdev.weathroza.core.helpers.toTwoDigitString
+import com.eslamdev.weathroza.core.settings.UserSettings
 import com.eslamdev.weathroza.data.models.forecast.DailyForecastEntity
 
 
@@ -28,7 +32,8 @@ import com.eslamdev.weathroza.data.models.forecast.DailyForecastEntity
 @Composable
 fun DailyForecastItem(
     forecast: DailyForecastEntity,
-    modifier: Modifier = Modifier
+    settings: UserSettings,
+    modifier: Modifier = Modifier,
 ) {
     CardWithBoarder(modifier = modifier.fillMaxWidth()) {
         Row(
@@ -79,13 +84,19 @@ fun DailyForecastItem(
                 verticalArrangement = Arrangement.spacedBy(2.dp)
             ) {
                 DegreeText(
-                    forecast.formattedTemp,
+                    forecast.tempDay,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
+                    settings = settings,
                     color = AppColors.gray
                 )
                 Text(
-                    text = stringResource(R.string.feels_like, forecast.formattedFeelsLike),
+                    text = stringResource(R.string.feels_like,
+                        forecast
+                        .feelsLikeDay
+                        .convertTemp(settings.temperatureUnit)
+                        .toTwoDigitString(),
+                        settings.temperatureUnit.label()),
                     fontSize = 10.sp,
                     color = AppColors.lightGray
                 )

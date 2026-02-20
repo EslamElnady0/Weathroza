@@ -61,5 +61,6 @@
     <string name="fahrenheit_symbol">ف</string>
     <string name="celsius_symbol">د</string>
     <string name="pressure_unit">ه.ب</string>
+    <string name="kelvin_symbol">ك</string>
 
 </resources>

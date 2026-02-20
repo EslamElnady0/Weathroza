@@ -50,7 +50,7 @@ fun MainView(
 
                 val context = LocalContext.current
                 val factory = remember {
-                    HomeViewModelFactory(WeatherRepo(context))
+                    HomeViewModelFactory(WeatherRepo(context),context)
                 }
                 val viewModel: HomeViewModel =
                     viewModel(factory = factory)

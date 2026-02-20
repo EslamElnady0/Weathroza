@@ -21,43 +21,47 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.eslamdev.weathroza.core.components.HeightSpacer
 import com.eslamdev.weathroza.core.helpers.AppColors
+import com.eslamdev.weathroza.core.settings.UserSettings
 import com.eslamdev.weathroza.presentaion.settings.view.components.AppLanguage
 import com.eslamdev.weathroza.presentaion.settings.view.components.LanguageSelector
 import com.eslamdev.weathroza.presentaion.settings.view.components.LocationSelector
 import com.eslamdev.weathroza.presentaion.settings.view.components.UnitsSection
+import com.eslamdev.weathroza.presentaion.settings.viewmodel.SettingsViewModel
+import com.eslamdev.weathroza.presentaion.settings.viewmodel.SettingsViewModelFactory
 
 @Composable
 fun SettingsView(bottomController: NavController, modifier: Modifier = Modifier) {
-    SettingsViewImpl(modifier)
+    val context = LocalContext.current
+    val viewModel: SettingsViewModel = viewModel(
+        factory = SettingsViewModelFactory(context)
+    )
+    val settings by viewModel.settings.collectAsStateWithLifecycle()
+
+    SettingsViewImpl(
+        settings = settings,
+        onTemperatureUnitChanged = viewModel::onTemperatureUnitChanged,
+        onWindSpeedUnitChanged = viewModel::onWindSpeedUnitChanged,
+        modifier = modifier
+    )
 }
 
-@Preview(
-    showBackground = true,
-    uiMode = Configuration.UI_MODE_NIGHT_YES
-)
-@Composable
-fun HomeBodyPreview(modifier: Modifier = Modifier) {
-
-    MaterialTheme(colorScheme = darkColorScheme()) {
-        Scaffold { innerPadding ->
-            SettingsViewImpl(modifier.padding(innerPadding))
-        }
-    }
-
-}
 
 @Composable
-fun SettingsViewImpl(modifier: Modifier = Modifier) {
+fun SettingsViewImpl(settings: UserSettings,
+                     onTemperatureUnitChanged: (Int) -> Unit,
+                     onWindSpeedUnitChanged: (Int) -> Unit,
+                     modifier: Modifier = Modifier) {
     var selectedLocationIndex by remember { mutableIntStateOf(0) }
-    var selectedUnitIndex by remember { mutableIntStateOf(0) }
-    var selectedTempIndex by remember { mutableIntStateOf(0) }
     var selectedLanguage by remember { mutableStateOf(AppLanguage.SYSTEM) }
 
     Column(
@@ -99,10 +103,10 @@ fun SettingsViewImpl(modifier: Modifier = Modifier) {
             )
             HeightSpacer(12.0)
             UnitsSection(
-                selectedTempUnitIndex = selectedUnitIndex,
-                onTempOptionSelected = { selectedUnitIndex = it },
-                selectedWindUnitIndex = selectedTempIndex,
-                onWindOptionSelected = { selectedTempIndex = it }
+                selectedTempUnitIndex = settings.temperatureUnit.ordinal,
+                onTempOptionSelected = onTemperatureUnitChanged,
+                selectedWindUnitIndex = settings.windSpeedUnit.ordinal,
+                onWindOptionSelected = onWindSpeedUnitChanged
             )
             HeightSpacer(12.0)
             HorizontalDivider()

@@ -24,6 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
@@ -35,7 +36,11 @@ import com.eslamdev.weathroza.core.components.HeightSpacer
 import com.eslamdev.weathroza.core.components.WidthSpacer
 import com.eslamdev.weathroza.core.helpers.AppColors
 import com.eslamdev.weathroza.core.helpers.DateTimeHelper
+import com.eslamdev.weathroza.core.helpers.convertWind
+import com.eslamdev.weathroza.core.helpers.label
+import com.eslamdev.weathroza.core.helpers.toTwoDigitString
 import com.eslamdev.weathroza.core.langmanager.LanguageManager
+import com.eslamdev.weathroza.core.settings.UserSettings
 import com.eslamdev.weathroza.data.models.forecast.DailyForecastEntity
 import com.eslamdev.weathroza.data.models.forecast.HourlyForecastEntity
 import com.eslamdev.weathroza.data.models.weather.WeatherEntity
@@ -53,6 +58,7 @@ fun HomeBody(
 ) {
 
     val state by viewModel.uiState.collectAsState()
+    val settings by viewModel.settings.collectAsStateWithLifecycle()
 
     when (state) {
 
@@ -80,7 +86,8 @@ fun HomeBody(
             HomeBodyImpl(
                 weather = data.weather,
                 hourly = data.hourlyForecast,
-                daily = data.dailyForecast
+                daily = data.dailyForecast,
+                settings= settings
             )
         }
 
@@ -93,6 +100,7 @@ fun HomeBodyImpl(
     weather: WeatherEntity,
     hourly: List<HourlyForecastEntity>,
     daily: List<DailyForecastEntity>,
+    settings: UserSettings,
     modifier: Modifier = Modifier
 ) {
 
@@ -106,11 +114,11 @@ fun HomeBodyImpl(
         item {
             HeightSpacer(30.0)
 
-            HeaderSection(weather)
+            HeaderSection(weather,settings)
 
             HeightSpacer(16.0)
 
-            WeatherDetailsSection(weather)
+            WeatherDetailsSection(weather, settings)
 
             HeightSpacer(12.0)
 
@@ -118,7 +126,7 @@ fun HomeBodyImpl(
 
             HeightSpacer(20.0)
 
-            HourlyForecastList(forecasts = hourly)
+            HourlyForecastList(hourly, settings)
 
             HeightSpacer(24.0)
 
@@ -135,7 +143,7 @@ fun HomeBodyImpl(
         }
 
         items(daily) { forecast ->
-            DailyForecastItem(forecast = forecast)
+            DailyForecastItem(forecast, settings)
             HeightSpacer(12.0)
         }
 
@@ -148,7 +156,7 @@ fun HomeBodyImpl(
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-private fun HeaderSection(weather: WeatherEntity) {
+private fun HeaderSection(weather: WeatherEntity,settings: UserSettings) {
     Text(
         "${weather.name}, ${weather.country}",
         fontSize = 30.sp,
@@ -177,16 +185,16 @@ private fun HeaderSection(weather: WeatherEntity) {
         color = AppColors.gray
     )
 
-    DegreeText(
-        weather.formattedTemp,
+    DegreeText(weather.temp,
         fontSize = 65.sp,
         color = AppColors.primary,
+        settings = settings,
         fontWeight = FontWeight.ExtraBold
     )
 }
 
 @Composable
-private fun WeatherDetailsSection(weather: WeatherEntity) {
+private fun WeatherDetailsSection(weather: WeatherEntity,settings: UserSettings) {
     Row {
         StatusItem(
             icon = R.drawable.humidity_ic,
@@ -199,7 +207,7 @@ private fun WeatherDetailsSection(weather: WeatherEntity) {
         StatusItem(
             icon = R.drawable.wind_ic,
             label = stringResource(R.string.wind),
-            value = "${weather.windSpeed} ${stringResource(R.string.unit_ms)}",
+            value = "${weather.windSpeed.convertWind(settings.windSpeedUnit).toTwoDigitString()} ${settings.windSpeedUnit.label()}",
             contentDesc = stringResource(R.string.wind_icon_desc),
             modifier = Modifier.weight(1f)
         )

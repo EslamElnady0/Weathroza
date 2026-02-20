@@ -37,7 +37,7 @@
 
     <!-- 7-Day Forecast Strings -->
     <string name="seven_day_forecast">7-DAY FORECAST</string>
-    <string name="feels_like">Feels like %1$s°C</string>
+    <string name="feels_like">Feels like %1$s°</string>
 
     <!-- Settings Strings -->
     <string name="location">Location</string>
@@ -61,5 +61,6 @@
     <string name="fahrenheit_symbol">F</string>
     <string name="celsius_symbol">C</string>
     <string name="pressure_unit">hPa</string>
+    <string name="kelvin_symbol">K</string>
 
 </resources>

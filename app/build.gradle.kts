@@ -94,4 +94,14 @@ dependencies {
 //Serialization for NavArgs
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0")
     implementation("androidx.compose.material:material-icons-extended")
+
+    // DataStore
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
+
+// Google Maps Compose
+    implementation("com.google.maps.android:maps-compose:4.3.3")
+    implementation("com.google.android.gms:play-services-maps:19.0.0")
+
+// FusedLocation
+    implementation("com.google.android.gms:play-services-location:21.3.0")
 }
