@@ -1,8 +1,8 @@
 package com.eslamdev.weathroza.data.repo
 
 import android.content.Context
-import com.eslamdev.weathroza.core.enums.AppLanguage
 import com.eslamdev.weathroza.core.enums.Units
+import com.eslamdev.weathroza.core.settings.AppLanguage
 import com.eslamdev.weathroza.data.datasources.local.WeatherLocalDataSource
 import com.eslamdev.weathroza.data.datasources.remote.WeatherRemoteDataSource
 import com.eslamdev.weathroza.data.models.forecast.DailyForecastEntity
@@ -164,5 +164,24 @@ class WeatherRepo(val context: Context) {
         return localForecasts.ifEmpty {
             fetchAndSaveDailyForecast(latitude, longitude, language, units)
         }
+    }
+
+    suspend fun getCachedHomeData(): Triple<WeatherEntity, List<HourlyForecastEntity>, List<DailyForecastEntity>>? {
+        val weather = localDataSource.getAllWeather().firstOrNull() ?: return null
+        val hourly = localDataSource.getHourlyForecasts()
+        val daily = localDataSource.getDailyForecasts(weather.id.toLong())
+        return Triple(weather, hourly, daily)
+    }
+
+    suspend fun refreshHomeData(
+        latitude: Double,
+        longitude: Double,
+        language: AppLanguage = AppLanguage.ENGLISH,
+        units: Units = Units.METRIC
+    ): Triple<WeatherEntity, List<HourlyForecastEntity>, List<DailyForecastEntity>> {
+        val weather = fetchAndSaveWeather(latitude, longitude, language, units)
+        val hourly = fetchAndSaveHourlyForecast(latitude, longitude, language, units)
+        val daily = fetchAndSaveDailyForecast(latitude, longitude, language, units)
+        return Triple(weather, hourly, daily)
     }
 }

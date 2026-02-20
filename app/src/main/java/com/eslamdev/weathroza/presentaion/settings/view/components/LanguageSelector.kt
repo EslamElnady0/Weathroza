@@ -35,12 +35,7 @@ import androidx.compose.ui.unit.dp
 import com.eslamdev.weathroza.R
 import com.eslamdev.weathroza.core.components.CardWithBoarder
 import com.eslamdev.weathroza.core.helpers.AppColors
-
-enum class AppLanguage(val code: String, val titleResId: Int) {
-    SYSTEM("system", R.string.system_default),
-    ENGLISH("en", R.string.english),
-    ARABIC("ar", R.string.arabic)
-}
+import com.eslamdev.weathroza.core.settings.AppLanguage
 
 @Composable
 fun LanguageSelector(

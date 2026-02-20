@@ -1,5 +1,6 @@
 package com.eslamdev.weathroza.presentaion.main.views
 
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
@@ -24,6 +25,9 @@ import com.eslamdev.weathroza.presentaion.home.viewmodel.HomeViewModelFactory
 import com.eslamdev.weathroza.presentaion.main.components.BottomNavBar
 import com.eslamdev.weathroza.presentaion.routes.BottomRoute
 import com.eslamdev.weathroza.presentaion.settings.view.SettingsView
+import com.eslamdev.weathroza.presentaion.settings.viewmodel.SettingsViewModel
+import com.eslamdev.weathroza.presentaion.settings.viewmodel.SettingsViewModelFactory
+import kotlin.getValue
 
 @Composable
 fun MainView(
@@ -50,7 +54,7 @@ fun MainView(
 
                 val context = LocalContext.current
                 val factory = remember {
-                    HomeViewModelFactory(WeatherRepo(context))
+                    HomeViewModelFactory(WeatherRepo(context),context)
                 }
                 val viewModel: HomeViewModel =
                     viewModel(factory = factory)
@@ -70,17 +74,20 @@ fun MainView(
             }
 
             composable<BottomRoute.Settings> {
-                SettingsView(bottomController)
+                val context = LocalContext.current
+                val settingsViewModel=
+                    viewModel<SettingsViewModel>(factory = SettingsViewModelFactory(context))
+                SettingsView(bottomController, settingsViewModel)
             }
         }
     }
 }
 
-
-@Preview(showBackground = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
-@Composable
-fun HomeBodyPreview(modifier: Modifier = Modifier) {
-    MaterialTheme(colorScheme = darkColorScheme()) {
-        MainView(controller = rememberNavController())
-    }
-}
+//
+//@Preview(showBackground = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
+//@Composable
+//fun HomeBodyPreview(modifier: Modifier = Modifier) {
+//    MaterialTheme(colorScheme = darkColorScheme()) {
+//        MainView(controller = rememberNavController())
+//    }
+//}

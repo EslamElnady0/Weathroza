@@ -1,65 +1,58 @@
 package com.eslamdev.weathroza.presentaion.settings.view
 
-import android.content.res.Configuration
 import androidx.compose.ui.res.stringResource
 import com.eslamdev.weathroza.R
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.eslamdev.weathroza.core.components.HeightSpacer
 import com.eslamdev.weathroza.core.helpers.AppColors
-import com.eslamdev.weathroza.presentaion.settings.view.components.AppLanguage
+import com.eslamdev.weathroza.core.settings.AppLanguage
+import com.eslamdev.weathroza.core.settings.UserSettings
 import com.eslamdev.weathroza.presentaion.settings.view.components.LanguageSelector
 import com.eslamdev.weathroza.presentaion.settings.view.components.LocationSelector
 import com.eslamdev.weathroza.presentaion.settings.view.components.UnitsSection
+import com.eslamdev.weathroza.presentaion.settings.viewmodel.SettingsViewModel
 
 @Composable
-fun SettingsView(bottomController: NavController, modifier: Modifier = Modifier) {
-    SettingsViewImpl(modifier)
+fun SettingsView(bottomController: NavController,
+                 settingsViewModel: SettingsViewModel,
+                 modifier: Modifier = Modifier) {
+
+    val settings by settingsViewModel.settings.collectAsStateWithLifecycle()
+    SettingsViewImpl(
+        settings = settings,
+        onTemperatureUnitChanged = settingsViewModel::onTemperatureUnitChanged,
+        onWindSpeedUnitChanged = settingsViewModel::onWindSpeedUnitChanged,
+        onLanguageChanged = settingsViewModel::onLanguageChanged,
+        modifier = modifier
+    )
 }
 
-@Preview(
-    showBackground = true,
-    uiMode = Configuration.UI_MODE_NIGHT_YES
-)
-@Composable
-fun HomeBodyPreview(modifier: Modifier = Modifier) {
-
-    MaterialTheme(colorScheme = darkColorScheme()) {
-        Scaffold { innerPadding ->
-            SettingsViewImpl(modifier.padding(innerPadding))
-        }
-    }
-
-}
 
 @Composable
-fun SettingsViewImpl(modifier: Modifier = Modifier) {
+fun SettingsViewImpl(settings: UserSettings,
+                     onTemperatureUnitChanged: (Int) -> Unit,
+                     onWindSpeedUnitChanged: (Int) -> Unit,
+                     onLanguageChanged: (AppLanguage) -> Unit,
+                     modifier: Modifier = Modifier) {
     var selectedLocationIndex by remember { mutableIntStateOf(0) }
-    var selectedUnitIndex by remember { mutableIntStateOf(0) }
-    var selectedTempIndex by remember { mutableIntStateOf(0) }
-    var selectedLanguage by remember { mutableStateOf(AppLanguage.SYSTEM) }
-
     Column(
         modifier
             .fillMaxSize()
@@ -99,10 +92,10 @@ fun SettingsViewImpl(modifier: Modifier = Modifier) {
             )
             HeightSpacer(12.0)
             UnitsSection(
-                selectedTempUnitIndex = selectedUnitIndex,
-                onTempOptionSelected = { selectedUnitIndex = it },
-                selectedWindUnitIndex = selectedTempIndex,
-                onWindOptionSelected = { selectedTempIndex = it }
+                selectedTempUnitIndex = settings.temperatureUnit.ordinal,
+                onTempOptionSelected = onTemperatureUnitChanged,
+                selectedWindUnitIndex = settings.windSpeedUnit.ordinal,
+                onWindOptionSelected = onWindSpeedUnitChanged
             )
             HeightSpacer(12.0)
             HorizontalDivider()
@@ -115,8 +108,8 @@ fun SettingsViewImpl(modifier: Modifier = Modifier) {
             )
             HeightSpacer(12.0)
             LanguageSelector(
-                selectedLanguage = selectedLanguage,
-                onLanguageSelected = { selectedLanguage = it }
+                selectedLanguage = settings.language,
+                onLanguageSelected = onLanguageChanged
             )
             HeightSpacer(32.0)
 

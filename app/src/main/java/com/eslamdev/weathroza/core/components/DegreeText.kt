@@ -9,17 +9,28 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 import com.eslamdev.weathroza.R
+import com.eslamdev.weathroza.core.helpers.convertTemp
+import com.eslamdev.weathroza.core.helpers.formatLocalized
+import com.eslamdev.weathroza.core.helpers.label
+import com.eslamdev.weathroza.core.helpers.toTwoDigitString
+import com.eslamdev.weathroza.core.settings.UserSettings
+import com.eslamdev.weathroza.core.settings.toLocale
 
 @Composable
 fun DegreeText(
-    degree: String,
+    degree: Double,
     modifier: Modifier = Modifier,
     fontSize: TextUnit = 14.sp,
     color: Color = Color.White,
+    settings: UserSettings,
     fontWeight: FontWeight = FontWeight.Normal
 ) {
     Text(
-        "${degree}°${stringResource(R.string.celsius_symbol)}",
+        "${degree.convertTemp(settings.temperatureUnit)
+            .formatLocalized(
+                locale = settings.language.toLocale(),
+                pattern = "%d"
+            )}°${settings.temperatureUnit.label()}",
         fontSize = fontSize,
         color = color,
         fontWeight = fontWeight,
