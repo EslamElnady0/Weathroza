@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.eslamdev.weathroza.core.common.UiState
 import com.eslamdev.weathroza.core.settings.SettingsDataStore
 import com.eslamdev.weathroza.core.settings.UserSettings
+import com.eslamdev.weathroza.data.models.geocoding.CityEntity
 import com.eslamdev.weathroza.data.models.weather.WeatherEntity
 import com.eslamdev.weathroza.data.repo.WeatherRepo
 import com.google.android.gms.maps.model.LatLng
@@ -52,6 +53,26 @@ class MapViewModel(
 
     fun resetWeather() {
         _weatherState.value = UiState.Idle
+    }
+
+    private val _citiesState = MutableStateFlow<UiState<List<CityEntity>>>(UiState.Idle)
+    val citiesState: StateFlow<UiState<List<CityEntity>>> = _citiesState.asStateFlow()
+
+    fun getPossibleCities(cityName: String) {
+        if (cityName.isBlank()) return
+        viewModelScope.launch {
+            _citiesState.value = UiState.Loading
+            try {
+                val cities = repo.getPossibleCities(cityName)
+                _citiesState.value = UiState.Success(cities)
+            } catch (e: Exception) {
+                _citiesState.value = UiState.Error(e.message ?: "Unknown error")
+            }
+        }
+    }
+
+    fun resetCitiesState() {
+        _citiesState.value = UiState.Idle
     }
 }
 

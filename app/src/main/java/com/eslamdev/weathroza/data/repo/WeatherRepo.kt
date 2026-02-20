@@ -7,6 +7,7 @@ import com.eslamdev.weathroza.data.datasources.local.WeatherLocalDataSource
 import com.eslamdev.weathroza.data.datasources.remote.WeatherRemoteDataSource
 import com.eslamdev.weathroza.data.models.forecast.DailyForecastEntity
 import com.eslamdev.weathroza.data.models.forecast.HourlyForecastEntity
+import com.eslamdev.weathroza.data.models.geocoding.CityEntity
 import com.eslamdev.weathroza.data.models.weather.WeatherEntity
 
 class WeatherRepo(val context: Context) {
@@ -183,5 +184,12 @@ class WeatherRepo(val context: Context) {
         val hourly = fetchAndSaveHourlyForecast(latitude, longitude, language, units)
         val daily = fetchAndSaveDailyForecast(latitude, longitude, language, units)
         return Triple(weather, hourly, daily)
+    }
+
+    suspend fun getPossibleCities(
+        cityName: String,
+        limit: Int = 5
+    ): List<CityEntity> {
+        return remoteDataSource.getPossibleCities(cityName, limit)
     }
 }

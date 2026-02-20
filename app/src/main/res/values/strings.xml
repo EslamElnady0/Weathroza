@@ -82,5 +82,7 @@
     <string name="map_loading_weather">Fetching weather…</string>
     <string name="map_tap_hint">Tap anywhere on the map to select a location</string>
     <string name="feels_like_minimal">Feels like</string>
+    <string name="searching">Searching...</string>
+    <string name="no_cities_found">No cities found</string>
 
 </resources>

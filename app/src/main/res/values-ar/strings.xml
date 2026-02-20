@@ -82,5 +82,7 @@
     <string name="map_loading_weather">جارٍ جلب بيانات الطقس…</string>
     <string name="map_tap_hint">اضغط في أي مكان على الخريطة لاختيار موقع</string>
     <string name="feels_like_minimal">تشعر وكأنها</string>
+    <string name="searching">جاري البحث...</string>
+    <string name="no_cities_found">لم يتم العثور علي مدن</string>
 
 </resources>
