@@ -33,6 +33,7 @@ fun MapCitySearchResults(
     citiesState: UiState<List<CityEntity>>,
     language: AppLanguage,
     onCityClick: (LatLng) -> Unit,
+    onRetry: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val shouldShow = citiesState is UiState.Loading
@@ -72,12 +73,24 @@ fun MapCitySearchResults(
             }
 
             is UiState.Error -> {
-                Text(
-                    text = citiesState.message,
-                    fontSize = 13.sp,
-                    color = AppColors.error,
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 18.dp)
-                )
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable(onClick = onRetry)
+                        .padding(horizontal = 16.dp, vertical = 18.dp),
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Text(
+                        text = citiesState.message,
+                        fontSize = 13.sp,
+                        color = AppColors.error
+                    )
+                    Text(
+                        text = stringResource(R.string.tap_to_retry),
+                        fontSize = 12.sp,
+                        color = AppColors.label
+                    )
+                }
             }
 
             is UiState.Success -> {

@@ -62,6 +62,7 @@ fun MapView(
                 viewModel.onSearchQueryChange("")
                 viewModel.loadWeather(latLng)
             },
+            onRetry = { viewModel.getPossibleCities(mapState.uiState.searchQuery) },
             modifier = Modifier
                 .padding(top = 80.dp)
                 .statusBarsPadding()
@@ -77,7 +78,10 @@ fun MapView(
                     mapState.onBottomSheetDismiss()
                     viewModel.resetWeather()
                 },
-                onConfirm = { latLng -> /* TODO */ }
+                onConfirm = { latLng -> /* TODO */ },
+                onRetry = {
+                    mapState.uiState.selectedLatLng?.let { viewModel.loadWeather(it) }
+                }
             )
         }
     }

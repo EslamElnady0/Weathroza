@@ -44,7 +44,8 @@ fun MapLocationBottomSheet(
     sheetState: SheetState,
     selectedLatLng: LatLng?,
     onDismiss: () -> Unit,
-    onConfirm: (LatLng) -> Unit
+    onConfirm: (LatLng) -> Unit,
+    onRetry: () -> Unit
 ) {
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -80,7 +81,7 @@ fun MapLocationBottomSheet(
 
             when (weatherState) {
                 is UiState.Loading -> MapWeatherLoading()
-                is UiState.Error   -> MapWeatherError(message = weatherState.message)
+                is UiState.Error   -> MapWeatherError(message = weatherState.message, onRetry = onRetry)
                 is UiState.Success -> {
                     MapWeatherCard(weather = weatherState.data, settings = settings)
                     Button(

@@ -1,5 +1,6 @@
 package com.eslamdev.weathroza.data.models.mapper
 
+import com.eslamdev.weathroza.core.helpers.DateTimeHelper
 import com.eslamdev.weathroza.data.models.weather.WeatherDto
 import com.eslamdev.weathroza.data.models.weather.WeatherEntity
 
@@ -31,16 +32,16 @@ object WeatherMapper {
 
             cloudsAll = dto.clouds.all,
 
-            country = dto.sys.country,
-            sunrise = dto.sys.sunrise,
-            sunset = dto.sys.sunset,
+            country = dto.sys?.country.orEmpty(),
+            sunrise = dto.sys?.sunrise ?: 0L,
+            sunset  = dto.sys?.sunset  ?: 0L,
 
             dt = dto.dt,
-            formattedFullDate = com.eslamdev.weathroza.core.helpers.DateTimeHelper.formatFullDateTime(
+            formattedFullDate = DateTimeHelper.formatFullDateTime(
                 dto.dt
             ),
-            formattedSunrise = com.eslamdev.weathroza.core.helpers.DateTimeHelper.formatTime(dto.sys.sunrise),
-            formattedSunset = com.eslamdev.weathroza.core.helpers.DateTimeHelper.formatTime(dto.sys.sunset),
+            formattedSunrise = DateTimeHelper.formatTime(dto.sys?.sunrise ?: 0L),
+            formattedSunset  = DateTimeHelper.formatTime(dto.sys?.sunset  ?: 0L),
             formattedTemp = dto.main.temp.toString(),
             iconUrl = "https://openweathermap.org/img/wn/${weather?.icon}@4x.png"
         )

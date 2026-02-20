@@ -85,4 +85,11 @@
     <string name="searching">Searching...</string>
     <string name="no_cities_found">No cities found</string>
 
+    <!-- Error Messages -->
+    <string name="error_no_internet">No internet connection check your network coverage</string>
+    <string name="error_timeout">Connection timed out</string>
+    <string name="error_server">Server error occurred</string>
+    <string name="error_unknown">An unknown error occurred</string>
+    <string name="tap_to_retry">Tap to retry</string>
+
 </resources>

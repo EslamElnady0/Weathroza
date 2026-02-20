@@ -10,6 +10,7 @@ import com.eslamdev.weathroza.core.settings.UserSettings
 import com.eslamdev.weathroza.data.models.geocoding.CityEntity
 import com.eslamdev.weathroza.data.models.weather.WeatherEntity
 import com.eslamdev.weathroza.data.repo.WeatherRepo
+import com.eslamdev.weathroza.core.network.ErrorHandler
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,7 +26,7 @@ import kotlinx.coroutines.launch
 @OptIn(FlowPreview::class)
 class MapViewModel(
     private val repo: WeatherRepo,
-    context: Context
+    private val context: Context
 ) : ViewModel() {
 
     //Settings State --------------------------------------------------------------
@@ -54,7 +55,7 @@ class MapViewModel(
                 )
                 _weatherState.value = UiState.Success(weather)
             } catch (e: Exception) {
-                _weatherState.value = UiState.Error(e.message ?: "Unknown error")
+                _weatherState.value = UiState.Error(ErrorHandler.handleException(e, context = context))
             }
         }
     }
@@ -75,7 +76,7 @@ class MapViewModel(
                 val cities = repo.getPossibleCities(cityName)
                 _citiesState.value = UiState.Success(cities)
             } catch (e: Exception) {
-                _citiesState.value = UiState.Error(e.message ?: "Unknown error")
+                _citiesState.value = UiState.Error(ErrorHandler.handleException(e, context))
             }
         }
     }
