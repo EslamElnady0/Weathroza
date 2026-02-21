@@ -1,11 +1,9 @@
 package com.eslamdev.weathroza.core.settings
 
 import android.content.Context
-import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.*
 import androidx.datastore.preferences.preferencesDataStore
-import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
@@ -20,6 +18,8 @@ class SettingsDataStore(private val context: Context) {
         val LANGUAGE = stringPreferencesKey("language")
         val USER_LAT     = doublePreferencesKey("user_lat")
         val USER_LNG     = doublePreferencesKey("user_lng")
+
+        val CITY_ID     = longPreferencesKey("city_id")
         val LOCATION_TYPE = stringPreferencesKey("location_type")
     }
 
@@ -40,7 +40,8 @@ class SettingsDataStore(private val context: Context) {
                 userLng = prefs[USER_LNG],
                 locationType = LocationType.valueOf(
                     prefs[LOCATION_TYPE] ?: LocationType.NONE.name
-                )
+                ),
+                cityId = prefs[CITY_ID]
             )
         }
 
@@ -60,11 +61,12 @@ class SettingsDataStore(private val context: Context) {
         context.dataStore.edit { it[LOCATION_TYPE] = type.name }
     }
 
-    suspend fun saveManualLocation(lat: Double, lng: Double) {
+    suspend fun saveManualLocation(lat: Double, lng: Double, cityId: Long) {
         context.dataStore.edit {
             it[USER_LAT] = lat
             it[USER_LNG] = lng
             it[LOCATION_TYPE] = LocationType.MANUAL.name
+            it[CITY_ID] = cityId
         }
     }
 }

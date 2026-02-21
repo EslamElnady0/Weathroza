@@ -1,7 +1,6 @@
 package com.eslamdev.weathroza.presentaion.map.viewmodel
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -66,9 +65,9 @@ class MapViewModel(
         _weatherState.value = UiState.Idle
     }
     //Location Update ------------------------------------------------------------
-    fun confirmLocation(latLng: LatLng) {
+    fun confirmLocation(latLng: LatLng,cityId:Long) {
         viewModelScope.launch {
-            dataStore.saveManualLocation(latLng.latitude, latLng.longitude)
+            dataStore.saveManualLocation(latLng.latitude, latLng.longitude,cityId)
             dataStore.saveLocationType(LocationType.MANUAL)
         }
     }

@@ -37,12 +37,7 @@ object WeatherMapper {
             sunset  = dto.sys?.sunset  ?: 0L,
 
             dt = dto.dt,
-            formattedFullDate = DateTimeHelper.formatFullDateTime(
-                dto.dt
-            ),
-            formattedSunrise = DateTimeHelper.formatTime(dto.sys?.sunrise ?: 0L),
-            formattedSunset  = DateTimeHelper.formatTime(dto.sys?.sunset  ?: 0L),
-            formattedTemp = dto.main.temp.toString(),
+
             iconUrl = "https://openweathermap.org/img/wn/${weather?.icon}@4x.png"
         )
     }

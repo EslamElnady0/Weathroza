@@ -95,7 +95,6 @@ class WeatherRepo(val context: Context) {
             language = language,
             units = units
         )
-        localDataSource.deleteAllHourlyForecasts()
         localDataSource.insertHourlyForecasts(forecasts)
         return forecasts
     }
@@ -144,14 +143,13 @@ class WeatherRepo(val context: Context) {
             units = units
         )
         if (forecasts.isNotEmpty()) {
-            val cityId = forecasts.first().cityId
             localDataSource.insertDailyForecasts(forecasts)
         }
         return forecasts
     }
 
     suspend fun getDailyForecast(cityId: Long): List<DailyForecastEntity> {
-        return localDataSource.getDailyForecasts(cityId)
+        return localDataSource.getDailyForecastsByCityId(cityId)
     }
 
     suspend fun getDailyForecastOrFetch(
@@ -167,11 +165,14 @@ class WeatherRepo(val context: Context) {
         }
     }
 
-    suspend fun getCachedHomeData(): Triple<WeatherEntity, List<HourlyForecastEntity>, List<DailyForecastEntity>>? {
-        val weather = localDataSource.getAllWeather().firstOrNull() ?: return null
-        val hourly = localDataSource.getHourlyForecasts()
-        val daily = localDataSource.getDailyForecasts(weather.id.toLong())
-        return Triple(weather, hourly, daily)
+    suspend fun getCachedHomeData(cityId: Long?): Triple<WeatherEntity, List<HourlyForecastEntity>, List<DailyForecastEntity>>? {
+        cityId?.let {
+            val weather = localDataSource.getWeatherByCityId(cityId)
+            val hourly = localDataSource.getHourlyForecastsByCityId(cityId)
+            val daily = localDataSource.getDailyForecastsByCityId(cityId)
+            return Triple(weather, hourly, daily)
+        }
+        return null
     }
 
     suspend fun refreshHomeData(
@@ -180,12 +181,18 @@ class WeatherRepo(val context: Context) {
         language: AppLanguage = AppLanguage.ENGLISH,
         units: Units = Units.METRIC
     ): Triple<WeatherEntity, List<HourlyForecastEntity>, List<DailyForecastEntity>> {
+
         val weather = fetchAndSaveWeather(latitude, longitude, language, units)
         val hourly = fetchAndSaveHourlyForecast(latitude, longitude, language, units)
         val daily = fetchAndSaveDailyForecast(latitude, longitude, language, units)
+
         return Triple(weather, hourly, daily)
     }
-
+    suspend fun clearHomeData(cityId: Long) {
+        localDataSource.deleteWeatherByCityId(cityId)
+        localDataSource.deleteHourlyForecastsByCityId(cityId)
+        localDataSource.deleteDailyForecastsByCityId(cityId)
+    }
     suspend fun getPossibleCities(
         cityName: String,
         limit: Int = 5

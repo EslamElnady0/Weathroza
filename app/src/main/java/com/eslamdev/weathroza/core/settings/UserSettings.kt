@@ -22,6 +22,7 @@ data class UserSettings(
     val language: AppLanguage = AppLanguage.SYSTEM,
     val userLat: Double? = null,
     val userLng: Double? = null,
+    val cityId: Long? = null,
     val locationType: LocationType = LocationType.NONE
 ) {
     val userLatLng: LatLng?

@@ -11,9 +11,8 @@ object HourlyForecastMapper {
                 dt = dto.dt,
                 temp = dto.main.temp,
                 icon = dto.weather.firstOrNull()?.icon ?: "",
-                formattedTime = com.eslamdev.weathroza.core.helpers.DateTimeHelper.formatHour(dto.dt),
-                formattedTemp = dto.main.temp.toInt().toString(),
                 iconResId = com.eslamdev.weathroza.R.drawable.dummy_sun_image,
+                cityId = response.city.id,
                 iconUrl = "https://openweathermap.org/img/wn/${dto.weather.firstOrNull()?.icon}@4x.png"
             )
         }

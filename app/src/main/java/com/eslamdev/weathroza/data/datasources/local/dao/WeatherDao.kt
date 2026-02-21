@@ -20,4 +20,11 @@ interface WeatherDao {
 
     @Query("DELETE FROM weather")
     suspend fun deleteAllWeather()
+
+    @Query("DELETE FROM weather WHERE id = :cityId")
+    suspend fun deleteWeatherByCityId(cityId: Long)
+
+    @Query("Select * FROM weather WHERE id = :cityId")
+    suspend fun getWeatherByCityId(cityId: Long) : WeatherEntity
+
 }

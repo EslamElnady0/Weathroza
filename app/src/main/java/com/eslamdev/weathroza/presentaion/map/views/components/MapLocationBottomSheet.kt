@@ -45,7 +45,7 @@ fun MapLocationBottomSheet(
     sheetState: SheetState,
     selectedLatLng: LatLng?,
     onDismiss: () -> Unit,
-    onConfirm: (LatLng) -> Unit,
+    onConfirm: (LatLng,Long) -> Unit,
     onRetry: () -> Unit
 ) {
     ModalBottomSheet(
@@ -87,7 +87,7 @@ fun MapLocationBottomSheet(
                     MapWeatherCard(weather = weatherState.data, settings = settings)
                     Button(
                         onClick = {
-                            selectedLatLng?.let { onConfirm(it) }
+                            selectedLatLng?.let { onConfirm(it, weatherState.data.id.toLong()) }
                             onDismiss()
                         },
                         modifier = Modifier

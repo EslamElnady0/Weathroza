@@ -59,7 +59,6 @@ fun SettingsViewImpl(settings: UserSettings,
                      onGpsSelected: () -> Unit,
                      onNavigateToMap: () -> Unit,
                      modifier: Modifier = Modifier) {
-    var selectedLocationIndex by remember { mutableIntStateOf(0) }
     Column(
         modifier
             .fillMaxSize()

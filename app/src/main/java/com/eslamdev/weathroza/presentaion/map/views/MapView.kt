@@ -78,8 +78,8 @@ fun MapView(
                     mapState.onBottomSheetDismiss()
                     viewModel.resetWeather()
                 },
-                onConfirm = { latLng ->
-                    viewModel.confirmLocation(latLng)
+                onConfirm = { latLng,cityId ->
+                    viewModel.confirmLocation(latLng, cityId)
                     navController.popBackStack() },
                 onRetry = {
                     mapState.uiState.selectedLatLng?.let { viewModel.loadWeather(it) }

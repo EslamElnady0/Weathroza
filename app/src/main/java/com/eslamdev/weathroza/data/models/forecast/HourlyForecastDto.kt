@@ -4,7 +4,9 @@ import com.google.gson.annotations.SerializedName
 
 data class HourlyForecastResponseDto(
     @SerializedName("list")
-    val list: List<HourlyForecastDto>
+    val list: List<HourlyForecastDto>,
+    @SerializedName("city")
+    val city: City
 )
 
 data class HourlyForecastDto(
@@ -24,4 +26,9 @@ data class Main(
 data class Weather(
     @SerializedName("icon")
     val icon: String
+)
+
+data class City(
+    @SerializedName("id")
+    val id: String
 )
