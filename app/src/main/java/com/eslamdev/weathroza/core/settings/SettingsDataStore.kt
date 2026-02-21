@@ -16,6 +16,11 @@ class SettingsDataStore(private val context: Context) {
         val TEMP_UNIT = stringPreferencesKey("temp_unit")
         val WIND_UNIT = stringPreferencesKey("wind_unit")
         val LANGUAGE = stringPreferencesKey("language")
+        val USER_LAT     = doublePreferencesKey("user_lat")
+        val USER_LNG     = doublePreferencesKey("user_lng")
+
+        val CITY_ID     = longPreferencesKey("city_id")
+        val LOCATION_TYPE = stringPreferencesKey("location_type")
     }
 
     val settingsFlow: Flow<UserSettings> = context.dataStore.data
@@ -30,7 +35,13 @@ class SettingsDataStore(private val context: Context) {
                 ),
                 language = AppLanguage.valueOf(
                     prefs[LANGUAGE] ?: AppLanguage.SYSTEM.name
-                )
+                ),
+                userLat = prefs[USER_LAT],
+                userLng = prefs[USER_LNG],
+                locationType = LocationType.valueOf(
+                    prefs[LOCATION_TYPE] ?: LocationType.NONE.name
+                ),
+                cityId = prefs[CITY_ID]
             )
         }
 
@@ -44,5 +55,18 @@ class SettingsDataStore(private val context: Context) {
 
     suspend fun saveLanguage(language: AppLanguage) {
         context.dataStore.edit { it[LANGUAGE] = language.name }
+    }
+
+    suspend fun saveLocationType(type: LocationType) {
+        context.dataStore.edit { it[LOCATION_TYPE] = type.name }
+    }
+
+    suspend fun saveManualLocation(lat: Double, lng: Double, cityId: Long) {
+        context.dataStore.edit {
+            it[USER_LAT] = lat
+            it[USER_LNG] = lng
+            it[LOCATION_TYPE] = LocationType.MANUAL.name
+            it[CITY_ID] = cityId
+        }
     }
 }

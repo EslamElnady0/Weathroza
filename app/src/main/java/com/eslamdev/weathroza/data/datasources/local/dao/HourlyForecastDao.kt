@@ -21,4 +21,10 @@ interface HourlyForecastDao {
 
     @Query("DELETE FROM hourly_forecast")
     suspend fun deleteAllHourlyForecasts()
+
+    @Query("DELETE FROM hourly_forecast WHERE cityId = :cityId")
+    suspend fun deleteHourlyForecastsByCityId(cityId: Long)
+
+    @Query("SELECT * FROM hourly_forecast WHERE cityId = :cityId ORDER BY dt ASC")
+    suspend fun getHourlyForecastsByCityId(cityId: Long): List<HourlyForecastEntity>
 }

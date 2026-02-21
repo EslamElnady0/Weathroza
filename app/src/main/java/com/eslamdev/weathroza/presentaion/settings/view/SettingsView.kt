@@ -24,7 +24,9 @@ import androidx.navigation.NavController
 import com.eslamdev.weathroza.core.components.HeightSpacer
 import com.eslamdev.weathroza.core.helpers.AppColors
 import com.eslamdev.weathroza.core.settings.AppLanguage
+import com.eslamdev.weathroza.core.settings.LocationType
 import com.eslamdev.weathroza.core.settings.UserSettings
+import com.eslamdev.weathroza.presentaion.routes.Route
 import com.eslamdev.weathroza.presentaion.settings.view.components.LanguageSelector
 import com.eslamdev.weathroza.presentaion.settings.view.components.LocationSelector
 import com.eslamdev.weathroza.presentaion.settings.view.components.UnitsSection
@@ -33,7 +35,8 @@ import com.eslamdev.weathroza.presentaion.settings.viewmodel.SettingsViewModel
 @Composable
 fun SettingsView(bottomController: NavController,
                  settingsViewModel: SettingsViewModel,
-                 modifier: Modifier = Modifier) {
+                 modifier: Modifier = Modifier,
+                 onNavigateToMap: ()->Unit,) {
 
     val settings by settingsViewModel.settings.collectAsStateWithLifecycle()
     SettingsViewImpl(
@@ -41,6 +44,8 @@ fun SettingsView(bottomController: NavController,
         onTemperatureUnitChanged = settingsViewModel::onTemperatureUnitChanged,
         onWindSpeedUnitChanged = settingsViewModel::onWindSpeedUnitChanged,
         onLanguageChanged = settingsViewModel::onLanguageChanged,
+        onGpsSelected = settingsViewModel::onGpsLocationSelected,
+        onNavigateToMap = onNavigateToMap,
         modifier = modifier
     )
 }
@@ -51,8 +56,9 @@ fun SettingsViewImpl(settings: UserSettings,
                      onTemperatureUnitChanged: (Int) -> Unit,
                      onWindSpeedUnitChanged: (Int) -> Unit,
                      onLanguageChanged: (AppLanguage) -> Unit,
+                     onGpsSelected: () -> Unit,
+                     onNavigateToMap: () -> Unit,
                      modifier: Modifier = Modifier) {
-    var selectedLocationIndex by remember { mutableIntStateOf(0) }
     Column(
         modifier
             .fillMaxSize()
@@ -71,8 +77,13 @@ fun SettingsViewImpl(settings: UserSettings,
 
             HeightSpacer(16.0)
             LocationSelector(
-                selectedOptionIndex = selectedLocationIndex,
-                onOptionSelected = { selectedLocationIndex = it }
+                selectedOptionIndex = when (settings.locationType) {
+                    LocationType.GPS    -> 0
+                    LocationType.MANUAL -> 1
+                    LocationType.NONE   -> -1
+                },
+                onGpsSelected = onGpsSelected,
+                onMapSelected = onNavigateToMap
             )
             HeightSpacer(12.0)
             Text(

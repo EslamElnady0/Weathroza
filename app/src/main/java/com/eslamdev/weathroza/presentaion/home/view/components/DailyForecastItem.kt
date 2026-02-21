@@ -22,6 +22,7 @@ import com.eslamdev.weathroza.core.components.DegreeText
 import com.eslamdev.weathroza.core.helpers.AppColors
 import com.eslamdev.weathroza.core.helpers.DateTimeHelper
 import com.eslamdev.weathroza.core.helpers.convertTemp
+import com.eslamdev.weathroza.core.helpers.formatLocalized
 import com.eslamdev.weathroza.core.helpers.label
 import com.eslamdev.weathroza.core.helpers.toTwoDigitString
 import com.eslamdev.weathroza.core.settings.UserSettings
@@ -96,7 +97,10 @@ fun DailyForecastItem(
                     text = stringResource(R.string.feels_like,
                         forecast
                         .feelsLikeDay
-                        .convertTemp(settings.temperatureUnit)) + settings.temperatureUnit.label(),
+                        .convertTemp(settings.temperatureUnit).formatLocalized(
+                            locale = settings.language.toLocale(),
+                            pattern = "%d"
+                        )) + settings.temperatureUnit.label(),
                     fontSize = 10.sp,
                     color = AppColors.lightGray
                 )

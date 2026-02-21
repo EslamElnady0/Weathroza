@@ -33,6 +33,7 @@ android {
 
         val weatherApiKey = localProperties.getProperty("WEATHER_API_KEY") ?: ""
         buildConfigField("String", "WEATHER_API_KEY", "\"$weatherApiKey\"")
+        manifestPlaceholders["MAPS_API_KEY"] = localProperties.getProperty("MAPS_API_KEY") ?: ""
 
     }
 

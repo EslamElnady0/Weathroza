@@ -70,4 +70,19 @@
     <string name="pressure_unit">ه.ب</string>
     <string name="kelvin_symbol">ك</string>
 
+    <!-- Map Screen Strings -->
+    <string name="map_back">رجوع</string>
+    <string name="map_search_hint">ابحث عن مدن…</string>
+    <string name="map_selected_location">الموقع المحدد</string>
+    <string name="map_latitude">خط العرض</string>
+    <string name="map_longitude">خط الطول</string>
+    <string name="map_select_as_location">تحديد كموقع</string>
+    <string name="map_weather_at">الطقس عند الموقع المحدد</string>
+    <string name="map_feels_like">تشعر وكأنها %1$s</string>
+    <string name="map_loading_weather">جارٍ جلب بيانات الطقس…</string>
+    <string name="map_tap_hint">اضغط في أي مكان على الخريطة لاختيار موقع</string>
+    <string name="feels_like_minimal">تشعر وكأنها</string>
+    <string name="searching">جاري البحث...</string>
+    <string name="no_cities_found">لم يتم العثور علي مدن</string>
+
 </resources>

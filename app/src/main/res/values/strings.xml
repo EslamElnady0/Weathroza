@@ -70,4 +70,26 @@
     <string name="pressure_unit">hPa</string>
     <string name="kelvin_symbol">K</string>
 
+    <!-- Map Screen Strings -->
+    <string name="map_back">Back</string>
+    <string name="map_search_hint">Search cities…</string>
+    <string name="map_selected_location">Selected Location</string>
+    <string name="map_latitude">Latitude</string>
+    <string name="map_longitude">Longitude</string>
+    <string name="map_select_as_location">Select as Location</string>
+    <string name="map_weather_at">Weather at selected location</string>
+    <string name="map_feels_like">Feels like %1$s</string>
+    <string name="map_loading_weather">Fetching weather…</string>
+    <string name="map_tap_hint">Tap anywhere on the map to select a location</string>
+    <string name="feels_like_minimal">Feels like</string>
+    <string name="searching">Searching...</string>
+    <string name="no_cities_found">No cities found</string>
+
+    <!-- Error Messages -->
+    <string name="error_no_internet">No internet connection check your network coverage</string>
+    <string name="error_timeout">Connection timed out</string>
+    <string name="error_server">Server error occurred</string>
+    <string name="error_unknown">An unknown error occurred</string>
+    <string name="tap_to_retry">Tap to retry</string>
+
 </resources>

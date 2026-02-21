@@ -18,7 +18,7 @@ class SettingsViewModel(
     val settings: StateFlow<UserSettings> = dataStore.settingsFlow
         .stateIn(
             scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
+            started = SharingStarted.Eagerly,
             initialValue = UserSettings()
         )
     fun onTemperatureUnitChanged(index: Int) {
@@ -36,6 +36,12 @@ class SettingsViewModel(
             dataStore.saveLanguage(language)
         }
         LocaleHelper.setAppLanguage(language)
+    }
+
+    fun onGpsLocationSelected() {
+        viewModelScope.launch {
+            dataStore.saveLocationType(LocationType.GPS)
+        }
     }
 }
 

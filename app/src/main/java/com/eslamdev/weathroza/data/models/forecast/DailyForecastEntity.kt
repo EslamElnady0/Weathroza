@@ -11,11 +11,6 @@ data class DailyForecastEntity(
     val weatherMain: String,
     val weatherDescription: String,
     val weatherIcon: String,
-    
-    val formattedDayName: String = "",
-    val formattedDate: String = "",
-    val formattedTemp: String = "",
-    val formattedFeelsLike: String = "",
     val iconResId: Int = 0,
     val iconUrl: String = ""
 )

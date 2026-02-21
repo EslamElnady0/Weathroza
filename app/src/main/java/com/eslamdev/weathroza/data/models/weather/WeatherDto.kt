@@ -20,7 +20,7 @@ data class WeatherDto(
     @SerializedName("dt")
     val dt: Long,
     @SerializedName("sys")
-    val sys: Sys,
+    val sys: Sys?,
     @SerializedName("timezone")
     val timezone: Int,
     @SerializedName("id")
@@ -84,9 +84,9 @@ data class Clouds(
 
 data class Sys(
     @SerializedName("country")
-    val country: String,
+    val country: String?,
     @SerializedName("sunrise")
-    val sunrise: Long,
+    val sunrise: Long?,
     @SerializedName("sunset")
-    val sunset: Long
+    val sunset: Long?
 )

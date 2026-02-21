@@ -7,6 +7,7 @@ import com.eslamdev.weathroza.data.config.network.RetrofitHelper
 import com.eslamdev.weathroza.data.datasources.remote.service.WeatherService
 import com.eslamdev.weathroza.data.models.forecast.DailyForecastEntity
 import com.eslamdev.weathroza.data.models.forecast.HourlyForecastEntity
+import com.eslamdev.weathroza.data.models.geocoding.CityEntity
 import com.eslamdev.weathroza.data.models.mapper.DailyForecastMapper
 import com.eslamdev.weathroza.data.models.mapper.HourlyForecastMapper
 import com.eslamdev.weathroza.data.models.mapper.WeatherMapper
@@ -65,5 +66,17 @@ class WeatherRemoteDataSource {
             count = count
         )
         return DailyForecastMapper.toEntityList(response)
+    }
+
+    suspend fun getPossibleCities(
+        cityName: String,
+        limit: Int = 5
+    ): List<CityEntity> {
+        val response = weatherService.getPossibleCities(
+            apiKey = BuildConfig.WEATHER_API_KEY,
+            cityName = cityName,
+            limit = limit
+        )
+        return com.eslamdev.weathroza.data.models.mapper.CityMapper.toEntityList(response)
     }
 }
