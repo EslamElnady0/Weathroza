@@ -80,7 +80,7 @@ fun SettingsViewImpl(settings: UserSettings,
                 selectedOptionIndex = when (settings.locationType) {
                     LocationType.GPS    -> 0
                     LocationType.MANUAL -> 1
-                    LocationType.NONE   -> 0
+                    LocationType.NONE   -> -1
                 },
                 onGpsSelected = onGpsSelected,
                 onMapSelected = onNavigateToMap
