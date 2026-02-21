@@ -1,5 +1,4 @@
 package com.eslamdev.weathroza.core.helpers
-import com.eslamdev.weathroza.core.langmanager.LanguageManager
 import com.eslamdev.weathroza.core.settings.TemperatureUnit
 import com.eslamdev.weathroza.core.settings.WindSpeedUnit
 import java.util.Locale

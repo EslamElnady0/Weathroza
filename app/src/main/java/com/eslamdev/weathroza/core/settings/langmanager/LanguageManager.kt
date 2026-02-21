@@ -1,4 +1,4 @@
-package com.eslamdev.weathroza.core.langmanager
+package com.eslamdev.weathroza.core.settings.langmanager
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf

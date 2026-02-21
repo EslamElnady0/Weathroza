@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.eslamdev.weathroza.core.langmanager.LocaleHelper
+import com.eslamdev.weathroza.core.settings.langmanager.LocaleHelper
 import com.eslamdev.weathroza.core.settings.*
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow

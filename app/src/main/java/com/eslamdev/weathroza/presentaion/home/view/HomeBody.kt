@@ -21,12 +21,14 @@ import androidx.compose.material3.VerticalDivider
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -48,7 +50,10 @@ import com.eslamdev.weathroza.core.helpers.convertWind
 import com.eslamdev.weathroza.core.helpers.formatLocalized
 import com.eslamdev.weathroza.core.helpers.label
 import com.eslamdev.weathroza.core.helpers.toLocalizedPercentage
+import com.eslamdev.weathroza.core.settings.LocationType
 import com.eslamdev.weathroza.core.settings.UserSettings
+import com.eslamdev.weathroza.core.settings.location.LocationPermissionHelper
+import com.eslamdev.weathroza.core.settings.location.RequestLocationPermission
 import com.eslamdev.weathroza.core.settings.toLocale
 import com.eslamdev.weathroza.data.models.forecast.DailyForecastEntity
 import com.eslamdev.weathroza.data.models.forecast.HourlyForecastEntity
@@ -70,7 +75,23 @@ fun HomeBody(
     val state by viewModel.uiState.collectAsState()
     val settings by viewModel.settings.collectAsStateWithLifecycle()
     val isRefreshing by viewModel.isRefreshing.collectAsStateWithLifecycle()
+    val context = LocalContext.current
 
+    val shouldRequestGps = settings.locationType == LocationType.GPS
+            || settings.locationType == LocationType.NONE
+
+    if (shouldRequestGps) {
+        if (LocationPermissionHelper.hasPermission(context)) {
+            LaunchedEffect(Unit) {
+                viewModel.fetchAndSaveGpsLocation()
+            }
+        } else {
+            RequestLocationPermission(
+                onGranted = { viewModel.fetchAndSaveGpsLocation() },
+                onDenied  = { /* optionally show rationale */ }
+            )
+        }
+    }
     when (state) {
 
         is UiState.Loading -> {

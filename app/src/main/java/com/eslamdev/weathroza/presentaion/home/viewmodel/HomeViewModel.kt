@@ -23,7 +23,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.scan
+import com.eslamdev.weathroza.core.settings.location.LocationManager
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -165,6 +165,20 @@ class HomeViewModel(
 
     fun refresh() {
         viewModelScope.launch { refreshFromNetwork() }
+    }
+
+    fun fetchAndSaveGpsLocation() {
+        viewModelScope.launch {
+            try {
+                val location = LocationManager(context).getCurrentLocation()
+                dataStore.saveGpsLocation(
+                    lat = location.latitude,
+                    lng = location.longitude
+                )
+            } catch (e: Exception) {
+                Log.e("TAG", "GPS fetch failed: ${e.message}")
+            }
+        }
     }
 }
 private data class Location(val lat: Double, val lng: Double, val cityId: Long)

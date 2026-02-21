@@ -69,4 +69,13 @@ class SettingsDataStore(private val context: Context) {
             it[CITY_ID] = cityId
         }
     }
+
+    suspend fun saveGpsLocation(lat: Double, lng: Double) {
+        context.dataStore.edit {
+            it[USER_LAT] = lat
+            it[USER_LNG] = lng
+            it[LOCATION_TYPE] = LocationType.GPS.name
+        }
+    }
+
 }

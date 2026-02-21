@@ -1,4 +1,4 @@
-package com.eslamdev.weathroza.core.langmanager
+package com.eslamdev.weathroza.core.settings.langmanager
 
 import android.content.res.Configuration
 import android.text.TextUtils
