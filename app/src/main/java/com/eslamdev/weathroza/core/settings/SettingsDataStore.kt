@@ -1,9 +1,11 @@
 package com.eslamdev.weathroza.core.settings
 
 import android.content.Context
+import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.*
 import androidx.datastore.preferences.preferencesDataStore
+import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
@@ -16,6 +18,9 @@ class SettingsDataStore(private val context: Context) {
         val TEMP_UNIT = stringPreferencesKey("temp_unit")
         val WIND_UNIT = stringPreferencesKey("wind_unit")
         val LANGUAGE = stringPreferencesKey("language")
+        val USER_LAT     = doublePreferencesKey("user_lat")
+        val USER_LNG     = doublePreferencesKey("user_lng")
+        val LOCATION_TYPE = stringPreferencesKey("location_type")
     }
 
     val settingsFlow: Flow<UserSettings> = context.dataStore.data
@@ -30,6 +35,11 @@ class SettingsDataStore(private val context: Context) {
                 ),
                 language = AppLanguage.valueOf(
                     prefs[LANGUAGE] ?: AppLanguage.SYSTEM.name
+                ),
+                userLat = prefs[USER_LAT],
+                userLng = prefs[USER_LNG],
+                locationType = LocationType.valueOf(
+                    prefs[LOCATION_TYPE] ?: LocationType.NONE.name
                 )
             )
         }
@@ -44,5 +54,17 @@ class SettingsDataStore(private val context: Context) {
 
     suspend fun saveLanguage(language: AppLanguage) {
         context.dataStore.edit { it[LANGUAGE] = language.name }
+    }
+
+    suspend fun saveLocationType(type: LocationType) {
+        context.dataStore.edit { it[LOCATION_TYPE] = type.name }
+    }
+
+    suspend fun saveManualLocation(lat: Double, lng: Double) {
+        context.dataStore.edit {
+            it[USER_LAT] = lat
+            it[USER_LNG] = lng
+            it[LOCATION_TYPE] = LocationType.MANUAL.name
+        }
     }
 }

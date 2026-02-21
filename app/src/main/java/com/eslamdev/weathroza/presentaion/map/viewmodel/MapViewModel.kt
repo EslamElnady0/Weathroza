@@ -1,6 +1,7 @@
 package com.eslamdev.weathroza.presentaion.map.viewmodel
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -11,6 +12,7 @@ import com.eslamdev.weathroza.data.models.geocoding.CityEntity
 import com.eslamdev.weathroza.data.models.weather.WeatherEntity
 import com.eslamdev.weathroza.data.repo.WeatherRepo
 import com.eslamdev.weathroza.core.network.ErrorHandler
+import com.eslamdev.weathroza.core.settings.LocationType
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -62,6 +64,13 @@ class MapViewModel(
 
     fun resetWeather() {
         _weatherState.value = UiState.Idle
+    }
+    //Location Update ------------------------------------------------------------
+    fun confirmLocation(latLng: LatLng) {
+        viewModelScope.launch {
+            dataStore.saveManualLocation(latLng.latitude, latLng.longitude)
+            dataStore.saveLocationType(LocationType.MANUAL)
+        }
     }
     //Search Response --------------------------------------------------------------
 

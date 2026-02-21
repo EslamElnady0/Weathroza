@@ -16,16 +16,20 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun LocationSelector(
-    modifier: Modifier = Modifier,
-    selectedOptionIndex: Int = 0,
-    onOptionSelected: (Int) -> Unit = {}
+    selectedOptionIndex: Int,
+    onGpsSelected: () -> Unit,
+    onMapSelected: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     var showMapDialog by remember { mutableStateOf(false) }
 
     if (showMapDialog) {
         PickFromMapDialog(
             onDismiss = { showMapDialog = false },
-            onProceed = { onOptionSelected(1) }
+            onProceed = {
+                showMapDialog = false
+                onMapSelected()
+            }
         )
     }
 
@@ -34,7 +38,7 @@ fun LocationSelector(
             title = stringResource(R.string.gps_automatic),
             icon = Icons.Default.LocationOn,
             isSelected = selectedOptionIndex == 0,
-            onClick = { onOptionSelected(0) }
+            onClick = onGpsSelected
         )
         SettingSelectorItem(
             title = stringResource(R.string.map_manual),
@@ -43,10 +47,4 @@ fun LocationSelector(
             onClick = { showMapDialog = true }
         )
     }
-}
-
-@Preview
-@Composable
-fun LocationSelectorPreview() {
-    LocationSelector { }
 }

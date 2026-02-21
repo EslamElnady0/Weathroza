@@ -17,7 +17,7 @@ import com.eslamdev.weathroza.presentaion.map.views.MapView
 @Composable
 fun App(modifier: Modifier = Modifier) {
     val controller = rememberNavController()
-    NavHost(navController = controller, startDestination = Route.MapRoute) {
+    NavHost(navController = controller, startDestination = Route.MainRoute) {
 
         composable<Route.MainRoute> {
             MainView(controller)

@@ -2,6 +2,7 @@ package com.eslamdev.weathroza.core.settings
 
 import androidx.annotation.StringRes
 import com.eslamdev.weathroza.R
+import com.google.android.gms.maps.model.LatLng
 import java.util.Locale
 
 enum class AppLanguage(val code: String, @StringRes val titleResId: Int) {
@@ -18,8 +19,23 @@ fun AppLanguage.toLocale(): Locale = when (this) {
 data class UserSettings(
     val temperatureUnit: TemperatureUnit = TemperatureUnit.CELSIUS,
     val windSpeedUnit: WindSpeedUnit = WindSpeedUnit.MS,
-    val language: AppLanguage = AppLanguage.SYSTEM
-)
+    val language: AppLanguage = AppLanguage.SYSTEM,
+    val userLat: Double? = null,
+    val userLng: Double? = null,
+    val locationType: LocationType = LocationType.NONE
+) {
+    val userLatLng: LatLng?
+        get() = if (userLat != null && userLng != null) LatLng(userLat, userLng) else null
+
+    val hasLocation: Boolean
+        get() = locationType != LocationType.NONE && userLat != null && userLng != null
+}
 
 enum class TemperatureUnit { CELSIUS, FAHRENHEIT, KELVIN }
 enum class WindSpeedUnit { MS, MPH }
+
+enum class LocationType {
+    NONE,
+    GPS,
+    MANUAL
+}

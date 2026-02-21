@@ -1,6 +1,7 @@
 package com.eslamdev.weathroza.presentaion.home.viewmodel
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -8,6 +9,7 @@ import com.eslamdev.weathroza.core.common.UiState
 import com.eslamdev.weathroza.core.enums.Units
 import com.eslamdev.weathroza.core.network.NetworkObserver
 import com.eslamdev.weathroza.core.settings.AppLanguage
+import com.eslamdev.weathroza.core.settings.LocationType
 import com.eslamdev.weathroza.core.settings.SettingsDataStore
 import com.eslamdev.weathroza.core.settings.UserSettings
 import com.eslamdev.weathroza.data.repo.WeatherRepo
@@ -45,11 +47,9 @@ class HomeViewModel(
     private val _isRefreshing = MutableStateFlow(false)
     val isRefreshing: StateFlow<Boolean> = _isRefreshing.asStateFlow()
 
-    private val latitude = 30.599405
-    private val longitude = 31.489460
-
     init {
         loadHomeData()
+        observeLocationChanges()
     }
 
     private fun loadHomeData() {
@@ -82,12 +82,25 @@ class HomeViewModel(
     }
 
     private suspend fun refreshFromNetwork() {
+        val currentSettings = settings.value
+
+        if (currentSettings.locationType == LocationType.NONE) {
+            _uiState.value = UiState.Error("No location set")
+            return
+        }
+
+        val lat = currentSettings.userLat
+        val lng = currentSettings.userLng
+
+        if (lat == null || lng == null) {
+            _uiState.value = UiState.Loading
+            return
+        }
         _isRefreshing.value = true
         try {
-            val currentSettings = settings.value
             val (weather, hourly, daily) = repo.refreshHomeData(
-                latitude = latitude,
-                longitude = longitude,
+                latitude = lat,
+                longitude = lng,
                 language = currentSettings.language,
             )
             _uiState.value = UiState.Success(HomeViewData(weather, hourly, daily))
@@ -98,6 +111,17 @@ class HomeViewModel(
         } finally {
             _isRefreshing.value = false
         }
+    }
+
+    private fun observeLocationChanges() {
+        settings
+            .map { it.userLat to it.userLng }
+            .distinctUntilChanged()
+            .drop(1)
+            .onEach { (lat, lng) ->
+                if (lat != null && lng != null) refreshFromNetwork()
+            }
+            .launchIn(viewModelScope)
     }
 
     fun refresh() {

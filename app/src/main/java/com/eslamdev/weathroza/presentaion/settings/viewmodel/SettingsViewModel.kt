@@ -37,6 +37,12 @@ class SettingsViewModel(
         }
         LocaleHelper.setAppLanguage(language)
     }
+
+    fun onGpsLocationSelected() {
+        viewModelScope.launch {
+            dataStore.saveLocationType(LocationType.GPS)
+        }
+    }
 }
 
 class SettingsViewModelFactory(
