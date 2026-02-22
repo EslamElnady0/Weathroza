@@ -1,6 +1,7 @@
 package com.eslamdev.weathroza.presentaion.favourite.view.components
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,17 +17,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
-import com.eslamdev.weathroza.R
 import com.eslamdev.weathroza.core.components.CardWithBoarder
-import com.eslamdev.weathroza.core.components.WidthSpacer
+import com.eslamdev.weathroza.core.components.DegreeText
+import com.eslamdev.weathroza.core.helpers.AppColors
+import com.eslamdev.weathroza.core.settings.UserSettings
 import com.eslamdev.weathroza.data.models.fav.FavouriteLocationEntity
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun FavLocationCard(
     location: FavouriteLocationEntity,
+    settings: UserSettings,
     modifier: Modifier = Modifier,
-    iconRes: Int = R.drawable.dummy_sun_image,
 ) {
     CardWithBoarder(modifier = modifier.fillMaxWidth()) {
         Row(
@@ -37,7 +39,7 @@ fun FavLocationCard(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(0.6f)
             ) {
                 Text(
                     text = location.name,
@@ -47,29 +49,32 @@ fun FavLocationCard(
                 )
                 Text(
                     text = location.country,
-                    color = Color(0xFFA0AAB2),
+                    color = AppColors.lightGray,
                     fontSize = 14.sp
                 )
             }
 
-            Row(
-                verticalAlignment = Alignment.CenterVertically
+            Box(
+                modifier = Modifier.weight(0.2f),
+                contentAlignment = Alignment.Center
             ) {
-
                 GlideImage(
                     model = location.iconUrl,
                     contentDescription = "weather status icon",
                     modifier = Modifier.size(50.dp)
                 )
+            }
 
-                WidthSpacer(10.0)
-                Text(
-                    text = "${location.lastTemp?.toInt() ?: 0}°",
+            Box(modifier = Modifier.weight(0.25f), contentAlignment = Alignment.CenterEnd) {
+                DegreeText(
+                    degree = location.lastTemp ?: 0.0,
                     color = Color.White,
-                    fontSize = 35.sp,
-                    fontWeight = FontWeight.Light
+                    fontSize = 30.sp,
+                    fontWeight = FontWeight.Light,
+                    settings = settings
                 )
             }
+
         }
     }
 }

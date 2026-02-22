@@ -25,6 +25,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -32,6 +33,7 @@ import androidx.navigation.NavController
 import com.eslamdev.weathroza.R
 import com.eslamdev.weathroza.core.common.UiState
 import com.eslamdev.weathroza.core.components.HeightSpacer
+import com.eslamdev.weathroza.core.helpers.AppColors
 import com.eslamdev.weathroza.presentaion.favourite.view.components.FavLocationCard
 import com.eslamdev.weathroza.presentaion.favourite.view.components.FavSearchBar
 import com.eslamdev.weathroza.presentaion.favourite.viewmodel.FavViewModel
@@ -44,8 +46,7 @@ fun FavView(
     onNavigateToMap: () -> Unit,
 ) {
     var searchQuery by remember { mutableStateOf("") }
-
-
+    val settings by viewModel.settings.collectAsState()
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -53,13 +54,13 @@ fun FavView(
             FloatingActionButton(
                 onClick = onNavigateToMap,
                 shape = CircleShape,
-                containerColor = Color(0xFF1CB0F6),
+                containerColor = AppColors.primary,
                 contentColor = Color.Black,
                 modifier = Modifier.size(64.dp)
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
-                    contentDescription = "Add Location",
+                    contentDescription = stringResource(R.string.map_add_to_favourites),
                     modifier = Modifier.size(32.dp)
                 )
             }
@@ -73,7 +74,7 @@ fun FavView(
             HeightSpacer(16.0)
 
             Text(
-                text = "Favorites",
+                text = stringResource(R.string.favourites),
                 color = Color.White,
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold
@@ -124,7 +125,10 @@ fun FavView(
                                 .fillMaxWidth(),
                             contentAlignment = Alignment.Center
                         ) {
-                            Text(text = "No saved locations", color = Color.Gray)
+                            Text(
+                                text = stringResource(R.string.no_saved_locations),
+                                color = Color.Gray
+                            )
                         }
                     } else {
                         LazyColumn(
@@ -133,7 +137,7 @@ fun FavView(
                             items(locations, key = { it.cityId }) { location ->
                                 FavLocationCard(
                                     location = location,
-                                    iconRes = R.drawable.dummy_sun_image
+                                    settings = settings,
                                 )
                                 HeightSpacer(12.0)
                             }

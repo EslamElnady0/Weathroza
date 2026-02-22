@@ -73,7 +73,7 @@ fun MainView(
 
             composable<BottomRoute.Favourites> {
                 val context = LocalContext.current
-                val factory = remember { FavViewModelFactory(WeatherRepo(context)) }
+                val factory = remember { FavViewModelFactory(WeatherRepo(context), context) }
                 val viewModel: FavViewModel = viewModel(factory = factory)
                 FavView(
                     bottomController = bottomController,

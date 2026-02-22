@@ -100,6 +100,9 @@
     <string name="error_no_location_desc">يرجى الانتقال إلى الإعدادات واختيار طريقة تحديد الموقع المفضلة لديك — عبر GPS أو اختيار الموقع من الخريطة.</string>
     <string name="go_to_settings">الانتقال إلى الإعدادات</string>
     <string name="error_generic_title">حدث خطأ ما</string>
-    <string name="map_add_to_favourites">إضافة إلى المفضلة</string>
+    <!-- Favourites Strings -->
+    <string name="no_saved_locations">لا توجد مواقع محفوظة</string>
+    <string name="search_for_a_city">ابحث عن مدينة</string>
 
+    <string name="map_add_to_favourites">إضافة إلى المفضلة</string>
 </resources>

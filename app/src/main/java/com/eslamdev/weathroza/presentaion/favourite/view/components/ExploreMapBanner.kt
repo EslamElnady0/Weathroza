@@ -20,6 +20,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import com.eslamdev.weathroza.R
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -48,12 +50,12 @@ fun ExploreMapBanner(modifier: Modifier = Modifier) {
         ) {
             Icon(
                 imageVector = Icons.Default.Map,
-                contentDescription = "Map Icon",
+                contentDescription = stringResource(R.string.pick_from_map),
                 tint = Color(0xFF1CB0F6)
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(
-                text = "EXPLORE GLOBAL WEATHER MAP",
+                text = stringResource(R.string.pick_from_map),
                 color = Color.White,
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Bold,

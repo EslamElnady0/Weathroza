@@ -10,6 +10,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.ui.res.stringResource
+import com.eslamdev.weathroza.R
 import com.eslamdev.weathroza.core.helpers.AppColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -33,7 +35,7 @@ fun FavSearchBar(
             .height(56.dp),
         placeholder = {
             Text(
-                text = "Search for a city",
+                text = stringResource(R.string.search_for_a_city),
                 color = Color(0xFFA0AAB2),
                 fontSize = 16.sp
             )
@@ -41,7 +43,7 @@ fun FavSearchBar(
         leadingIcon = {
             Icon(
                 imageVector = Icons.Default.Search,
-                contentDescription = "Search icon",
+                contentDescription = stringResource(R.string.search_for_a_city),
                 tint = Color(0xFFA0AAB2)
             )
         },
