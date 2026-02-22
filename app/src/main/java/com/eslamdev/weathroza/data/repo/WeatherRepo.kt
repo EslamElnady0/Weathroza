@@ -5,198 +5,122 @@ import com.eslamdev.weathroza.core.enums.Units
 import com.eslamdev.weathroza.core.settings.AppLanguage
 import com.eslamdev.weathroza.data.datasources.local.WeatherLocalDataSource
 import com.eslamdev.weathroza.data.datasources.remote.WeatherRemoteDataSource
+import com.eslamdev.weathroza.data.models.fav.FavouriteLocationEntity
 import com.eslamdev.weathroza.data.models.forecast.DailyForecastEntity
 import com.eslamdev.weathroza.data.models.forecast.HourlyForecastEntity
 import com.eslamdev.weathroza.data.models.geocoding.CityEntity
 import com.eslamdev.weathroza.data.models.weather.WeatherEntity
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 
 class WeatherRepo(val context: Context) {
     private val localDataSource = WeatherLocalDataSource(context)
     private val remoteDataSource = WeatherRemoteDataSource()
 
-    suspend fun fetchWeatherFromApi(
+    // ── Home ────────────────────────────────────────────────────
+    fun getWeatherFromApi(
         latitude: Double,
         longitude: Double,
         language: AppLanguage = AppLanguage.ENGLISH,
         units: Units = Units.METRIC
-    ): WeatherEntity {
-        return remoteDataSource.getWeather(
-            latitude = latitude,
-            longitude = longitude,
-            language = language,
-            units = units
-        )
-    }
+    ): Flow<Result<WeatherEntity>> =
+        remoteDataSource.getWeather(latitude, longitude, language, units)
 
-    suspend fun getHourlyForecastFromApi(
+    fun refreshHomeData(
         latitude: Double,
         longitude: Double,
         language: AppLanguage = AppLanguage.ENGLISH,
         units: Units = Units.METRIC
-    ): List<HourlyForecastEntity> {
-        val forecasts = remoteDataSource.getHourlyForecast(
-            latitude = latitude,
-            longitude = longitude,
-            language = language,
-            units = units
-        )
-        return forecasts
-    }
-
-
-    suspend fun fetchAndSaveWeather(
-        latitude: Double,
-        longitude: Double,
-        language: AppLanguage = AppLanguage.ENGLISH,
-        units: Units = Units.METRIC
-    ): WeatherEntity {
-        val weatherEntity = remoteDataSource.getWeather(
-            latitude = latitude,
-            longitude = longitude,
-            language = language,
-            units = units
-        )
-        localDataSource.insertWeather(weatherEntity)
-        return weatherEntity
-    }
-
-    suspend fun getWeatherByCity(cityName: String): WeatherEntity? {
-        return localDataSource.getWeatherByCity(cityName)
-    }
-
-    suspend fun getAllWeather(): List<WeatherEntity> {
-        return localDataSource.getAllWeather()
-    }
-
-    suspend fun deleteAllWeather() {
-        localDataSource.deleteAllWeather()
-    }
-
-    suspend fun getWeatherOrFetch(
-        cityName: String,
-        latitude: Double,
-        longitude: Double,
-        language: AppLanguage = AppLanguage.ENGLISH,
-        units: Units = Units.METRIC
-    ): WeatherEntity {
-        val localWeather = getWeatherByCity(cityName)
-        return localWeather ?: fetchAndSaveWeather(latitude, longitude, language, units)
-    }
-
-    suspend fun fetchAndSaveHourlyForecast(
-        latitude: Double,
-        longitude: Double,
-        language: AppLanguage = AppLanguage.ENGLISH,
-        units: Units = Units.METRIC
-    ): List<HourlyForecastEntity> {
-        val forecasts = remoteDataSource.getHourlyForecast(
-            latitude = latitude,
-            longitude = longitude,
-            language = language,
-            units = units
-        )
-        localDataSource.insertHourlyForecasts(forecasts)
-        return forecasts
-    }
-
-    suspend fun getHourlyForecast(): List<HourlyForecastEntity> {
-        return localDataSource.getHourlyForecasts()
-    }
-
-    suspend fun getHourlyForecastOrFetch(
-        latitude: Double,
-        longitude: Double,
-        language: AppLanguage = AppLanguage.ENGLISH,
-        units: Units = Units.METRIC
-    ): List<HourlyForecastEntity> {
-        val localForecasts = getHourlyForecast()
-        return localForecasts.ifEmpty {
-            fetchAndSaveHourlyForecast(latitude, longitude, language, units)
+    ): Flow<Result<Triple<WeatherEntity, List<HourlyForecastEntity>, List<DailyForecastEntity>>>> =
+        combine(
+            remoteDataSource.getWeather(latitude, longitude, language, units),
+            remoteDataSource.getHourlyForecast(latitude, longitude, language, units),
+            remoteDataSource.getDailyForecast(latitude, longitude, language, units)
+        ) { weatherResult, hourlyResult, dailyResult ->
+            weatherResult.mapCatching { weather ->
+                Triple(
+                    weather,
+                    hourlyResult.getOrThrow(),
+                    dailyResult.getOrThrow()
+                )
+            }
         }
-    }
+            .onEach { result ->
+                result.onSuccess { (weather, hourly, daily) ->
+                    localDataSource.insertWeather(weather)
+                    localDataSource.insertHourlyForecasts(hourly)
+                    if (daily.isNotEmpty()) localDataSource.insertDailyForecasts(daily)
+                }
+            }
 
-    suspend fun getDailyForecastFromApi(
-        latitude: Double,
-        longitude: Double,
-        language: AppLanguage = AppLanguage.ENGLISH,
-        units: Units = Units.METRIC
-    ): List<DailyForecastEntity> {
-        val forecasts = remoteDataSource.getDailyForecast(
-            latitude = latitude,
-            longitude = longitude,
-            language = language,
-            units = units
-        )
-        return forecasts
-    }
-
-    suspend fun fetchAndSaveDailyForecast(
-        latitude: Double,
-        longitude: Double,
-        language: AppLanguage = AppLanguage.ENGLISH,
-        units: Units = Units.METRIC
-    ): List<DailyForecastEntity> {
-        val forecasts = remoteDataSource.getDailyForecast(
-            latitude = latitude,
-            longitude = longitude,
-            language = language,
-            units = units
-        )
-        if (forecasts.isNotEmpty()) {
-            localDataSource.insertDailyForecasts(forecasts)
-        }
-        return forecasts
-    }
-
-    suspend fun getDailyForecast(cityId: Long): List<DailyForecastEntity> {
-        return localDataSource.getDailyForecastsByCityId(cityId)
-    }
-
-    suspend fun getDailyForecastOrFetch(
-        cityId: Long,
-        latitude: Double,
-        longitude: Double,
-        language: AppLanguage = AppLanguage.ENGLISH,
-        units: Units = Units.METRIC
-    ): List<DailyForecastEntity> {
-        val localForecasts = getDailyForecast(cityId)
-        return localForecasts.ifEmpty {
-            fetchAndSaveDailyForecast(latitude, longitude, language, units)
-        }
-    }
-
-    suspend fun getCachedHomeData(cityId: Long?): Triple<WeatherEntity, List<HourlyForecastEntity>, List<DailyForecastEntity>>? {
-        cityId?.let {
-            val weather = localDataSource.getWeatherByCityId(cityId)
-            val hourly = localDataSource.getHourlyForecastsByCityId(cityId)
-            val daily = localDataSource.getDailyForecastsByCityId(cityId)
-            return Triple(weather, hourly, daily)
-        }
-        return null
-    }
-
-    suspend fun refreshHomeData(
-        latitude: Double,
-        longitude: Double,
-        language: AppLanguage = AppLanguage.ENGLISH,
-        units: Units = Units.METRIC
-    ): Triple<WeatherEntity, List<HourlyForecastEntity>, List<DailyForecastEntity>> {
-
-        val weather = fetchAndSaveWeather(latitude, longitude, language, units)
-        val hourly = fetchAndSaveHourlyForecast(latitude, longitude, language, units)
-        val daily = fetchAndSaveDailyForecast(latitude, longitude, language, units)
-
+    suspend fun getCachedHomeData(
+        cityId: Long?
+    ): Triple<WeatherEntity, List<HourlyForecastEntity>, List<DailyForecastEntity>>? {
+        cityId ?: return null
+        val weather = localDataSource.getWeatherByCityId(cityId) ?: return null
+        val hourly = localDataSource.getHourlyForecastsByCityId(cityId)
+        val daily = localDataSource.getDailyForecastsByCityId(cityId)
         return Triple(weather, hourly, daily)
     }
+
     suspend fun clearHomeData(cityId: Long) {
         localDataSource.deleteWeatherByCityId(cityId)
         localDataSource.deleteHourlyForecastsByCityId(cityId)
         localDataSource.deleteDailyForecastsByCityId(cityId)
     }
-    suspend fun getPossibleCities(
+
+    // ── Cities ──────────────────────────────────────────────────
+
+    fun getPossibleCities(
         cityName: String,
         limit: Int = 5
-    ): List<CityEntity> {
-        return remoteDataSource.getPossibleCities(cityName, limit)
+    ): Flow<Result<List<CityEntity>>> =
+        remoteDataSource.getPossibleCities(cityName, limit)
+
+    // ── Favourites ──────────────────────────────────────────────
+
+    fun getAllFavourites(): Flow<Result<List<FavouriteLocationEntity>>> =
+        localDataSource.getAllFavourites()
+            .map { Result.success(it) }
+            .catch { emit(Result.failure(it)) }
+
+    fun isFavourite(cityId: Long): Flow<Result<Boolean>> =
+        localDataSource.isFavourite(cityId)
+            .map { Result.success(it) }
+            .catch { emit(Result.failure(it)) }
+
+    suspend fun addFavourite(favourite: FavouriteLocationEntity) {
+        localDataSource.insertFavourite(favourite)
+    }
+
+    suspend fun removeFavourite(cityId: Long) {
+        localDataSource.deleteFavouriteById(cityId)
+    }
+
+    suspend fun toggleFavourite(favourite: FavouriteLocationEntity) {
+        val isCurrentlyFav = localDataSource.isFavourite(favourite.cityId).first()
+        if (isCurrentlyFav) removeFavourite(favourite.cityId)
+        else addFavourite(favourite)
+    }
+
+    suspend fun refreshFavouriteWeather(
+        cityId: Long,
+        lat: Double,
+        lng: Double,
+        language: AppLanguage
+    ) {
+        remoteDataSource.getWeather(lat, lng, language)
+            .first()
+            .onSuccess { entity ->
+                localDataSource.updateLastTemp(
+                    cityId = cityId,
+                    temp = entity.temp,
+                    iconUrl = "https://openweathermap.org/img/wn/${entity.iconUrl}@4x.png"
+                )
+            }
     }
 }

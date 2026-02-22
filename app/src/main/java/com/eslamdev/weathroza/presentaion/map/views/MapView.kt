@@ -19,7 +19,6 @@ import com.eslamdev.weathroza.presentaion.map.views.components.MapTopBar
 import com.eslamdev.weathroza.presentaion.map.views.components.maptoolbarcomponents.MapCitySearchResults
 
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MapView(
@@ -62,7 +61,7 @@ fun MapView(
                 viewModel.onSearchQueryChange("")
                 viewModel.loadWeather(latLng)
             },
-            onRetry = { viewModel.getPossibleCities(mapState.uiState.searchQuery) },
+            onRetry = { viewModel.searchCities(mapState.uiState.searchQuery) },
             modifier = Modifier
                 .padding(top = 80.dp)
                 .statusBarsPadding()
@@ -78,9 +77,10 @@ fun MapView(
                     mapState.onBottomSheetDismiss()
                     viewModel.resetWeather()
                 },
-                onConfirm = { latLng,cityId ->
+                onConfirm = { latLng, cityId ->
                     viewModel.confirmLocation(latLng, cityId)
-                    navController.popBackStack() },
+                    navController.popBackStack()
+                },
                 onRetry = {
                     mapState.uiState.selectedLatLng?.let { viewModel.loadWeather(it) }
                 }
