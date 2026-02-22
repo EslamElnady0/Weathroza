@@ -25,6 +25,8 @@ import com.eslamdev.weathroza.presentaion.routes.Route
 import com.eslamdev.weathroza.presentaion.settings.view.SettingsView
 import com.eslamdev.weathroza.presentaion.settings.viewmodel.SettingsViewModel
 import com.eslamdev.weathroza.presentaion.settings.viewmodel.SettingsViewModelFactory
+import com.eslamdev.weathroza.presentaion.favourite.viewmodel.FavViewModel
+import com.eslamdev.weathroza.presentaion.favourite.viewmodel.FavViewModelFactory
 
 @Composable
 fun MainView(
@@ -70,7 +72,13 @@ fun MainView(
             }
 
             composable<BottomRoute.Favourites> {
-                FavView(bottomController) {
+                val context = LocalContext.current
+                val factory = remember { FavViewModelFactory(WeatherRepo(context)) }
+                val viewModel: FavViewModel = viewModel(factory = factory)
+                FavView(
+                    bottomController = bottomController,
+                    viewModel = viewModel
+                ) {
                     controller.navigate(Route.MapRoute(MapMode.ADD_FAVOURITE))
                 }
             }

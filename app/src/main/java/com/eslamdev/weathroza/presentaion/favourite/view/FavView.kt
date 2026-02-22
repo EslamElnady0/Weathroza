@@ -1,7 +1,9 @@
 package com.eslamdev.weathroza.presentaion.favourite.view
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -9,15 +11,18 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -25,56 +30,22 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.eslamdev.weathroza.R
+import com.eslamdev.weathroza.core.common.UiState
 import com.eslamdev.weathroza.core.components.HeightSpacer
-import com.eslamdev.weathroza.data.models.fav.FavouriteLocationEntity
 import com.eslamdev.weathroza.presentaion.favourite.view.components.FavLocationCard
 import com.eslamdev.weathroza.presentaion.favourite.view.components.FavSearchBar
+import com.eslamdev.weathroza.presentaion.favourite.viewmodel.FavViewModel
 
 @Composable
 fun FavView(
     bottomController: NavController,
+    viewModel: FavViewModel,
     modifier: Modifier = Modifier,
     onNavigateToMap: () -> Unit,
 ) {
     var searchQuery by remember { mutableStateOf("") }
 
-    val dummyLocations = remember {
-        listOf(
-            FavouriteLocationEntity(
-                cityId = 1,
-                name = "London",
-                country = "United Kingdom",
-                lat = 51.5,
-                lng = -0.12,
-                lastTemp = 22.0,
-                icon = "01d",
-                iconUrl = "",
-                lastUpdated = System.currentTimeMillis()
-            ),
-            FavouriteLocationEntity(
-                cityId = 2,
-                name = "Tokyo",
-                country = "Japan",
-                lat = 35.6,
-                lng = 139.6,
-                lastTemp = 18.0,
-                icon = "03d",
-                iconUrl = "",
-                lastUpdated = System.currentTimeMillis()
-            ),
-            FavouriteLocationEntity(
-                cityId = 3,
-                name = "New York",
-                country = "United States",
-                lat = 40.7,
-                lng = -74.0,
-                lastTemp = 14.0,
-                icon = "09d",
-                iconUrl = "",
-                lastUpdated = System.currentTimeMillis()
-            )
-        )
-    }
+
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -116,29 +87,59 @@ fun FavView(
 
             HeightSpacer(24.0)
 
-            LazyColumn(
-                modifier = Modifier.weight(1f)
-            ) {
-                items(dummyLocations) { location ->
-                    val weatherDesc = when (location.name) {
-                        "London" -> "SUNNY"
-                        "Tokyo" -> "CLOUDY"
-                        else -> "RAINY"
-                    }
-                    val iconRes = when (location.name) {
-                        "London" -> R.drawable.dummy_sun_image
-                        "Tokyo" -> R.drawable.cloud_ic
-                        else -> R.drawable.cloud_ic
-                    }
+            val uiState by viewModel.favourites.collectAsState()
 
-                    FavLocationCard(
-                        location = location,
-                        weatherDesc = weatherDesc,
-                        iconRes = iconRes
-                    )
-                    HeightSpacer(12.0)
+            when (val state = uiState) {
+                is UiState.Loading, UiState.Idle -> {
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxWidth(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator(color = Color.White)
+                    }
                 }
 
+                is UiState.Error -> {
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxWidth(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(text = state.message, color = Color.Red)
+                    }
+                }
+
+                is UiState.Success -> {
+                    val locations = state.data.filter {
+                        it.name.contains(searchQuery, ignoreCase = true) ||
+                                it.country.contains(searchQuery, ignoreCase = true)
+                    }
+                    if (locations.isEmpty()) {
+                        Box(
+                            modifier = Modifier
+                                .weight(1f)
+                                .fillMaxWidth(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(text = "No saved locations", color = Color.Gray)
+                        }
+                    } else {
+                        LazyColumn(
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            items(locations, key = { it.cityId }) { location ->
+                                FavLocationCard(
+                                    location = location,
+                                    iconRes = R.drawable.dummy_sun_image
+                                )
+                                HeightSpacer(12.0)
+                            }
+                        }
+                    }
+                }
             }
         }
     }
