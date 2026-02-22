@@ -1,27 +1,21 @@
 package com.eslamdev.weathroza.data.models.mapper
 
 import com.eslamdev.weathroza.data.models.fav.FavouriteLocationEntity
-import com.eslamdev.weathroza.data.models.weather.WeatherDto
+import com.eslamdev.weathroza.data.models.weather.WeatherEntity
+import com.google.android.gms.maps.model.LatLng
 
 object FavouriteLocationMapper {
-
-    fun toEntity(dto: WeatherDto): FavouriteLocationEntity {
-        val weather = dto.weather.firstOrNull()
-        val iconCode = weather?.icon.orEmpty()
-
+    fun toEntity(weatherEntity: WeatherEntity, latLng: LatLng): FavouriteLocationEntity {
         return FavouriteLocationEntity(
-            cityId      = dto.id.toLong(),
-            name        = dto.name,
-            country     = dto.sys?.country.orEmpty(),
-            lat         = dto.coord.lat,
-            lng         = dto.coord.lon,
-            lastTemp    = dto.main.temp,
-            icon        = iconCode,
-            iconUrl     = "https://openweathermap.org/img/wn/${iconCode}@4x.png",
+            cityId = weatherEntity.id.toLong(),
+            name = weatherEntity.name,
+            country = weatherEntity.country.orEmpty(),
+            lat = latLng.latitude,
+            lng = latLng.longitude,
+            lastTemp = weatherEntity.temp,
+            icon = weatherEntity.weatherIcon,
+            iconUrl = weatherEntity.iconUrl,
             lastUpdated = System.currentTimeMillis()
         )
     }
-
-    fun toEntityList(dtos: List<WeatherDto>): List<FavouriteLocationEntity> =
-        dtos.map { toEntity(it) }
 }

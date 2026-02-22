@@ -9,7 +9,9 @@ import com.eslamdev.weathroza.data.models.fav.FavouriteLocationEntity
 import com.eslamdev.weathroza.data.models.forecast.DailyForecastEntity
 import com.eslamdev.weathroza.data.models.forecast.HourlyForecastEntity
 import com.eslamdev.weathroza.data.models.geocoding.CityEntity
+import com.eslamdev.weathroza.data.models.mapper.FavouriteLocationMapper
 import com.eslamdev.weathroza.data.models.weather.WeatherEntity
+import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
@@ -93,18 +95,13 @@ class WeatherRepo(val context: Context) {
             .map { Result.success(it) }
             .catch { emit(Result.failure(it)) }
 
-    suspend fun addFavourite(favourite: FavouriteLocationEntity) {
+    suspend fun addFavourite(weatherEntity: WeatherEntity, latLng: LatLng) {
+        val favourite = FavouriteLocationMapper.toEntity(weatherEntity, latLng)
         localDataSource.insertFavourite(favourite)
     }
 
     suspend fun removeFavourite(cityId: Long) {
         localDataSource.deleteFavouriteById(cityId)
-    }
-
-    suspend fun toggleFavourite(favourite: FavouriteLocationEntity) {
-        val isCurrentlyFav = localDataSource.isFavourite(favourite.cityId).first()
-        if (isCurrentlyFav) removeFavourite(favourite.cityId)
-        else addFavourite(favourite)
     }
 
     suspend fun refreshFavouriteWeather(

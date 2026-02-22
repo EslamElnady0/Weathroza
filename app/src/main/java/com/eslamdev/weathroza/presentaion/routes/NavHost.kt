@@ -8,6 +8,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.eslamdev.weathroza.data.repo.WeatherRepo
 import com.eslamdev.weathroza.presentaion.main.views.MainView
 import com.eslamdev.weathroza.presentaion.map.viewmodel.MapViewModel
@@ -23,9 +24,12 @@ fun App(modifier: Modifier = Modifier) {
             MainView(controller)
         }
 
-        composable<Route.MapRoute> {
+        composable<Route.MapRoute> { backStackEntry ->
             val context = LocalContext.current
-            val factory = remember { MapViewModelFactory(WeatherRepo(context), context) }
+            val args = backStackEntry.toRoute<Route.MapRoute>()
+            val factory = remember {
+                MapViewModelFactory(WeatherRepo(context), context, args.mode)
+            }
             val viewModel: MapViewModel = viewModel(factory = factory)
             MapView(
                 navController = controller,

@@ -1,22 +1,18 @@
 package com.eslamdev.weathroza.presentaion.main.views
 
-import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.eslamdev.weathroza.core.enums.MapMode
 import com.eslamdev.weathroza.data.repo.WeatherRepo
 import com.eslamdev.weathroza.presentaion.alerts.views.AlertsView
 import com.eslamdev.weathroza.presentaion.favourite.view.FavView
@@ -29,7 +25,6 @@ import com.eslamdev.weathroza.presentaion.routes.Route
 import com.eslamdev.weathroza.presentaion.settings.view.SettingsView
 import com.eslamdev.weathroza.presentaion.settings.viewmodel.SettingsViewModel
 import com.eslamdev.weathroza.presentaion.settings.viewmodel.SettingsViewModelFactory
-import kotlin.getValue
 
 @Composable
 fun MainView(
@@ -61,20 +56,23 @@ fun MainView(
                 HomeBody(
                     bottomController = controller,
                     viewModel = viewModel,
-                    onNavigateToSettings = { bottomController.navigate(BottomRoute.Settings){
-                        popUpTo(bottomController.graph.startDestinationId) {
-                        saveState = true
-                    }
-                        launchSingleTop = true
-                        restoreState = true
+                    onNavigateToSettings = {
+                        bottomController.navigate(BottomRoute.Settings) {
+                            popUpTo(bottomController.graph.startDestinationId) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
 
-                    }
+                        }
                     }
                 )
             }
 
             composable<BottomRoute.Favourites> {
-                FavView(bottomController)
+                FavView(bottomController) {
+                    controller.navigate(Route.MapRoute(MapMode.ADD_FAVOURITE))
+                }
             }
 
             composable<BottomRoute.Alerts> {
@@ -83,13 +81,13 @@ fun MainView(
 
             composable<BottomRoute.Settings> {
                 val context = LocalContext.current
-                val settingsViewModel=
+                val settingsViewModel =
                     viewModel<SettingsViewModel>(factory = SettingsViewModelFactory(context))
                 SettingsView(
-                   bottomController =  bottomController,
+                    bottomController = bottomController,
                     settingsViewModel,
-                ){
-                    controller.navigate(Route.MapRoute)
+                ) {
+                    controller.navigate(Route.MapRoute(MapMode.SELECT_LOCATION))
                 }
             }
         }

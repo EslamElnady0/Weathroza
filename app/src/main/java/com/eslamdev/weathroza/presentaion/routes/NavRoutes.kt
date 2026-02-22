@@ -1,5 +1,6 @@
 package com.eslamdev.weathroza.presentaion.routes
 
+import com.eslamdev.weathroza.core.enums.MapMode
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -8,7 +9,7 @@ sealed class Route {
     object MainRoute : Route()
 
     @Serializable
-    object MapRoute : Route()
+    data class MapRoute(var mode: MapMode = MapMode.SELECT_LOCATION) : Route()
 
 }
 

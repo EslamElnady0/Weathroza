@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.eslamdev.weathroza.core.common.UiState
+import com.eslamdev.weathroza.core.enums.MapMode
 import com.eslamdev.weathroza.core.network.ErrorHandler
 import com.eslamdev.weathroza.core.settings.LocationType
 import com.eslamdev.weathroza.core.settings.SettingsDataStore
@@ -30,7 +31,8 @@ import kotlinx.coroutines.launch
 @OptIn(FlowPreview::class)
 class MapViewModel(
     private val repo: WeatherRepo,
-    private val context: Context
+    private val context: Context,
+    val mode: MapMode = MapMode.SELECT_LOCATION
 ) : ViewModel() {
 
     private val dataStore = SettingsDataStore(context)
@@ -77,11 +79,24 @@ class MapViewModel(
 
     fun confirmLocation(latLng: LatLng, cityId: Long) {
         viewModelScope.launch {
-            dataStore.saveManualLocation(latLng.latitude, latLng.longitude, cityId)
-            dataStore.saveLocationType(LocationType.MANUAL)
+            when (mode) {
+                MapMode.SELECT_LOCATION -> {
+                    dataStore.saveManualLocation(latLng.latitude, latLng.longitude, cityId)
+                    dataStore.saveLocationType(LocationType.MANUAL)
+                }
+
+                MapMode.ADD_FAVOURITE -> {
+                    val weatherState = _weatherState.value
+                    if (weatherState is UiState.Success) {
+                        repo.addFavourite(
+                            weatherEntity = weatherState.data,
+                            latLng = latLng
+                        )
+                    }
+                }
+            }
         }
     }
-
     // ── Cities search ─────────────────────────────────────────────
 
     private val _citiesState = MutableStateFlow<UiState<List<CityEntity>>>(UiState.Idle)
@@ -129,13 +144,13 @@ class MapViewModel(
 
 class MapViewModelFactory(
     private val repo: WeatherRepo,
-    private val context: Context
+    private val context: Context,
+    private val mode: MapMode = MapMode.SELECT_LOCATION
 ) : ViewModelProvider.Factory {
-
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(MapViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return MapViewModel(repo, context) as T
+            return MapViewModel(repo, context, mode) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }
