@@ -91,5 +91,10 @@
     <string name="error_server">Server error occurred</string>
     <string name="error_unknown">An unknown error occurred</string>
     <string name="tap_to_retry">Tap to retry</string>
+    <string name="use_gps_location">Use Gps?</string>
+    <string name="use_gps_location_desc">The app will use your device\'s GPS to automatically detect and update your weather location. Do you want to enable this?</string>
+    <string name="location_disabled_title">Location is Disabled</string>
+    <string name="location_disabled_desc">Please enable location services in your device settings to use GPS automatically.</string>
+    <string name="open_settings">Open Settings</string>
 
 </resources>

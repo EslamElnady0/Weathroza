@@ -1,18 +1,21 @@
 package com.eslamdev.weathroza.presentaion.settings.viewmodel
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.eslamdev.weathroza.core.settings.langmanager.LocaleHelper
 import com.eslamdev.weathroza.core.settings.*
+import com.eslamdev.weathroza.core.settings.location.LocationManager
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class SettingsViewModel(
-    private val dataStore: SettingsDataStore
+    private val dataStore: SettingsDataStore,
+    private val context: Context
 ) : ViewModel() {
 
     val settings: StateFlow<UserSettings> = dataStore.settingsFlow
@@ -40,7 +43,15 @@ class SettingsViewModel(
 
     fun onGpsLocationSelected() {
         viewModelScope.launch {
-            dataStore.saveLocationType(LocationType.GPS)
+            try {
+                val location = LocationManager(context).getCurrentLocation()
+                dataStore.saveGpsLocation(
+                    lat    = location.latitude,
+                    lng    = location.longitude,
+                )
+            } catch (e: Exception) {
+                Log.e("TAG", "GPS fetch failed: ${e.message}")
+            }
         }
     }
 }
@@ -50,6 +61,6 @@ class SettingsViewModelFactory(
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         @Suppress("UNCHECKED_CAST")
-        return SettingsViewModel(SettingsDataStore(context)) as T
+        return SettingsViewModel(SettingsDataStore(context),context) as T
     }
 }

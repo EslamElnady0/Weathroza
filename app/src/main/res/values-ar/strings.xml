@@ -84,5 +84,15 @@
     <string name="feels_like_minimal">تشعر وكأنها</string>
     <string name="searching">جاري البحث...</string>
     <string name="no_cities_found">لم يتم العثور علي مدن</string>
+    <string name="error_no_internet">لا يوجد اتصال بالإنترنت، يرجى التحقق من تغطية الشبكة.</string>
+    <string name="error_timeout">انتهت مهلة الاتصال.</string>
+    <string name="error_server">حدث خطأ في الخادم.</string>
+    <string name="error_unknown">حدث خطأ غير معروف.</string>
+    <string name="tap_to_retry">اضغط لإعادة المحاولة.</string>
+    <string name="use_gps_location">استخدم GPS؟</string>
+    <string name="use_gps_location_desc">سيستخدم التطبيق نظام تحديد المواقع (GPS) في جهازك لاكتشاف موقع الطقس الخاص بك وتحديثه تلقائيًا. هل ترغب في تفعيل ذلك؟</string>
+    <string name="location_disabled_title">خدمة الموقع غير مفعّلة</string>
+    <string name="location_disabled_desc">يرجى تفعيل خدمات الموقع من إعدادات الجهاز لاستخدام GPS تلقائيًا.</string>
+    <string name="open_settings">فتح الإعدادات</string>
 
 </resources>

@@ -68,9 +68,8 @@ class HomeViewModel(
 
             val isOnlineNow = networkObserver.isConnected.first()
             isInitialized = true
-            if (isOnlineNow) {
-                refreshFromNetwork()
-            }
+
+            if (isOnlineNow) refreshFromNetwork()
 
             networkObserver.isConnected
                 .drop(1)
@@ -91,25 +90,28 @@ class HomeViewModel(
     }
 
     private fun observeLocationChanges() {
+        var previousCityId: Long? = null
+
         settings
-            .map { Triple(it.userLat, it.userLng, it.cityId) }
+            .map { it.userLat to it.userLng }
             .distinctUntilChanged()
             .drop(1)
-            .withPrevious()
-            .onEach { (old, new) ->
-                val (newLat, newLng, newCityId) = new
-
-                if (newLat != null && newLng != null && newCityId != null && isInitialized) {
-                    if (old?.third != null && old.third != newCityId) {
-                        repo.clearHomeData(old.third!!)
-                    }
-                    onLocationChanged(newLat, newLng)
+            .onEach { (lat, lng) ->
+                if (lat != null && lng != null && isInitialized) {
+                    val oldCityId = previousCityId
+                    previousCityId = settings.value.cityId
+                    onLocationChanged(lat, lng, oldCityId)
                 }
             }
             .launchIn(viewModelScope)
     }
 
-    private suspend fun onLocationChanged(lat: Double, lng: Double) {
+    private suspend fun onLocationChanged(lat: Double, lng: Double, oldCityId: Long?) {
+
+        if (oldCityId != null && oldCityId != 0L) {
+            repo.clearHomeData(oldCityId)
+        }
+
         _uiState.value = UiState.Loading
         _isRefreshing.value = true
         try {
@@ -118,6 +120,15 @@ class HomeViewModel(
                 longitude = lng,
                 language = settings.value.language,
             )
+
+            if (settings.value.locationType == LocationType.GPS) {
+                dataStore.saveGpsLocation(
+                    lat    = lat,
+                    lng    = lng,
+                )
+                dataStore.saveCityId(weather.id.toLong())
+            }
+
             _uiState.value = UiState.Success(HomeViewData(weather, hourly, daily))
         } catch (e: Exception) {
             _uiState.value = UiState.Error(e.message ?: "Unknown error")
@@ -129,9 +140,8 @@ class HomeViewModel(
     private suspend fun refreshFromNetwork() {
         val currentSettings = settings.value
 
-        if (!isInitialized) {
-            return
-        }
+        if (!isInitialized)  return
+
 
         if (currentSettings.locationType == LocationType.NONE) {
             if (_uiState.value !is UiState.Success) {
@@ -172,22 +182,22 @@ class HomeViewModel(
             try {
                 val location = LocationManager(context).getCurrentLocation()
                 dataStore.saveGpsLocation(
-                    lat = location.latitude,
-                    lng = location.longitude
+                    lat    = location.latitude,
+                    lng    = location.longitude,
                 )
             } catch (e: Exception) {
-                Log.e("TAG", "GPS fetch failed: ${e.message}")
+                Log.e("HomeVM", "fetchAndSaveGpsLocation: failed → ${e.message}")
             }
         }
     }
 }
+
 private data class Location(val lat: Double, val lng: Double, val cityId: Long)
 
 class HomeViewModelFactory(
     private val repo: WeatherRepo,
     private val context: Context
 ) : ViewModelProvider.Factory {
-
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(HomeViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
