@@ -26,9 +26,34 @@ import com.eslamdev.weathroza.core.helpers.AppColors
 import com.eslamdev.weathroza.core.settings.AppLanguage
 import com.eslamdev.weathroza.core.settings.LocationType
 import com.eslamdev.weathroza.core.settings.UserSettings
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import kotlinx.coroutines.delay
 import com.eslamdev.weathroza.presentaion.routes.Route
 import com.eslamdev.weathroza.presentaion.settings.view.components.LanguageSelector
 import com.eslamdev.weathroza.presentaion.settings.view.components.LocationSelector
+import com.eslamdev.weathroza.presentaion.settings.view.components.SettingsSnackbar
 import com.eslamdev.weathroza.presentaion.settings.view.components.UnitsSection
 import com.eslamdev.weathroza.presentaion.settings.viewmodel.SettingsViewModel
 
@@ -39,15 +64,29 @@ fun SettingsView(bottomController: NavController,
                  onNavigateToMap: ()->Unit,) {
 
     val settings by settingsViewModel.settings.collectAsStateWithLifecycle()
-    SettingsViewImpl(
-        settings = settings,
-        onTemperatureUnitChanged = settingsViewModel::onTemperatureUnitChanged,
-        onWindSpeedUnitChanged = settingsViewModel::onWindSpeedUnitChanged,
-        onLanguageChanged = settingsViewModel::onLanguageChanged,
-        onGpsSelected = settingsViewModel::onGpsLocationSelected,
-        onNavigateToMap = onNavigateToMap,
-        modifier = modifier
-    )
+    val snackBarState by settingsViewModel.snackBarState.collectAsStateWithLifecycle()
+
+    Box(modifier = modifier.fillMaxSize()) {
+        SettingsViewImpl(
+            settings = settings,
+            onTemperatureUnitChanged = settingsViewModel::onTemperatureUnitChanged,
+            onWindSpeedUnitChanged = settingsViewModel::onWindSpeedUnitChanged,
+            onLanguageChanged = settingsViewModel::onLanguageChanged,
+            onGpsSelected = settingsViewModel::onGpsLocationSelected,
+            onNavigateToMap = onNavigateToMap
+        )
+
+        SettingsSnackbar(
+            message = snackBarState.message,
+            isVisible = snackBarState.isVisible,
+            isLoading = snackBarState.isLoading,
+            isError = snackBarState.isError,
+            onDismiss = settingsViewModel::onSnackBarDismissed,
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 24.dp)
+        )
+    }
 }
 
 
@@ -126,4 +165,6 @@ fun SettingsViewImpl(settings: UserSettings,
 
     }
 }
+
+
 

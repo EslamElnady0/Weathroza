@@ -26,6 +26,7 @@ fun LocationSelector(
     var showGpsDialog    by remember { mutableStateOf(false) }
     var requestPermission by remember { mutableStateOf(false) }
     var showLocationDisabledDialog by remember { mutableStateOf(false) }
+    var showPermanentlyDeniedDialog by remember { mutableStateOf(false) }
 
     // Map dialog
     if (showMapDialog) {
@@ -69,6 +70,20 @@ fun LocationSelector(
             },
             onDenied = {
                 requestPermission = false
+            },
+            onPermanentlyDenied = {
+                requestPermission = false
+                showPermanentlyDeniedDialog = true
+            }
+        )
+    }
+
+    if (showPermanentlyDeniedDialog) {
+        PermanentlyDeniedDialog(
+            onDismiss = { showPermanentlyDeniedDialog = false },
+            onOpenSettings = {
+                showPermanentlyDeniedDialog = false
+                LocationPermissionHelper.openAppSettings(context)
             }
         )
     }

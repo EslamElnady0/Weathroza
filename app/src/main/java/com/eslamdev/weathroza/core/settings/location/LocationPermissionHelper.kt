@@ -1,10 +1,13 @@
 package com.eslamdev.weathroza.core.settings.location
 
 import android.Manifest
+import android.app.Activity
 import android.content.Context
+import android.content.ContextWrapper
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.LocationManager
+import android.net.Uri
 import android.provider.Settings
 import androidx.core.content.ContextCompat
 
@@ -33,5 +36,23 @@ object LocationPermissionHelper {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK
             }
         )
+    }
+    
+    fun openAppSettings(context: Context) {
+        context.startActivity(
+            Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                data = Uri.fromParts("package", context.packageName, null)
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            }
+        )
+    }
+
+    fun Context.findActivity(): Activity? {
+        var currentContext = this
+        while (currentContext is ContextWrapper) {
+            if (currentContext is Activity) return currentContext
+            currentContext = currentContext.baseContext
+        }
+        return null
     }
 }

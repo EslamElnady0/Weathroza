@@ -94,5 +94,7 @@
     <string name="location_disabled_title">خدمة الموقع غير مفعّلة</string>
     <string name="location_disabled_desc">يرجى تفعيل خدمات الموقع من إعدادات الجهاز لاستخدام GPS تلقائيًا.</string>
     <string name="open_settings">فتح الإعدادات</string>
+    <string name="permission_required">الإذن مطلوب</string>
+    <string name="permission_permanently_denied">تم رفض إذن الموقع عدة مرات. يرجى منح إذن الموقع من إعدادات التطبيق لاستخدام هذه الميزة.</string>
 
 </resources>

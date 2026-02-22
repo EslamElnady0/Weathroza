@@ -97,4 +97,10 @@
     <string name="location_disabled_desc">Please enable location services in your device settings to use GPS automatically.</string>
     <string name="open_settings">Open Settings</string>
 
+    <string name="permission_required">Permission Required</string>
+    <string name="permission_permanently_denied">Location permission was denied too many times. Please grant the location permission from the app settings to use this feature.</string>
+
+    <string name="fetching_gps_location">Fetching GPS location…</string>
+    <string name="gps_location_saved">GPS location updated successfully</string>
+    <string name="gps_location_failed">Failed to fetch GPS location</string>
 </resources>
