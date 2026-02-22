@@ -105,4 +105,5 @@
     <string name="search_for_a_city">ابحث عن مدينة</string>
 
     <string name="map_add_to_favourites">إضافة إلى المفضلة</string>
+    <string name="no_saved_locations_desc">اضغط على + لإضافة مدنك المفضلة والتحقق من حالة الطقس في أي وقت</string>
 </resources>

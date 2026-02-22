@@ -110,6 +110,7 @@
     <!-- Favourites Strings -->
     <string name="no_saved_locations">No saved locations</string>
     <string name="search_for_a_city">Search for a city</string>
-    
+
     <string name="map_add_to_favourites">Add to Favourites</string>
+    <string name="no_saved_locations_desc">Tap + to add your favourite cities and check their weather anytime</string>
 </resources>

@@ -34,6 +34,7 @@ import com.eslamdev.weathroza.R
 import com.eslamdev.weathroza.core.common.UiState
 import com.eslamdev.weathroza.core.components.HeightSpacer
 import com.eslamdev.weathroza.core.helpers.AppColors
+import com.eslamdev.weathroza.presentaion.favourite.view.components.FavEmptyState
 import com.eslamdev.weathroza.presentaion.favourite.view.components.FavLocationCard
 import com.eslamdev.weathroza.presentaion.favourite.view.components.FavSearchBar
 import com.eslamdev.weathroza.presentaion.favourite.viewmodel.FavViewModel
@@ -125,10 +126,7 @@ fun FavView(
                                 .fillMaxWidth(),
                             contentAlignment = Alignment.Center
                         ) {
-                            Text(
-                                text = stringResource(R.string.no_saved_locations),
-                                color = Color.Gray
-                            )
+                            FavEmptyState()
                         }
                     } else {
                         LazyColumn(
