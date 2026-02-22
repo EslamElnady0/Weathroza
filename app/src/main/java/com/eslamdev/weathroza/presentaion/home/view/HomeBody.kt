@@ -60,6 +60,7 @@ import com.eslamdev.weathroza.data.models.forecast.HourlyForecastEntity
 import com.eslamdev.weathroza.data.models.weather.WeatherEntity
 import com.eslamdev.weathroza.presentaion.home.model.HomeViewData
 import com.eslamdev.weathroza.presentaion.home.view.components.DailyForecastItem
+import com.eslamdev.weathroza.presentaion.home.view.components.HomeErrorState
 import com.eslamdev.weathroza.presentaion.home.view.components.HourlyForecastList
 import com.eslamdev.weathroza.presentaion.home.view.components.RefreshBanner
 import com.eslamdev.weathroza.presentaion.home.view.components.StatsRow
@@ -69,9 +70,9 @@ import com.eslamdev.weathroza.presentaion.home.viewmodel.HomeViewModel
 @Composable
 fun HomeBody(
     bottomController: NavController,
-    viewModel: HomeViewModel
+    viewModel: HomeViewModel,
+    onNavigateToSettings: () -> Unit
 ) {
-
     val state by viewModel.uiState.collectAsState()
     val settings by viewModel.settings.collectAsStateWithLifecycle()
     val isRefreshing by viewModel.isRefreshing.collectAsStateWithLifecycle()
@@ -88,33 +89,28 @@ fun HomeBody(
         } else {
             RequestLocationPermission(
                 onGranted = { viewModel.fetchAndSaveGpsLocation() },
-                onDenied  = { /* optionally show rationale */ }
+                onDenied  = {},
+                onPermanentlyDenied = {}
             )
         }
     }
-    when (state) {
 
+    when (state) {
         is UiState.Loading -> {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator(
-                    color = AppColors.primary
-                )
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator(color = AppColors.primary)
             }
         }
 
         is UiState.Error -> {
-            Text(
-                text = (state as UiState.Error).message
+            HomeErrorState(
+                message = (state as UiState.Error).message,
+                onNavigateToSettings = onNavigateToSettings
             )
         }
 
         is UiState.Success -> {
-            val data =
-                (state as UiState.Success<HomeViewData>).data
-
+            val data = (state as UiState.Success<HomeViewData>).data
             HomeBodyImpl(
                 weather = data.weather,
                 hourly = data.hourlyForecast,

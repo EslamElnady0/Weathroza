@@ -60,7 +60,16 @@ fun MainView(
                 )
                 HomeBody(
                     bottomController = controller,
-                    viewModel = viewModel
+                    viewModel = viewModel,
+                    onNavigateToSettings = { bottomController.navigate(BottomRoute.Settings){
+                        popUpTo(bottomController.graph.startDestinationId) {
+                        saveState = true
+                    }
+                        launchSingleTop = true
+                        restoreState = true
+
+                    }
+                    }
                 )
             }
 

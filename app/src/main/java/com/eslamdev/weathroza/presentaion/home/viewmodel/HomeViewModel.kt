@@ -163,6 +163,11 @@ class HomeViewModel(
                 longitude = lng,
                 language = currentSettings.language,
             )
+
+            if (settings.value.locationType == LocationType.GPS) {
+                dataStore.saveCityId(weather.id.toLong())
+            }
+
             _uiState.value = UiState.Success(HomeViewData(weather, hourly, daily))
         } catch (e: Exception) {
             if (_uiState.value !is UiState.Success) {

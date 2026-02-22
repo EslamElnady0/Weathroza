@@ -96,5 +96,9 @@
     <string name="open_settings">فتح الإعدادات</string>
     <string name="permission_required">الإذن مطلوب</string>
     <string name="permission_permanently_denied">تم رفض إذن الموقع عدة مرات. يرجى منح إذن الموقع من إعدادات التطبيق لاستخدام هذه الميزة.</string>
+    <string name="error_no_location_title">No Location Set</string>
+    <string name="error_no_location_desc">Please go to settings and choose your preferred location method — GPS or pick from map.</string>
+    <string name="go_to_settings">Go to Settings</string>
+    <string name="error_generic_title">Something Went Wrong</string>
 
 </resources>
