@@ -68,7 +68,7 @@ class WeatherRepo(val context: Context) {
         return Triple(weather, hourly, daily)
     }
 
-    suspend fun clearHomeData(cityId: Long) {
+    suspend fun clearCityData(cityId: Long) {
         localDataSource.deleteWeatherByCityId(cityId)
         localDataSource.deleteHourlyForecastsByCityId(cityId)
         localDataSource.deleteDailyForecastsByCityId(cityId)
@@ -109,6 +109,7 @@ class WeatherRepo(val context: Context) {
 
     suspend fun removeFavourite(cityId: Long) {
         localDataSource.deleteFavouriteById(cityId)
+        clearCityData(cityId)
     }
 
     suspend fun refreshFavouriteWeather(

@@ -18,7 +18,8 @@ class WeatherLocalDataSource(val context: Context) {
         WeatherDataBase.getInstance(context).getHourlyForecastDao()
     private val dailyForecastDao: DailyForecastDao =
         WeatherDataBase.getInstance(context).getDailyForecastDao()
-    private val favouriteLocationDao: FavouriteLocationDao = WeatherDataBase.getInstance(context).getFavouriteLocationDao()
+    private val favouriteLocationDao: FavouriteLocationDao =
+        WeatherDataBase.getInstance(context).getFavouriteLocationDao()
 
     suspend fun insertWeather(weather: WeatherEntity) {
         weatherDao.insertWeather(weather)
@@ -59,19 +60,23 @@ class WeatherLocalDataSource(val context: Context) {
     suspend fun deleteDailyForecastsByCityId(cityId: Long) {
         dailyForecastDao.deleteDailyForecastsByCity(cityId)
     }
+
     suspend fun deleteHourlyForecastsByCityId(cityId: Long) {
         hourlyForecastDao.deleteHourlyForecastsByCityId(cityId)
     }
+
     suspend fun deleteWeatherByCityId(cityId: Long) {
         weatherDao.deleteWeatherByCityId(cityId)
     }
 
-    suspend fun getWeatherByCityId(cityId: Long): WeatherEntity {
+    suspend fun getWeatherByCityId(cityId: Long): WeatherEntity? {
         return weatherDao.getWeatherByCityId(cityId)
     }
+
     suspend fun getHourlyForecastsByCityId(cityId: Long): List<HourlyForecastEntity> {
         return hourlyForecastDao.getHourlyForecastsByCityId(cityId)
     }
+
     suspend fun getDailyForecastsByCityId(cityId: Long): List<DailyForecastEntity> {
         return dailyForecastDao.getDailyForecastsList(cityId)
     }

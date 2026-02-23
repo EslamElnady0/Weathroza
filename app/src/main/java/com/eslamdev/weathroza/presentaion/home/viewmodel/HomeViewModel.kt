@@ -107,7 +107,7 @@ class HomeViewModel(
     private fun onLocationChanged(lat: Double, lng: Double, oldCityId: Long?) {
         viewModelScope.launch {
             if (oldCityId != null && oldCityId != 0L)
-                repo.clearHomeData(oldCityId)
+                repo.clearCityData(oldCityId)
         }
 
         _uiState.value = UiState.Loading

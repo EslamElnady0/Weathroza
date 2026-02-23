@@ -113,4 +113,8 @@
 
     <string name="map_add_to_favourites">Add to Favourites</string>
     <string name="no_saved_locations_desc">Tap + to add your favourite cities and check their weather anytime</string>
+
+    <string name="delete_fav_title">Delete Favorite?</string>
+    <string name="delete_fav_desc">Are you sure you want to delete %1$s, %2$s from your favorites?</string>
+    <string name="delete">DELETE</string>
 </resources>

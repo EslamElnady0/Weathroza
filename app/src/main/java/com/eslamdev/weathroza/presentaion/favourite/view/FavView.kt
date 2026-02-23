@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.clickable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.CircularProgressIndicator
@@ -38,7 +37,7 @@ import com.eslamdev.weathroza.core.components.HeightSpacer
 import com.eslamdev.weathroza.core.helpers.AppColors
 import com.eslamdev.weathroza.core.settings.AppLanguage
 import com.eslamdev.weathroza.presentaion.favourite.view.components.FavEmptyState
-import com.eslamdev.weathroza.presentaion.favourite.view.components.FavLocationCard
+import com.eslamdev.weathroza.presentaion.favourite.view.components.FavItem
 import com.eslamdev.weathroza.presentaion.favourite.view.components.FavSearchBar
 import com.eslamdev.weathroza.presentaion.favourite.viewmodel.FavViewModel
 
@@ -140,13 +139,19 @@ fun FavView(
                             modifier = Modifier.weight(1f)
                         ) {
                             items(locations, key = { it.cityId }) { location ->
-                                FavLocationCard(
+                                FavItem(
                                     location = location,
                                     settings = settings,
-                                    modifier = Modifier.clickable {
-                                        onNavigateToFavWeather(location.lat, location.lng, location.cityId)
+                                    onRemoveFavourite = viewModel::removeFavourite,
+                                    onClick = {
+                                        onNavigateToFavWeather(
+                                            location.lat,
+                                            location.lng,
+                                            location.cityId
+                                        )
                                     }
                                 )
+
                                 HeightSpacer(12.0)
                             }
                         }

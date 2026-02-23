@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.eslamdev.weathroza.R
 import com.eslamdev.weathroza.core.common.UiState
 import com.eslamdev.weathroza.core.network.ErrorHandler
 import com.eslamdev.weathroza.core.network.NetworkObserver
@@ -25,6 +26,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import java.io.IOException
 
 class FavWeatherDisplayViewModel(
     private val repo: WeatherRepo,
@@ -58,7 +60,6 @@ class FavWeatherDisplayViewModel(
 
     private fun loadData() {
         viewModelScope.launch {
-            // 1. Show cache immediately while we wait for network
             repo.getCachedHomeData(cityId)?.let { (weather, hourly, daily) ->
                 _uiState.value = UiState.Success(HomeViewData(weather, hourly, daily))
             }
@@ -66,15 +67,20 @@ class FavWeatherDisplayViewModel(
             val isOnlineNow = networkObserver.isConnected.first()
             isInitialized = true
 
-            if (isOnlineNow) refreshFromNetwork()
-
-            // 2. Re-fetch whenever connection is restored
+            if (isOnlineNow) {
+                refreshFromNetwork()
+            } else if (_uiState.value is UiState.Loading) {
+                _uiState.value = UiState.Error(
+                    ErrorHandler.handleException(
+                        IOException(context.getString(R.string.error_no_internet)), context
+                    )
+                )
+            }
             networkObserver.isConnected
                 .drop(1)
                 .onEach { isOnline -> if (isOnline) refreshFromNetwork() }
                 .launchIn(viewModelScope)
 
-            // 3. Re-fetch whenever language changes
             settings
                 .map { it.language }
                 .distinctUntilChanged()
