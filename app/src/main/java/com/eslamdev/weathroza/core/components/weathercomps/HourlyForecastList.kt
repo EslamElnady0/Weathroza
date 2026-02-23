@@ -1,7 +1,5 @@
-package com.eslamdev.weathroza.presentaion.home.view.components
+package com.eslamdev.weathroza.core.components.weathercomps
 
-import android.content.res.Configuration
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,27 +12,23 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
 import com.eslamdev.weathroza.R
 import com.eslamdev.weathroza.core.components.DegreeText
 import com.eslamdev.weathroza.core.helpers.AppColors
-import com.eslamdev.weathroza.data.models.forecast.HourlyForecastEntity
-import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
-import com.bumptech.glide.integration.compose.GlideImage
 import com.eslamdev.weathroza.core.helpers.DateTimeHelper
 import com.eslamdev.weathroza.core.settings.UserSettings
 import com.eslamdev.weathroza.core.settings.toLocale
+import com.eslamdev.weathroza.data.models.forecast.HourlyForecastEntity
 
 @Composable
 fun HourlyForecastList(
@@ -60,7 +54,7 @@ fun HourlyForecastList(
                 color = AppColors.lightGray
             )
         }
-        
+
         LazyRow(
             modifier = Modifier
                 .fillMaxWidth()
@@ -73,7 +67,6 @@ fun HourlyForecastList(
         }
     }
 }
-
 
 
 @OptIn(ExperimentalGlideComposeApi::class)

@@ -15,7 +15,6 @@ import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 
@@ -114,18 +113,14 @@ class WeatherRepo(val context: Context) {
 
     suspend fun refreshFavouriteWeather(
         cityId: Long,
-        lat: Double,
-        lng: Double,
-        language: AppLanguage
+        temp: Double,
+        iconUrl: String,
     ) {
-        remoteDataSource.getWeather(lat, lng, language)
-            .first()
-            .onSuccess { entity ->
-                localDataSource.updateLastTemp(
-                    cityId = cityId,
-                    temp = entity.temp,
-                    iconUrl = "https://openweathermap.org/img/wn/${entity.iconUrl}@4x.png"
-                )
-            }
+        localDataSource.updateLastTemp(
+            cityId = cityId,
+            temp = temp,
+            iconUrl = iconUrl
+        )
+
     }
 }

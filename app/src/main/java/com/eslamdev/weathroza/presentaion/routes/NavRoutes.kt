@@ -11,6 +11,8 @@ sealed class Route {
     @Serializable
     data class MapRoute(var mode: MapMode = MapMode.SELECT_LOCATION) : Route()
 
+    @Serializable
+    data class FavWeatherRoute(val lat: Double, val lng: Double, val cityId: Long) : Route()
 }
 
 

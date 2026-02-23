@@ -1,4 +1,4 @@
-package com.eslamdev.weathroza.presentaion.home.view.components
+package com.eslamdev.weathroza.core.components.weathercomps
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -32,7 +32,7 @@ fun RefreshBanner(
     modifier: Modifier = Modifier
 ) {
     val isVisible = isRefreshing || pullProgress > 0f
-    
+
     val text = when {
         isRefreshing -> stringResource(R.string.getting_latest_data)
         pullProgress >= 1f -> stringResource(R.string.release_to_refresh)

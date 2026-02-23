@@ -77,10 +77,14 @@ fun MainView(
                 val viewModel: FavViewModel = viewModel(factory = factory)
                 FavView(
                     bottomController = bottomController,
-                    viewModel = viewModel
-                ) {
-                    controller.navigate(Route.MapRoute(MapMode.ADD_FAVOURITE))
-                }
+                    viewModel = viewModel,
+                    onNavigateToMap = {
+                        controller.navigate(Route.MapRoute(MapMode.ADD_FAVOURITE))
+                    },
+                    onNavigateToFavWeather = { lat, lng, cityId ->
+                        controller.navigate(Route.FavWeatherRoute(lat, lng, cityId))
+                    }
+                )
             }
 
             composable<BottomRoute.Alerts> {

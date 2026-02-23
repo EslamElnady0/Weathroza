@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.clickable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.CircularProgressIndicator
@@ -47,6 +48,7 @@ fun FavView(
     viewModel: FavViewModel,
     modifier: Modifier = Modifier,
     onNavigateToMap: () -> Unit,
+    onNavigateToFavWeather: (lat: Double, lng: Double, cityId: Long) -> Unit,
 ) {
     var searchQuery by remember { mutableStateOf("") }
     val settings by viewModel.settings.collectAsStateWithLifecycle()
@@ -141,6 +143,9 @@ fun FavView(
                                 FavLocationCard(
                                     location = location,
                                     settings = settings,
+                                    modifier = Modifier.clickable {
+                                        onNavigateToFavWeather(location.lat, location.lng, location.cityId)
+                                    }
                                 )
                                 HeightSpacer(12.0)
                             }

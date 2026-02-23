@@ -14,6 +14,9 @@ import com.eslamdev.weathroza.presentaion.main.views.MainView
 import com.eslamdev.weathroza.presentaion.map.viewmodel.MapViewModel
 import com.eslamdev.weathroza.presentaion.map.viewmodel.MapViewModelFactory
 import com.eslamdev.weathroza.presentaion.map.views.MapView
+import com.eslamdev.weathroza.presentaion.favourite.view.FavWeatherDisplayView
+import com.eslamdev.weathroza.presentaion.favourite.viewmodel.FavWeatherDisplayViewModel
+import com.eslamdev.weathroza.presentaion.favourite.viewmodel.FavWeatherDisplayViewModelFactory
 
 @Composable
 fun App(modifier: Modifier = Modifier) {
@@ -34,6 +37,20 @@ fun App(modifier: Modifier = Modifier) {
             MapView(
                 navController = controller,
                 viewModel = viewModel
+            )
+        }
+
+        composable<Route.FavWeatherRoute> { backStackEntry ->
+            val context = LocalContext.current
+            val args = backStackEntry.toRoute<Route.FavWeatherRoute>()
+            val factory = remember {
+                FavWeatherDisplayViewModelFactory(WeatherRepo(context), context, args.lat, args.lng, args.cityId)
+            }
+            val viewModel: FavWeatherDisplayViewModel = viewModel(factory = factory)
+            FavWeatherDisplayView(
+                viewModel = viewModel,
+                bottomController = controller,
+                onNavigateBack = { controller.popBackStack() }
             )
         }
     }
