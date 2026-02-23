@@ -90,4 +90,20 @@ class WeatherRemoteDataSource {
                 )
             )
         }.asResultFlow()
+
+    fun getCityNamesLocalized(
+        latitude: Double,
+        longitude: Double,
+        limit: Int = 1
+    ): Flow<Result<List<CityEntity>>> =
+        suspend {
+            CityMapper.toEntityList(
+                weatherService.getCityNamesLocalized(
+                    apiKey = BuildConfig.WEATHER_API_KEY,
+                    latitude = latitude,
+                    longitude = longitude,
+                    limit = limit
+                )
+            )
+        }.asResultFlow()
 }

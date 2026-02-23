@@ -92,7 +92,6 @@ fun MapLocationBottomSheet(
                     Button(
                         onClick = {
                             selectedLatLng?.let { onConfirm(it, weatherState.data.id.toLong()) }
-                            onDismiss()
                         },
                         modifier = Modifier
                             .fillMaxWidth()

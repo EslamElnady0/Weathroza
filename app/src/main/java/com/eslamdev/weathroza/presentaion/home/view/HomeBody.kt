@@ -1,6 +1,5 @@
 package com.eslamdev.weathroza.presentaion.home.view
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -8,11 +7,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -26,7 +22,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -89,7 +84,7 @@ fun HomeBody(
         } else {
             RequestLocationPermission(
                 onGranted = { viewModel.fetchAndSaveGpsLocation() },
-                onDenied  = {},
+                onDenied = {},
                 onPermanentlyDenied = {}
             )
         }
@@ -135,7 +130,7 @@ fun HomeBodyImpl(
     onRefresh: () -> Unit,
     modifier: Modifier = Modifier,
     isRefreshing: Boolean = false,
-    ) {
+) {
     val pullToRefreshState = rememberPullToRefreshState()
     PullToRefreshBox(
         isRefreshing = isRefreshing,
@@ -203,13 +198,16 @@ fun HomeBodyImpl(
         }
     }
 }
+
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-private fun HeaderSection(weather: WeatherEntity,settings: UserSettings) {
+private fun HeaderSection(weather: WeatherEntity, settings: UserSettings) {
     Text(
         "${weather.name}, ${weather.country}",
         fontSize = 30.sp,
-        fontWeight = FontWeight.Bold
+        fontWeight = FontWeight.Bold,
+        lineHeight = 35.sp,
+        textAlign = TextAlign.Center
     )
 
     HeightSpacer(2.0)
@@ -234,7 +232,8 @@ private fun HeaderSection(weather: WeatherEntity,settings: UserSettings) {
         color = AppColors.gray
     )
 
-    DegreeText(weather.temp,
+    DegreeText(
+        weather.temp,
         fontSize = 65.sp,
         color = AppColors.primary,
         settings = settings,
@@ -258,7 +257,8 @@ private fun WeatherDetailsSection(weather: WeatherEntity, settings: UserSettings
             icon = R.drawable.wind_ic,
             label = stringResource(R.string.wind),
             value = "${
-                weather.windSpeed.convertWind(settings.windSpeedUnit).formatLocalized(locale, "%.2f")
+                weather.windSpeed.convertWind(settings.windSpeedUnit)
+                    .formatLocalized(locale, "%.2f")
             } ${settings.windSpeedUnit.label()}",
             contentDesc = stringResource(R.string.wind_icon_desc),
             modifier = Modifier.weight(1f)

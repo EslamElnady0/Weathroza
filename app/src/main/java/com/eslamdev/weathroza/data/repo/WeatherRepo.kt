@@ -83,6 +83,14 @@ class WeatherRepo(val context: Context) {
     ): Flow<Result<List<CityEntity>>> =
         remoteDataSource.getPossibleCities(cityName, limit)
 
+    fun getCityNamesLocalized(
+        latitude: Double,
+        longitude: Double,
+        limit: Int = 1
+    ): Flow<Result<List<CityEntity>>> =
+        remoteDataSource.getCityNamesLocalized(latitude, longitude, limit)
+
+
     // ── Favourites ──────────────────────────────────────────────
 
     fun getAllFavourites(): Flow<Result<List<FavouriteLocationEntity>>> =
@@ -95,8 +103,8 @@ class WeatherRepo(val context: Context) {
             .map { Result.success(it) }
             .catch { emit(Result.failure(it)) }
 
-    suspend fun addFavourite(weatherEntity: WeatherEntity, latLng: LatLng) {
-        val favourite = FavouriteLocationMapper.toEntity(weatherEntity, latLng)
+    suspend fun addFavourite(weatherEntity: WeatherEntity, latLng: LatLng, cityEntity: CityEntity) {
+        val favourite = FavouriteLocationMapper.toEntity(weatherEntity, latLng, cityEntity)
         localDataSource.insertFavourite(favourite)
     }
 

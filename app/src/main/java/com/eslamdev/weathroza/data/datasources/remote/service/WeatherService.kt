@@ -6,7 +6,9 @@ import com.eslamdev.weathroza.data.models.geocoding.CityDto
 import com.eslamdev.weathroza.data.models.weather.WeatherDto
 import retrofit2.http.GET
 import retrofit2.http.Query
+
 private const val dataPrefix = "data/2.5"
+
 interface WeatherService {
     @GET("$dataPrefix/weather")
     suspend fun getWeather(
@@ -42,5 +44,13 @@ interface WeatherService {
         @Query("appid") apiKey: String,
         @Query("q") cityName: String,
         @Query("limit") limit: Int = 5
+    ): List<CityDto>
+
+    @GET("geo/1.0/reverse")
+    suspend fun getCityNamesLocalized(
+        @Query("appid") apiKey: String,
+        @Query("lat") latitude: Double,
+        @Query("lon") longitude: Double,
+        @Query("limit") limit: Int = 1
     ): List<CityDto>
 }

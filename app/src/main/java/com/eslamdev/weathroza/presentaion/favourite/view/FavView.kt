@@ -29,11 +29,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.eslamdev.weathroza.R
 import com.eslamdev.weathroza.core.common.UiState
 import com.eslamdev.weathroza.core.components.HeightSpacer
 import com.eslamdev.weathroza.core.helpers.AppColors
+import com.eslamdev.weathroza.core.settings.AppLanguage
 import com.eslamdev.weathroza.presentaion.favourite.view.components.FavEmptyState
 import com.eslamdev.weathroza.presentaion.favourite.view.components.FavLocationCard
 import com.eslamdev.weathroza.presentaion.favourite.view.components.FavSearchBar
@@ -47,7 +49,7 @@ fun FavView(
     onNavigateToMap: () -> Unit,
 ) {
     var searchQuery by remember { mutableStateOf("") }
-    val settings by viewModel.settings.collectAsState()
+    val settings by viewModel.settings.collectAsStateWithLifecycle()
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -115,8 +117,11 @@ fun FavView(
                 }
 
                 is UiState.Success -> {
+
                     val locations = state.data.filter {
-                        it.name.contains(searchQuery, ignoreCase = true) ||
+                        val name =
+                            remember { if (settings.language == AppLanguage.ARABIC) it.arName else it.enName }
+                        name.contains(searchQuery, ignoreCase = true) ||
                                 it.country.contains(searchQuery, ignoreCase = true)
                     }
                     if (locations.isEmpty()) {

@@ -77,24 +77,45 @@ class MapViewModel(
 
     // ── Location ─────────────────────────────────────────────────
 
-    fun confirmLocation(latLng: LatLng, cityId: Long) {
+    fun confirmLocation(latLng: LatLng, cityId: Long, postOperationCallBack: () -> Unit) {
         viewModelScope.launch {
             when (mode) {
                 MapMode.SELECT_LOCATION -> {
                     dataStore.saveManualLocation(latLng.latitude, latLng.longitude, cityId)
                     dataStore.saveLocationType(LocationType.MANUAL)
+                    postOperationCallBack()
                 }
 
                 MapMode.ADD_FAVOURITE -> {
                     val weatherState = _weatherState.value
                     if (weatherState is UiState.Success) {
-                        repo.addFavourite(
-                            weatherEntity = weatherState.data,
-                            latLng = latLng
-                        )
+                        repo.getCityNamesLocalized(latLng.latitude, latLng.longitude)
+                            .onStart { _weatherState.value = UiState.Loading }
+                            .onEach { result ->
+                                result.fold(
+                                    onSuccess = { cities ->
+                                        if (cities.isNotEmpty()) {
+                                            repo.addFavourite(
+                                                weatherEntity = weatherState.data,
+                                                latLng = latLng,
+                                                cityEntity = cities[0]
+                                            )
+                                            postOperationCallBack()
+                                        }
+                                    }, onFailure = { t ->
+                                        _weatherState.value = UiState.Error(
+                                            ErrorHandler.handleException(
+                                                t as Exception,
+                                                context
+                                            )
+                                        )
+                                    }
+                                )
+                            }.launchIn(viewModelScope)
                     }
                 }
             }
+
         }
     }
     // ── Cities search ─────────────────────────────────────────────

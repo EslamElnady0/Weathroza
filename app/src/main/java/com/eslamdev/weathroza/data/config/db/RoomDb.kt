@@ -15,7 +15,7 @@ import com.eslamdev.weathroza.data.models.weather.WeatherEntity
 
 @Database(
     entities = [WeatherEntity::class, HourlyForecastEntity::class, DailyForecastEntity::class, FavouriteLocationEntity::class],
-    version = 3
+    version = 4
 )
 abstract class WeatherDataBase : RoomDatabase() {
     abstract fun getWeatherDao(): WeatherDao

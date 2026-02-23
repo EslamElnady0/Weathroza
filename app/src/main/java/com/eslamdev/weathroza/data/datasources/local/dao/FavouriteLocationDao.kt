@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface FavouriteLocationDao {
 
-    @Query("SELECT * FROM favourite_locations ORDER BY name ASC")
+    @Query("SELECT * FROM favourite_locations ORDER BY lastUpdated ASC")
     fun getAllFavourites(): Flow<List<FavouriteLocationEntity>>
 
     @Query("SELECT * FROM favourite_locations WHERE cityId = :cityId")
@@ -29,11 +29,13 @@ interface FavouriteLocationDao {
     @Query("DELETE FROM favourite_locations WHERE cityId = :cityId")
     suspend fun deleteFavouriteById(cityId: Long)
 
-    @Query("""
+    @Query(
+        """
     UPDATE favourite_locations 
     SET lastTemp = :temp, iconUrl = :iconUrl, lastUpdated = :timestamp 
     WHERE cityId = :cityId
-""")
+"""
+    )
     suspend fun updateLastWeather(
         cityId: Long,
         temp: Double,

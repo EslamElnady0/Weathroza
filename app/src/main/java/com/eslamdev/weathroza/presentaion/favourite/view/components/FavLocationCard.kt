@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -20,6 +21,7 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.eslamdev.weathroza.core.components.CardWithBoarder
 import com.eslamdev.weathroza.core.components.DegreeText
 import com.eslamdev.weathroza.core.helpers.AppColors
+import com.eslamdev.weathroza.core.settings.AppLanguage
 import com.eslamdev.weathroza.core.settings.UserSettings
 import com.eslamdev.weathroza.data.models.fav.FavouriteLocationEntity
 
@@ -41,8 +43,10 @@ fun FavLocationCard(
             Column(
                 modifier = Modifier.weight(0.6f)
             ) {
+                val name =
+                    remember { if (settings.language == AppLanguage.ARABIC) location.arName else location.enName }
                 Text(
-                    text = location.name,
+                    text = name,
                     color = Color.White,
                     fontSize = 22.sp,
                     fontWeight = FontWeight.Bold
