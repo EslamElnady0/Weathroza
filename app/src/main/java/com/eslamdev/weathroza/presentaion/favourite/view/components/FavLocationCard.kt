@@ -69,11 +69,11 @@ fun FavLocationCard(
                 )
             }
 
-            Box(modifier = Modifier.weight(0.25f), contentAlignment = Alignment.CenterEnd) {
+            Box(modifier = Modifier.weight(0.3f), contentAlignment = Alignment.CenterEnd) {
                 DegreeText(
                     degree = location.lastTemp ?: 0.0,
                     color = Color.White,
-                    fontSize = 30.sp,
+                    fontSize = 25.sp,
                     fontWeight = FontWeight.Light,
                     settings = settings
                 )
