@@ -92,7 +92,6 @@ class FavWeatherDisplayViewModel(
 
     private fun refreshFromNetwork() {
         if (!isInitialized) return
-
         val currentSettings = settings.value
 
         repo.refreshHomeData(lat, lng, currentSettings.language)
