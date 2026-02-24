@@ -3,7 +3,6 @@ package com.eslamdev.weathroza.presentaion.favourite.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.eslamdev.weathroza.R
 import com.eslamdev.weathroza.core.common.UiState
 import com.eslamdev.weathroza.core.network.ErrorHandler
 import com.eslamdev.weathroza.data.models.usersettings.UserSettings
@@ -16,7 +15,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onCompletion
@@ -49,49 +47,54 @@ class FavWeatherDisplayViewModel(
 
     fun loadData(lat: Double, lng: Double, cityId: Long) {
         viewModelScope.launch {
-            repo.getCachedHomeData(cityId)?.let { (weather, hourly, daily) ->
-                _uiState.value = UiState.Success(HomeViewData(weather, hourly, daily))
-            }
-
-            val isOnlineNow = isConnectedFlow.first()
+            loadCache(cityId)
             isInitialized = true
-
-            if (isOnlineNow) {
-                refreshFromNetwork(lat, lng, cityId)
-            } else if (_uiState.value is UiState.Loading) {
-                _uiState.value =
-                    UiState.Error(R.string.error_no_internet)
-
-            }
-            isConnectedFlow
-                .drop(1)
-                .onEach { isOnline -> if (isOnline) refreshFromNetwork(lat, lng, cityId) }
-                .launchIn(viewModelScope)
-
-            settings
-                .map { it.language }
-                .distinctUntilChanged()
-                .drop(1)
-                .onEach { refreshFromNetwork(lat, lng, cityId) }
-                .launchIn(viewModelScope)
+            tryRefresh(lat, lng, cityId, showErrorIfHasCache = false)
+            observeNetwork(lat, lng, cityId)
+            observeLanguage(lat, lng, cityId)
         }
     }
 
-    fun refreshFromNetwork(
+    private suspend fun loadCache(cityId: Long) {
+        repo.getCachedHomeData(cityId)?.let { (weather, hourly, daily) ->
+            _uiState.value = UiState.Success(HomeViewData(weather, hourly, daily))
+        }
+    }
+
+    private fun observeNetwork(lat: Double, lng: Double, cityId: Long) {
+        isConnectedFlow
+            .drop(1)
+            .distinctUntilChanged()
+            .onEach { isOnline ->
+                if (isOnline) tryRefresh(lat, lng, cityId, showErrorIfHasCache = false)
+            }
+            .launchIn(viewModelScope)
+    }
+
+    private fun observeLanguage(lat: Double, lng: Double, cityId: Long) {
+        settings
+            .map { it.language }
+            .distinctUntilChanged()
+            .drop(1)
+            .onEach { tryRefresh(lat, lng, cityId, showErrorIfHasCache = false) }
+            .launchIn(viewModelScope)
+    }
+
+
+    private fun tryRefresh(
         lat: Double,
         lng: Double,
         cityId: Long,
+        showErrorIfHasCache: Boolean
     ) {
         if (!isInitialized) return
-        val currentSettings = settings.value
 
-        repo.refreshHomeData(lat, lng, currentSettings.language)
+        repo.refreshHomeData(lat, lng, settings.value.language)
             .onStart { _isRefreshing.value = true }
             .onEach { result ->
                 result.fold(
                     onSuccess = { (weather, hourly, daily) ->
                         _uiState.value = UiState.Success(HomeViewData(weather, hourly, daily))
-                        // update the record to be viewed at the fav list with updated icon and temp
                         repo.refreshFavouriteWeather(
                             cityId = cityId,
                             temp = weather.temp,
@@ -99,7 +102,8 @@ class FavWeatherDisplayViewModel(
                         )
                     },
                     onFailure = { e ->
-                        if (_uiState.value !is UiState.Success)
+                        val hasCache = _uiState.value is UiState.Success
+                        if (!hasCache || showErrorIfHasCache)
                             _uiState.value =
                                 UiState.Error(ErrorHandler.handleException(e as Exception))
                     }
@@ -109,11 +113,8 @@ class FavWeatherDisplayViewModel(
             .launchIn(viewModelScope)
     }
 
-    fun refresh(
-        lat: Double, lng: Double, cityId: Long,
-    ) {
-        refreshFromNetwork(lat, lng, cityId)
-    }
+    fun refresh(lat: Double, lng: Double, cityId: Long) =
+        tryRefresh(lat, lng, cityId, showErrorIfHasCache = false)
 }
 
 class FavWeatherDisplayViewModelFactory(
