@@ -1,34 +1,39 @@
-package com.eslamdev.weathroza.core.settings.location
+package com.eslamdev.weathroza.data.datasources.local.impl
 
 import android.annotation.SuppressLint
 import android.content.Context
 import android.location.Location
+import com.eslamdev.weathroza.data.datasources.local.LocationManager
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
-import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 
-class LocationManager(context: Context) {
+class LocationManagerImpl(context: Context) : LocationManager {
 
     private val fusedClient = LocationServices
         .getFusedLocationProviderClient(context.applicationContext)
 
     @SuppressLint("MissingPermission")
-    suspend fun getCurrentLocation(): Location = suspendCancellableCoroutine { cont ->
+    override fun getLocationFlow(): Flow<Location> = callbackFlow {
         val cancellationSource = CancellationTokenSource()
 
         fusedClient.getCurrentLocation(
             Priority.PRIORITY_BALANCED_POWER_ACCURACY,
             cancellationSource.token
         ).addOnSuccessListener { location ->
-            if (location != null) cont.resume(location)
-            else cont.resumeWithException(Exception("Location unavailable"))
+            if (location != null) {
+                trySend(location)
+                close()
+            } else {
+                close(Exception("Location unavailable"))
+            }
         }.addOnFailureListener { e ->
-            cont.resumeWithException(e)
+            close(e)
         }
 
-        cont.invokeOnCancellation { cancellationSource.cancel() }
+        awaitClose { cancellationSource.cancel() }
     }
 }

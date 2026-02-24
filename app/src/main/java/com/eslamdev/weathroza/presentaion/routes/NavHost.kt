@@ -9,18 +9,22 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.eslamdev.weathroza.data.repo.WeatherRepo
+import com.eslamdev.weathroza.WeathrozaApp
+import com.eslamdev.weathroza.presentaion.favourite.view.FavWeatherDisplayView
+import com.eslamdev.weathroza.presentaion.favourite.viewmodel.FavWeatherDisplayViewModel
+import com.eslamdev.weathroza.presentaion.favourite.viewmodel.FavWeatherDisplayViewModelFactory
 import com.eslamdev.weathroza.presentaion.main.views.MainView
 import com.eslamdev.weathroza.presentaion.map.viewmodel.MapViewModel
 import com.eslamdev.weathroza.presentaion.map.viewmodel.MapViewModelFactory
 import com.eslamdev.weathroza.presentaion.map.views.MapView
-import com.eslamdev.weathroza.presentaion.favourite.view.FavWeatherDisplayView
-import com.eslamdev.weathroza.presentaion.favourite.viewmodel.FavWeatherDisplayViewModel
-import com.eslamdev.weathroza.presentaion.favourite.viewmodel.FavWeatherDisplayViewModelFactory
 
 @Composable
 fun App(modifier: Modifier = Modifier) {
     val controller = rememberNavController()
+    val context = LocalContext.current
+    val appContainer = remember {
+        (context.applicationContext as WeathrozaApp).appContainer
+    }
     NavHost(navController = controller, startDestination = Route.MainRoute) {
 
         composable<Route.MainRoute> {
@@ -31,7 +35,10 @@ fun App(modifier: Modifier = Modifier) {
             val context = LocalContext.current
             val args = backStackEntry.toRoute<Route.MapRoute>()
             val factory = remember {
-                MapViewModelFactory(WeatherRepo(context), context, args.mode)
+                MapViewModelFactory(
+                    appContainer.weatherRepo,
+                    appContainer.userSettingsRepo, args.mode
+                )
             }
             val viewModel: MapViewModel = viewModel(factory = factory)
             MapView(
@@ -41,15 +48,20 @@ fun App(modifier: Modifier = Modifier) {
         }
 
         composable<Route.FavWeatherRoute> { backStackEntry ->
-            val context = LocalContext.current
             val args = backStackEntry.toRoute<Route.FavWeatherRoute>()
             val factory = remember {
-                FavWeatherDisplayViewModelFactory(WeatherRepo(context), context, args.lat, args.lng, args.cityId)
+                FavWeatherDisplayViewModelFactory(
+                    appContainer.weatherRepo,
+                    appContainer.userSettingsRepo
+                )
             }
             val viewModel: FavWeatherDisplayViewModel = viewModel(factory = factory)
             FavWeatherDisplayView(
                 viewModel = viewModel,
                 bottomController = controller,
+                lat = args.lat,
+                lng = args.lng,
+                cityId = args.cityId,
                 onNavigateBack = { controller.popBackStack() }
             )
         }

@@ -1,12 +1,24 @@
 package com.eslamdev.weathroza.presentaion.favourite.view.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.*
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -22,9 +34,9 @@ import androidx.compose.ui.window.DialogProperties
 import com.eslamdev.weathroza.R
 import com.eslamdev.weathroza.core.components.HeightSpacer
 import com.eslamdev.weathroza.core.helpers.AppColors
-import com.eslamdev.weathroza.core.settings.AppLanguage
-import com.eslamdev.weathroza.core.settings.UserSettings
 import com.eslamdev.weathroza.data.models.fav.FavouriteLocationEntity
+import com.eslamdev.weathroza.data.models.usersettings.AppLanguage
+import com.eslamdev.weathroza.data.models.usersettings.UserSettings
 
 @Composable
 fun DeleteFavDialog(
@@ -77,7 +89,8 @@ fun DeleteFavDialog(
 
                 HeightSpacer(10.0)
 
-                val name = remember { if (settings.language == AppLanguage.ARABIC) location.arName else location.enName }
+                val name =
+                    remember { if (settings.language == AppLanguage.ARABIC) location.arName else location.enName }
                 Text(
                     text = stringResource(R.string.delete_fav_desc, name, location.country),
                     fontSize = 13.sp,

@@ -26,9 +26,9 @@ import com.eslamdev.weathroza.R
 import com.eslamdev.weathroza.core.components.DegreeText
 import com.eslamdev.weathroza.core.helpers.AppColors
 import com.eslamdev.weathroza.core.helpers.DateTimeHelper
-import com.eslamdev.weathroza.core.settings.UserSettings
-import com.eslamdev.weathroza.core.settings.toLocale
 import com.eslamdev.weathroza.data.models.forecast.HourlyForecastEntity
+import com.eslamdev.weathroza.data.models.usersettings.UserSettings
+import com.eslamdev.weathroza.data.models.usersettings.toLocale
 
 @Composable
 fun HourlyForecastList(

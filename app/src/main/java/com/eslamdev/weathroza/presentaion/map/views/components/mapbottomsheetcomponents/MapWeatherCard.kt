@@ -1,7 +1,15 @@
 package com.eslamdev.weathroza.presentaion.map.views.components.mapbottomsheetcomponents
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,8 +29,8 @@ import com.eslamdev.weathroza.core.helpers.AppColors
 import com.eslamdev.weathroza.core.helpers.convertTemp
 import com.eslamdev.weathroza.core.helpers.formatLocalized
 import com.eslamdev.weathroza.core.helpers.label
-import com.eslamdev.weathroza.core.settings.UserSettings
-import com.eslamdev.weathroza.core.settings.toLocale
+import com.eslamdev.weathroza.data.models.usersettings.UserSettings
+import com.eslamdev.weathroza.data.models.usersettings.toLocale
 import com.eslamdev.weathroza.data.models.weather.WeatherEntity
 
 @OptIn(ExperimentalGlideComposeApi::class)
@@ -47,8 +55,18 @@ fun MapWeatherCard(weather: WeatherEntity, settings: UserSettings) {
                 verticalArrangement = Arrangement.spacedBy(4.dp),
                 modifier = Modifier.weight(1f)
             ) {
-                Text(text = weather.name, fontWeight = FontWeight.Bold, fontSize = 20.sp, color = AppColors.value)
-                Text(text = weather.country, fontSize = 13.sp, color = AppColors.label, letterSpacing = 0.5.sp)
+                Text(
+                    text = weather.name,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp,
+                    color = AppColors.value
+                )
+                Text(
+                    text = weather.country,
+                    fontSize = 13.sp,
+                    color = AppColors.label,
+                    letterSpacing = 0.5.sp
+                )
                 Spacer(modifier = Modifier.height(6.dp))
                 DegreeText(
                     degree = weather.temp,
@@ -78,15 +96,30 @@ fun MapWeatherCard(weather: WeatherEntity, settings: UserSettings) {
             }
         }
 
-        Box(modifier = Modifier.fillMaxWidth().height(1.dp).background(AppColors.divider))
+        Box(modifier = Modifier
+            .fillMaxWidth()
+            .height(1.dp)
+            .background(AppColors.divider))
 
         val feelsLikeLabel = "${
             weather.feelsLike.convertTemp(settings.temperatureUnit).formatLocalized(locale, "%d")
         }°${settings.temperatureUnit.label()}"
 
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-            Text(text = stringResource(R.string.feels_like_minimal), fontSize = 13.sp, color = AppColors.label)
-            Text(text = feelsLikeLabel, fontSize = 13.sp, color = AppColors.value, fontWeight = FontWeight.Medium)
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            Text(
+                text = stringResource(R.string.feels_like_minimal),
+                fontSize = 13.sp,
+                color = AppColors.label
+            )
+            Text(
+                text = feelsLikeLabel,
+                fontSize = 13.sp,
+                color = AppColors.value,
+                fontWeight = FontWeight.Medium
+            )
         }
 
         MapWeatherStats(weather = weather, settings = settings)

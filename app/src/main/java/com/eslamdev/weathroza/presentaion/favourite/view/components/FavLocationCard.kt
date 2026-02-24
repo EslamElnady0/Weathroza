@@ -21,9 +21,9 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.eslamdev.weathroza.core.components.CardWithBoarder
 import com.eslamdev.weathroza.core.components.DegreeText
 import com.eslamdev.weathroza.core.helpers.AppColors
-import com.eslamdev.weathroza.core.settings.AppLanguage
-import com.eslamdev.weathroza.core.settings.UserSettings
 import com.eslamdev.weathroza.data.models.fav.FavouriteLocationEntity
+import com.eslamdev.weathroza.data.models.usersettings.AppLanguage
+import com.eslamdev.weathroza.data.models.usersettings.UserSettings
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable

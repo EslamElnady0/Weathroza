@@ -1,17 +1,17 @@
 package com.eslamdev.weathroza.presentaion.map.viewmodel
 
-import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.eslamdev.weathroza.core.common.UiState
 import com.eslamdev.weathroza.core.enums.MapMode
+import com.eslamdev.weathroza.core.enums.Units
 import com.eslamdev.weathroza.core.network.ErrorHandler
-import com.eslamdev.weathroza.core.settings.LocationType
-import com.eslamdev.weathroza.core.settings.SettingsDataStore
-import com.eslamdev.weathroza.core.settings.UserSettings
 import com.eslamdev.weathroza.data.models.geocoding.CityEntity
+import com.eslamdev.weathroza.data.models.usersettings.LocationType
+import com.eslamdev.weathroza.data.models.usersettings.UserSettings
 import com.eslamdev.weathroza.data.models.weather.WeatherEntity
+import com.eslamdev.weathroza.data.repo.UserSettingsRepo
 import com.eslamdev.weathroza.data.repo.WeatherRepo
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.FlowPreview
@@ -31,13 +31,12 @@ import kotlinx.coroutines.launch
 @OptIn(FlowPreview::class)
 class MapViewModel(
     private val repo: WeatherRepo,
-    private val context: Context,
+    private val settingsRepo: UserSettingsRepo,
     val mode: MapMode = MapMode.SELECT_LOCATION
 ) : ViewModel() {
 
-    private val dataStore = SettingsDataStore(context)
 
-    val settings: StateFlow<UserSettings> = dataStore.settingsFlow
+    val settings: StateFlow<UserSettings> = settingsRepo.settingsFlow
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
@@ -53,7 +52,8 @@ class MapViewModel(
         repo.getWeatherFromApi(
             latitude = latLng.latitude,
             longitude = latLng.longitude,
-            language = settings.value.language
+            language = settings.value.language,
+            units = Units.METRIC
         )
             .onStart { _weatherState.value = UiState.Loading }
             .onEach { result ->
@@ -63,7 +63,7 @@ class MapViewModel(
                     },
                     onFailure = { e ->
                         _weatherState.value = UiState.Error(
-                            ErrorHandler.handleException(e as Exception, context)
+                            ErrorHandler.handleException(e as Exception)
                         )
                     }
                 )
@@ -81,15 +81,15 @@ class MapViewModel(
         viewModelScope.launch {
             when (mode) {
                 MapMode.SELECT_LOCATION -> {
-                    dataStore.saveManualLocation(latLng.latitude, latLng.longitude, cityId)
-                    dataStore.saveLocationType(LocationType.MANUAL)
+                    settingsRepo.saveManualLocation(latLng.latitude, latLng.longitude, cityId)
+                    settingsRepo.saveLocationType(LocationType.MANUAL)
                     postOperationCallBack()
                 }
 
                 MapMode.ADD_FAVOURITE -> {
                     val weatherState = _weatherState.value
                     if (weatherState is UiState.Success) {
-                        repo.getCityNamesLocalized(latLng.latitude, latLng.longitude)
+                        repo.getCityNamesLocalized(latLng.latitude, latLng.longitude, 5)
                             .onStart { _weatherState.value = UiState.Loading }
                             .onEach { result ->
                                 result.fold(
@@ -106,7 +106,6 @@ class MapViewModel(
                                         _weatherState.value = UiState.Error(
                                             ErrorHandler.handleException(
                                                 t as Exception,
-                                                context
                                             )
                                         )
                                     }
@@ -132,7 +131,7 @@ class MapViewModel(
 
     fun searchCities(query: String) {
         if (query.isBlank()) return
-        repo.getPossibleCities(query)
+        repo.getPossibleCities(query, limit = 7)
             .onStart { _citiesState.value = UiState.Loading }
             .onEach { result ->
                 result.fold(
@@ -141,7 +140,7 @@ class MapViewModel(
                     },
                     onFailure = { e ->
                         _citiesState.value = UiState.Error(
-                            ErrorHandler.handleException(e as Exception, context)
+                            ErrorHandler.handleException(e as Exception)
                         )
                     }
                 )
@@ -165,13 +164,13 @@ class MapViewModel(
 
 class MapViewModelFactory(
     private val repo: WeatherRepo,
-    private val context: Context,
+    private val settingsRepo: UserSettingsRepo,
     private val mode: MapMode = MapMode.SELECT_LOCATION
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(MapViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return MapViewModel(repo, context, mode) as T
+            return MapViewModel(repo, settingsRepo, mode) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

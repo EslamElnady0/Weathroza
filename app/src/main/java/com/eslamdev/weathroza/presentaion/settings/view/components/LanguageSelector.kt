@@ -35,7 +35,7 @@ import androidx.compose.ui.unit.dp
 import com.eslamdev.weathroza.R
 import com.eslamdev.weathroza.core.components.CardWithBoarder
 import com.eslamdev.weathroza.core.helpers.AppColors
-import com.eslamdev.weathroza.core.settings.AppLanguage
+import com.eslamdev.weathroza.data.models.usersettings.AppLanguage
 
 @Composable
 fun LanguageSelector(

@@ -25,8 +25,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.eslamdev.weathroza.core.helpers.AppColors
-import com.eslamdev.weathroza.core.settings.UserSettings
 import com.eslamdev.weathroza.data.models.fav.FavouriteLocationEntity
+import com.eslamdev.weathroza.data.models.usersettings.UserSettings
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -24,9 +24,9 @@ import com.eslamdev.weathroza.core.helpers.DateTimeHelper
 import com.eslamdev.weathroza.core.helpers.convertTemp
 import com.eslamdev.weathroza.core.helpers.formatLocalized
 import com.eslamdev.weathroza.core.helpers.label
-import com.eslamdev.weathroza.core.settings.UserSettings
-import com.eslamdev.weathroza.core.settings.toLocale
 import com.eslamdev.weathroza.data.models.forecast.DailyForecastEntity
+import com.eslamdev.weathroza.data.models.usersettings.UserSettings
+import com.eslamdev.weathroza.data.models.usersettings.toLocale
 
 
 @OptIn(ExperimentalGlideComposeApi::class)

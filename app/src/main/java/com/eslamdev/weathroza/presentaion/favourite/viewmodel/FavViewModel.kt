@@ -3,11 +3,10 @@ package com.eslamdev.weathroza.presentaion.favourite.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import android.content.Context
 import com.eslamdev.weathroza.core.common.UiState
-import com.eslamdev.weathroza.core.settings.SettingsDataStore
-import com.eslamdev.weathroza.core.settings.UserSettings
 import com.eslamdev.weathroza.data.models.fav.FavouriteLocationEntity
+import com.eslamdev.weathroza.data.models.usersettings.UserSettings
+import com.eslamdev.weathroza.data.repo.UserSettingsRepo
 import com.eslamdev.weathroza.data.repo.WeatherRepo
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -15,10 +14,10 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class FavViewModel(private val repo: WeatherRepo, private val context: Context) : ViewModel() {
+class FavViewModel(private val repo: WeatherRepo, private val settingsRepo: UserSettingsRepo) :
+    ViewModel() {
 
-    private val dataStore = SettingsDataStore(context)
-    val settings: StateFlow<UserSettings> = dataStore.settingsFlow
+    val settings: StateFlow<UserSettings> = settingsRepo.settingsFlow
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
@@ -29,7 +28,7 @@ class FavViewModel(private val repo: WeatherRepo, private val context: Context) 
         .map { result ->
             result.fold(
                 onSuccess = { locations -> UiState.Success(locations) },
-                onFailure = { error -> UiState.Error(error.message ?: "Unknown error") }
+                onFailure = { error -> UiState.Error(message = error.message ?: "Unknown error") }
             )
         }
         .stateIn(
@@ -47,12 +46,12 @@ class FavViewModel(private val repo: WeatherRepo, private val context: Context) 
 
 class FavViewModelFactory(
     private val repo: WeatherRepo,
-    private val context: Context
+    private val settingsRepo: UserSettingsRepo
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(FavViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return FavViewModel(repo, context) as T
+            return FavViewModel(repo, settingsRepo) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

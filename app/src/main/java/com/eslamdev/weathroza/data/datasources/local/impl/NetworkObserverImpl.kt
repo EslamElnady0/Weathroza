@@ -1,22 +1,23 @@
-package com.eslamdev.weathroza.core.network
+package com.eslamdev.weathroza.data.datasources.local.impl
 
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
+import com.eslamdev.weathroza.data.datasources.local.NetworkObserver
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 
-class NetworkObserver(context: Context) {
+class NetworkObserverImpl(context: Context) : NetworkObserver {
 
     private val connectivityManager =
         context.applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE)
-            as ConnectivityManager
+                as ConnectivityManager
 
-    val isConnected: Flow<Boolean> = callbackFlow {
+    override val isConnected: Flow<Boolean> = callbackFlow {
 
         trySend(isCurrentlyConnected())
 
@@ -33,8 +34,10 @@ class NetworkObserver(context: Context) {
                 network: Network,
                 caps: NetworkCapabilities
             ) {
-                trySend(caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) &&
-                        caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED))
+                trySend(
+                    caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) &&
+                            caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
+                )
             }
         }
 

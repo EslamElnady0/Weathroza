@@ -12,10 +12,12 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.eslamdev.weathroza.WeathrozaApp
 import com.eslamdev.weathroza.core.enums.MapMode
-import com.eslamdev.weathroza.data.repo.WeatherRepo
 import com.eslamdev.weathroza.presentaion.alerts.views.AlertsView
 import com.eslamdev.weathroza.presentaion.favourite.view.FavView
+import com.eslamdev.weathroza.presentaion.favourite.viewmodel.FavViewModel
+import com.eslamdev.weathroza.presentaion.favourite.viewmodel.FavViewModelFactory
 import com.eslamdev.weathroza.presentaion.home.view.HomeBody
 import com.eslamdev.weathroza.presentaion.home.viewmodel.HomeViewModel
 import com.eslamdev.weathroza.presentaion.home.viewmodel.HomeViewModelFactory
@@ -25,8 +27,6 @@ import com.eslamdev.weathroza.presentaion.routes.Route
 import com.eslamdev.weathroza.presentaion.settings.view.SettingsView
 import com.eslamdev.weathroza.presentaion.settings.viewmodel.SettingsViewModel
 import com.eslamdev.weathroza.presentaion.settings.viewmodel.SettingsViewModelFactory
-import com.eslamdev.weathroza.presentaion.favourite.viewmodel.FavViewModel
-import com.eslamdev.weathroza.presentaion.favourite.viewmodel.FavViewModelFactory
 
 @Composable
 fun MainView(
@@ -35,7 +35,10 @@ fun MainView(
 ) {
 
     val bottomController = rememberNavController()
-
+    val context = LocalContext.current
+    val appContainer = remember {
+        (context.applicationContext as WeathrozaApp).appContainer
+    }
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
@@ -50,8 +53,12 @@ fun MainView(
         ) {
 
             composable<BottomRoute.Home> {
-                val context = LocalContext.current
-                val factory = remember { HomeViewModelFactory(WeatherRepo(context), context) }
+                val factory = remember {
+                    HomeViewModelFactory(
+                        appContainer.weatherRepo,
+                        appContainer.userSettingsRepo
+                    )
+                }
                 val viewModel: HomeViewModel = viewModel(
                     factory = factory
                 )
@@ -72,8 +79,12 @@ fun MainView(
             }
 
             composable<BottomRoute.Favourites> {
-                val context = LocalContext.current
-                val factory = remember { FavViewModelFactory(WeatherRepo(context), context) }
+                val factory = remember {
+                    FavViewModelFactory(
+                        appContainer.weatherRepo,
+                        appContainer.userSettingsRepo
+                    )
+                }
                 val viewModel: FavViewModel = viewModel(factory = factory)
                 FavView(
                     bottomController = bottomController,
@@ -94,7 +105,7 @@ fun MainView(
             composable<BottomRoute.Settings> {
                 val context = LocalContext.current
                 val settingsViewModel =
-                    viewModel<SettingsViewModel>(factory = SettingsViewModelFactory(context))
+                    viewModel<SettingsViewModel>(factory = SettingsViewModelFactory(appContainer.userSettingsRepo))
                 SettingsView(
                     bottomController = bottomController,
                     settingsViewModel,

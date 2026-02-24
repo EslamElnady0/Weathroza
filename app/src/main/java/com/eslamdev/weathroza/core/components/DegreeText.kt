@@ -4,17 +4,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
-import com.eslamdev.weathroza.R
 import com.eslamdev.weathroza.core.helpers.convertTemp
 import com.eslamdev.weathroza.core.helpers.formatLocalized
 import com.eslamdev.weathroza.core.helpers.label
-import com.eslamdev.weathroza.core.helpers.toTwoDigitString
-import com.eslamdev.weathroza.core.settings.UserSettings
-import com.eslamdev.weathroza.core.settings.toLocale
+import com.eslamdev.weathroza.data.models.usersettings.UserSettings
+import com.eslamdev.weathroza.data.models.usersettings.toLocale
 
 @Composable
 fun DegreeText(
@@ -26,11 +23,13 @@ fun DegreeText(
     fontWeight: FontWeight = FontWeight.Normal
 ) {
     Text(
-        "${degree.convertTemp(settings.temperatureUnit)
-            .formatLocalized(
-                locale = settings.language.toLocale(),
-                pattern = "%d"
-            )}°${settings.temperatureUnit.label()}",
+        "${
+            degree.convertTemp(settings.temperatureUnit)
+                .formatLocalized(
+                    locale = settings.language.toLocale(),
+                    pattern = "%d"
+                )
+        }°${settings.temperatureUnit.label()}",
         fontSize = fontSize,
         color = color,
         fontWeight = fontWeight,
