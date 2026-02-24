@@ -9,7 +9,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.eslamdev.weathroza.R
@@ -60,9 +59,8 @@ fun HomeBody(
 
         is UiState.Error -> {
             HomeErrorState(
-                message = stringResource(
-                    (state as UiState.Error).messageRes ?: R.string.error_unknown
-                ),
+                messageRes =
+                    (state as UiState.Error).messageRes ?: R.string.error_unknown,
                 onNavigateToSettings = onNavigateToSettings
             )
         }

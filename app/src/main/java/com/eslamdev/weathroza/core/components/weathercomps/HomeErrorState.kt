@@ -1,5 +1,6 @@
 package com.eslamdev.weathroza.core.components.weathercomps
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -26,15 +27,16 @@ import com.eslamdev.weathroza.R
 import com.eslamdev.weathroza.core.components.HeightSpacer
 import com.eslamdev.weathroza.core.helpers.AppColors
 
-private const val NO_LOCATION_ERROR = "No location set"
 
 @Composable
 fun HomeErrorState(
-    message: String,
+    @StringRes messageRes: Int,
     onNavigateToSettings: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val isNoLocation = message == NO_LOCATION_ERROR
+    val noLocationError = R.string.no_location_set
+
+    val isNoLocation = messageRes == noLocationError
 
     Box(
         modifier = modifier.fillMaxSize(),
@@ -47,7 +49,7 @@ fun HomeErrorState(
             if (isNoLocation) {
                 NoLocationContent(onNavigateToSettings = onNavigateToSettings)
             } else {
-                GenericErrorContent(message = message)
+                GenericErrorContent(message = stringResource(messageRes))
             }
         }
     }
