@@ -1,97 +1,19 @@
 package com.eslamdev.weathroza.data.datasources.local
 
-import android.content.Context
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.doublePreferencesKey
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.emptyPreferences
-import androidx.datastore.preferences.core.longPreferencesKey
-import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.datastore.preferences.preferencesDataStore
 import com.eslamdev.weathroza.data.models.usersettings.AppLanguage
 import com.eslamdev.weathroza.data.models.usersettings.LocationType
 import com.eslamdev.weathroza.data.models.usersettings.TemperatureUnit
 import com.eslamdev.weathroza.data.models.usersettings.UserSettings
 import com.eslamdev.weathroza.data.models.usersettings.WindSpeedUnit
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.map
 
-private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "user_settings")
-
-class SettingsDataStore(private val context: Context) {
-
-    companion object {
-        val TEMP_UNIT = stringPreferencesKey("temp_unit")
-        val WIND_UNIT = stringPreferencesKey("wind_unit")
-        val LANGUAGE = stringPreferencesKey("language")
-        val USER_LAT = doublePreferencesKey("user_lat")
-        val USER_LNG = doublePreferencesKey("user_lng")
-
-        val CITY_ID = longPreferencesKey("city_id")
-        val LOCATION_TYPE = stringPreferencesKey("location_type")
-    }
-
-    val settingsFlow: Flow<UserSettings> = context.dataStore.data
-        .catch { emit(emptyPreferences()) }
-        .map { prefs ->
-            UserSettings(
-                temperatureUnit = TemperatureUnit.valueOf(
-                    prefs[TEMP_UNIT] ?: TemperatureUnit.CELSIUS.name
-                ),
-                windSpeedUnit = WindSpeedUnit.valueOf(
-                    prefs[WIND_UNIT] ?: WindSpeedUnit.MS.name
-                ),
-                language = AppLanguage.valueOf(
-                    prefs[LANGUAGE] ?: AppLanguage.SYSTEM.name
-                ),
-                userLat = prefs[USER_LAT],
-                userLng = prefs[USER_LNG],
-                locationType = LocationType.valueOf(
-                    prefs[LOCATION_TYPE] ?: LocationType.NONE.name
-                ),
-                cityId = prefs[CITY_ID]
-            )
-        }
-
-    suspend fun saveTemperatureUnit(unit: TemperatureUnit) {
-        context.dataStore.edit { it[TEMP_UNIT] = unit.name }
-    }
-
-    suspend fun saveWindSpeedUnit(unit: WindSpeedUnit) {
-        context.dataStore.edit { it[WIND_UNIT] = unit.name }
-    }
-
-    suspend fun saveLanguage(language: AppLanguage) {
-        context.dataStore.edit { it[LANGUAGE] = language.name }
-    }
-
-    suspend fun saveLocationType(type: LocationType) {
-        context.dataStore.edit { it[LOCATION_TYPE] = type.name }
-    }
-
-    suspend fun saveManualLocation(lat: Double, lng: Double, cityId: Long) {
-        context.dataStore.edit {
-            it[USER_LAT] = lat
-            it[USER_LNG] = lng
-            it[LOCATION_TYPE] = LocationType.MANUAL.name
-            it[CITY_ID] = cityId
-        }
-    }
-
-    suspend fun saveGpsLocation(lat: Double, lng: Double) {
-        context.dataStore.edit {
-            it[USER_LAT] = lat
-            it[USER_LNG] = lng
-            it[LOCATION_TYPE] = LocationType.GPS.name
-        }
-    }
-
-    suspend fun saveCityId(cityId: Long) {
-        context.dataStore.edit {
-            it[CITY_ID] = cityId
-        }
-    }
-
+interface SettingsDataStore {
+    val settingsFlow: Flow<UserSettings>
+    suspend fun saveTemperatureUnit(unit: TemperatureUnit)
+    suspend fun saveWindSpeedUnit(unit: WindSpeedUnit)
+    suspend fun saveLanguage(language: AppLanguage)
+    suspend fun saveLocationType(type: LocationType)
+    suspend fun saveManualLocation(lat: Double, lng: Double, cityId: Long)
+    suspend fun saveGpsLocation(lat: Double, lng: Double)
+    suspend fun saveCityId(cityId: Long)
 }

@@ -1,106 +1,45 @@
 package com.eslamdev.weathroza.data.datasources.remote
 
-import com.eslamdev.weathroza.BuildConfig
 import com.eslamdev.weathroza.core.enums.Units
-import com.eslamdev.weathroza.core.helpers.asResultFlow
-import com.eslamdev.weathroza.data.datasources.remote.service.WeatherService
 import com.eslamdev.weathroza.data.models.forecast.DailyForecastEntity
 import com.eslamdev.weathroza.data.models.forecast.HourlyForecastEntity
 import com.eslamdev.weathroza.data.models.geocoding.CityEntity
-import com.eslamdev.weathroza.data.models.mapper.CityMapper
-import com.eslamdev.weathroza.data.models.mapper.DailyForecastMapper
-import com.eslamdev.weathroza.data.models.mapper.HourlyForecastMapper
-import com.eslamdev.weathroza.data.models.mapper.WeatherMapper
 import com.eslamdev.weathroza.data.models.usersettings.AppLanguage
 import com.eslamdev.weathroza.data.models.weather.WeatherEntity
 import kotlinx.coroutines.flow.Flow
 
-class WeatherRemoteDataSource(private val weatherService: WeatherService) {
+interface WeatherRemoteDataSource {
     fun getWeather(
         latitude: Double,
         longitude: Double,
-        language: AppLanguage = AppLanguage.ENGLISH,
-        units: Units = Units.METRIC
-    ): Flow<Result<WeatherEntity>> =
-        suspend {
-            WeatherMapper.toEntity(
-                weatherService.getWeather(
-                    apiKey = BuildConfig.WEATHER_API_KEY,
-                    latitude = latitude,
-                    longitude = longitude,
-                    language = language.code,
-                    units = units.value
-                )
-            )
-        }.asResultFlow()
+        language: AppLanguage,
+        units: Units
+    ): Flow<Result<WeatherEntity>>
 
     fun getHourlyForecast(
         latitude: Double,
         longitude: Double,
-        language: AppLanguage = AppLanguage.ENGLISH,
-        units: Units = Units.METRIC,
+        language: AppLanguage,
+        units: Units,
         count: Int = 24
-    ): Flow<Result<List<HourlyForecastEntity>>> =
-        suspend {
-            HourlyForecastMapper.toEntityList(
-                weatherService.getHourlyForecast(
-                    apiKey = BuildConfig.WEATHER_API_KEY,
-                    latitude = latitude,
-                    longitude = longitude,
-                    language = language.code,
-                    units = units.value,
-                    count = count
-                )
-            )
-        }.asResultFlow()
+    ): Flow<Result<List<HourlyForecastEntity>>>
 
     fun getDailyForecast(
         latitude: Double,
         longitude: Double,
-        language: AppLanguage = AppLanguage.ENGLISH,
-        units: Units = Units.METRIC,
+        language: AppLanguage,
+        units: Units,
         count: Int = 7
-    ): Flow<Result<List<DailyForecastEntity>>> =
-        suspend {
-            DailyForecastMapper.toEntityList(
-                weatherService.getDailyForecast(
-                    apiKey = BuildConfig.WEATHER_API_KEY,
-                    latitude = latitude,
-                    longitude = longitude,
-                    language = language.code,
-                    units = units.value,
-                    count = count
-                )
-            )
-        }.asResultFlow()
+    ): Flow<Result<List<DailyForecastEntity>>>
 
     fun getPossibleCities(
         cityName: String,
-        limit: Int = 5
-    ): Flow<Result<List<CityEntity>>> =
-        suspend {
-            CityMapper.toEntityList(
-                weatherService.getPossibleCities(
-                    apiKey = BuildConfig.WEATHER_API_KEY,
-                    cityName = cityName,
-                    limit = limit
-                )
-            )
-        }.asResultFlow()
+        limit: Int = 7
+    ): Flow<Result<List<CityEntity>>>
 
     fun getCityNamesLocalized(
         latitude: Double,
         longitude: Double,
-        limit: Int = 1
-    ): Flow<Result<List<CityEntity>>> =
-        suspend {
-            CityMapper.toEntityList(
-                weatherService.getCityNamesLocalized(
-                    apiKey = BuildConfig.WEATHER_API_KEY,
-                    latitude = latitude,
-                    longitude = longitude,
-                    limit = limit
-                )
-            )
-        }.asResultFlow()
+        limit: Int
+    ): Flow<Result<List<CityEntity>>>
 }

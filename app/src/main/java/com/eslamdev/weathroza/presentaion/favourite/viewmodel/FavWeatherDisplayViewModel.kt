@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.eslamdev.weathroza.core.common.UiState
+import com.eslamdev.weathroza.core.enums.Units
 import com.eslamdev.weathroza.core.network.ErrorHandler
 import com.eslamdev.weathroza.data.models.usersettings.UserSettings
 import com.eslamdev.weathroza.data.repo.UserSettingsRepo
@@ -89,7 +90,7 @@ class FavWeatherDisplayViewModel(
     ) {
         if (!isInitialized) return
 
-        repo.refreshHomeData(lat, lng, settings.value.language)
+        repo.refreshHomeData(lat, lng, settings.value.language, Units.METRIC)
             .onStart { _isRefreshing.value = true }
             .onEach { result ->
                 result.fold(

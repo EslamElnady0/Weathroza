@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.eslamdev.weathroza.R
 import com.eslamdev.weathroza.core.common.UiState
+import com.eslamdev.weathroza.core.enums.Units
 import com.eslamdev.weathroza.core.network.ErrorHandler
 import com.eslamdev.weathroza.data.models.usersettings.LocationType
 import com.eslamdev.weathroza.data.models.usersettings.UserSettings
@@ -120,7 +121,7 @@ class HomeViewModel(
         val lat = currentSettings.userLat ?: return
         val lng = currentSettings.userLng ?: return
 
-        weatherRepo.refreshHomeData(lat, lng, currentSettings.language)
+        weatherRepo.refreshHomeData(lat, lng, currentSettings.language, Units.METRIC)
             .onStart { _isRefreshing.value = true }
             .onEach { result ->
                 result.fold(

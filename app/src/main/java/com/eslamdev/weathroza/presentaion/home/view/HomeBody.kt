@@ -35,9 +35,12 @@ fun HomeBody(
 
     val shouldRequestGps = settings.locationType == LocationType.GPS
             || settings.locationType == LocationType.NONE
+    val settingsLoaded = settings.locationType != LocationType.NONE
+            || settings.cityId != null
 
-    if (shouldRequestGps) {
-        if (LocationPermissionHelper.hasPermission(context)) {
+    if (shouldRequestGps && settingsLoaded) {
+        val hasPermission = LocationPermissionHelper.hasPermission(context)
+        if (hasPermission) {
             LaunchedEffect(Unit) {
                 viewModel.fetchAndSaveGpsLocation()
             }

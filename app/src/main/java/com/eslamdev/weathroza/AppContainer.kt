@@ -1,20 +1,27 @@
 package com.eslamdev.weathroza
 
 import android.content.Context
-import com.eslamdev.weathroza.core.network.NetworkObserver
 import com.eslamdev.weathroza.data.config.db.WeatherDataBase
 import com.eslamdev.weathroza.data.config.network.RetrofitHelper
 import com.eslamdev.weathroza.data.datasources.local.LocationManager
+import com.eslamdev.weathroza.data.datasources.local.NetworkObserver
 import com.eslamdev.weathroza.data.datasources.local.SettingsDataStore
 import com.eslamdev.weathroza.data.datasources.local.WeatherLocalDataSource
 import com.eslamdev.weathroza.data.datasources.local.dao.DailyForecastDao
 import com.eslamdev.weathroza.data.datasources.local.dao.FavouriteLocationDao
 import com.eslamdev.weathroza.data.datasources.local.dao.HourlyForecastDao
 import com.eslamdev.weathroza.data.datasources.local.dao.WeatherDao
+import com.eslamdev.weathroza.data.datasources.local.impl.LocationManagerImpl
+import com.eslamdev.weathroza.data.datasources.local.impl.NetworkObserverImpl
+import com.eslamdev.weathroza.data.datasources.local.impl.SettingsDataStoreImpl
+import com.eslamdev.weathroza.data.datasources.local.impl.WeatherLocalDataSourceImpl
 import com.eslamdev.weathroza.data.datasources.remote.WeatherRemoteDataSource
+import com.eslamdev.weathroza.data.datasources.remote.impl.WeatherRemoteDataSourceImpl
 import com.eslamdev.weathroza.data.datasources.remote.service.WeatherService
 import com.eslamdev.weathroza.data.repo.UserSettingsRepo
 import com.eslamdev.weathroza.data.repo.WeatherRepo
+import com.eslamdev.weathroza.data.repo.impl.UserSettingsRepoImpl
+import com.eslamdev.weathroza.data.repo.impl.WeatherRepoImpl
 
 interface AppContainer {
     val locationManager: LocationManager
@@ -33,13 +40,13 @@ interface AppContainer {
 
 class AppContainerImpl(private val context: Context) : AppContainer {
     override val locationManager: LocationManager by lazy {
-        LocationManager(context)
+        LocationManagerImpl(context)
     }
     override val settingsDataStore: SettingsDataStore by lazy {
-        SettingsDataStore(context)
+        SettingsDataStoreImpl(context)
     }
     override val networkObserver: NetworkObserver by lazy {
-        NetworkObserver(context)
+        NetworkObserverImpl(context)
     }
 
     override val dailyForecastDao: DailyForecastDao by lazy {
@@ -58,7 +65,7 @@ class AppContainerImpl(private val context: Context) : AppContainer {
         RetrofitHelper.weatherService
     }
     override val weatherLocalDataSource: WeatherLocalDataSource by lazy {
-        WeatherLocalDataSource(
+        WeatherLocalDataSourceImpl(
             weatherDao = weatherDao,
             hourlyForecastDao = hourlyForecastDao,
             dailyForecastDao = dailyForecastDao,
@@ -66,16 +73,16 @@ class AppContainerImpl(private val context: Context) : AppContainer {
         )
     }
     override val weatherRemoteDataSource: WeatherRemoteDataSource by lazy {
-        WeatherRemoteDataSource(weatherService)
+        WeatherRemoteDataSourceImpl(weatherService)
     }
     override val weatherRepo: WeatherRepo by lazy {
-        WeatherRepo(
+        WeatherRepoImpl(
             localDataSource = weatherLocalDataSource,
             remoteDataSource = weatherRemoteDataSource,
         )
     }
     override val userSettingsRepo: UserSettingsRepo by lazy {
-        UserSettingsRepo(
+        UserSettingsRepoImpl(
             dataStore = settingsDataStore,
             locationManager = locationManager,
             networkObserver = networkObserver

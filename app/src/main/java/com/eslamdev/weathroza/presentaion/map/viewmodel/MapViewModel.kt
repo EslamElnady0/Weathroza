@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.eslamdev.weathroza.core.common.UiState
 import com.eslamdev.weathroza.core.enums.MapMode
+import com.eslamdev.weathroza.core.enums.Units
 import com.eslamdev.weathroza.core.network.ErrorHandler
 import com.eslamdev.weathroza.data.models.geocoding.CityEntity
 import com.eslamdev.weathroza.data.models.usersettings.LocationType
@@ -51,7 +52,8 @@ class MapViewModel(
         repo.getWeatherFromApi(
             latitude = latLng.latitude,
             longitude = latLng.longitude,
-            language = settings.value.language
+            language = settings.value.language,
+            units = Units.METRIC
         )
             .onStart { _weatherState.value = UiState.Loading }
             .onEach { result ->
@@ -87,7 +89,7 @@ class MapViewModel(
                 MapMode.ADD_FAVOURITE -> {
                     val weatherState = _weatherState.value
                     if (weatherState is UiState.Success) {
-                        repo.getCityNamesLocalized(latLng.latitude, latLng.longitude)
+                        repo.getCityNamesLocalized(latLng.latitude, latLng.longitude, 5)
                             .onStart { _weatherState.value = UiState.Loading }
                             .onEach { result ->
                                 result.fold(
@@ -129,7 +131,7 @@ class MapViewModel(
 
     fun searchCities(query: String) {
         if (query.isBlank()) return
-        repo.getPossibleCities(query)
+        repo.getPossibleCities(query, limit = 7)
             .onStart { _citiesState.value = UiState.Loading }
             .onEach { result ->
                 result.fold(
