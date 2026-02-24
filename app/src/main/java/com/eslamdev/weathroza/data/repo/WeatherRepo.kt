@@ -21,7 +21,6 @@ class WeatherRepo(
     private val localDataSource: WeatherLocalDataSource,
     private val remoteDataSource: WeatherRemoteDataSource
 ) {
-    // ── Home ────────────────────────────────────────────────────
     fun getWeatherFromApi(
         latitude: Double,
         longitude: Double,
