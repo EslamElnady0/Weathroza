@@ -97,8 +97,20 @@
     <string name="permission_required">الإذن مطلوب</string>
     <string name="permission_permanently_denied">تم رفض إذن الموقع عدة مرات. يرجى منح إذن الموقع من إعدادات التطبيق لاستخدام هذه الميزة.</string>
     <string name="error_no_location_title">No Location Set</string>
-    <string name="error_no_location_desc">Please go to settings and choose your preferred location method — GPS or pick from map.</string>
-    <string name="go_to_settings">Go to Settings</string>
-    <string name="error_generic_title">Something Went Wrong</string>
+    <string name="error_no_location_desc">يرجى الانتقال إلى الإعدادات واختيار طريقة تحديد الموقع المفضلة لديك — عبر GPS أو اختيار الموقع من الخريطة.</string>
+    <string name="go_to_settings">الانتقال إلى الإعدادات</string>
+    <string name="error_generic_title">حدث خطأ ما</string>
+    <string name="fetching_gps_location">جارٍ تحديد الموقع عبر نظام تحديد المواقع (GPS)…</string>
+    <string name="gps_location_saved">تم تحديث موقع GPS بنجاح</string>
+    <string name="gps_location_failed">فشل في تحديد موقع GPS</string>
+    <!-- Favourites Strings -->
+    <string name="no_saved_locations">لا توجد مواقع محفوظة</string>
+    <string name="search_for_a_city">ابحث عن مدينة</string>
 
+    <string name="map_add_to_favourites">إضافة إلى المفضلة</string>
+    <string name="no_saved_locations_desc">اضغط على + لإضافة مدنك المفضلة والتحقق من حالة الطقس في أي وقت</string>
+
+    <string name="delete_fav_title">حذف من المفضلة؟</string>
+    <string name="delete_fav_desc">هل أنت متأكد من أنك تريد حذف %1$s، %2$s من المفضلة؟</string>
+    <string name="delete">حذف</string>
 </resources>

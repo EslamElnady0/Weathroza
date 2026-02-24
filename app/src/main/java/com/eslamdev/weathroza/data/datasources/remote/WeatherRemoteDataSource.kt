@@ -2,81 +2,108 @@ package com.eslamdev.weathroza.data.datasources.remote
 
 import com.eslamdev.weathroza.BuildConfig
 import com.eslamdev.weathroza.core.enums.Units
+import com.eslamdev.weathroza.core.helpers.asResultFlow
 import com.eslamdev.weathroza.core.settings.AppLanguage
 import com.eslamdev.weathroza.data.config.network.RetrofitHelper
 import com.eslamdev.weathroza.data.datasources.remote.service.WeatherService
 import com.eslamdev.weathroza.data.models.forecast.DailyForecastEntity
 import com.eslamdev.weathroza.data.models.forecast.HourlyForecastEntity
 import com.eslamdev.weathroza.data.models.geocoding.CityEntity
+import com.eslamdev.weathroza.data.models.mapper.CityMapper
 import com.eslamdev.weathroza.data.models.mapper.DailyForecastMapper
 import com.eslamdev.weathroza.data.models.mapper.HourlyForecastMapper
 import com.eslamdev.weathroza.data.models.mapper.WeatherMapper
 import com.eslamdev.weathroza.data.models.weather.WeatherEntity
+import kotlinx.coroutines.flow.Flow
 
 class WeatherRemoteDataSource {
     private val weatherService: WeatherService = RetrofitHelper.weatherService
 
-    suspend fun getWeather(
+    fun getWeather(
         latitude: Double,
         longitude: Double,
         language: AppLanguage = AppLanguage.ENGLISH,
         units: Units = Units.METRIC
-    ): WeatherEntity {
-        val weatherDto = weatherService.getWeather(
-            apiKey = BuildConfig.WEATHER_API_KEY,
-            latitude = latitude,
-            longitude = longitude,
-            language = language.code,
-            units = units.value
-        )
-        return WeatherMapper.toEntity(weatherDto)
-    }
+    ): Flow<Result<WeatherEntity>> =
+        suspend {
+            WeatherMapper.toEntity(
+                weatherService.getWeather(
+                    apiKey = BuildConfig.WEATHER_API_KEY,
+                    latitude = latitude,
+                    longitude = longitude,
+                    language = language.code,
+                    units = units.value
+                )
+            )
+        }.asResultFlow()
 
-    suspend fun getHourlyForecast(
+    fun getHourlyForecast(
         latitude: Double,
         longitude: Double,
         language: AppLanguage = AppLanguage.ENGLISH,
         units: Units = Units.METRIC,
         count: Int = 24
-    ): List<HourlyForecastEntity> {
-        val response = weatherService.getHourlyForecast(
-            apiKey = BuildConfig.WEATHER_API_KEY,
-            latitude = latitude,
-            longitude = longitude,
-            language = language.code,
-            units = units.value,
-            count = count
-        )
-        return HourlyForecastMapper.toEntityList(response)
-    }
+    ): Flow<Result<List<HourlyForecastEntity>>> =
+        suspend {
+            HourlyForecastMapper.toEntityList(
+                weatherService.getHourlyForecast(
+                    apiKey = BuildConfig.WEATHER_API_KEY,
+                    latitude = latitude,
+                    longitude = longitude,
+                    language = language.code,
+                    units = units.value,
+                    count = count
+                )
+            )
+        }.asResultFlow()
 
-    suspend fun getDailyForecast(
+    fun getDailyForecast(
         latitude: Double,
         longitude: Double,
         language: AppLanguage = AppLanguage.ENGLISH,
         units: Units = Units.METRIC,
         count: Int = 7
-    ): List<DailyForecastEntity> {
-        val response = weatherService.getDailyForecast(
-            apiKey = BuildConfig.WEATHER_API_KEY,
-            latitude = latitude,
-            longitude = longitude,
-            language = language.code,
-            units = units.value,
-            count = count
-        )
-        return DailyForecastMapper.toEntityList(response)
-    }
+    ): Flow<Result<List<DailyForecastEntity>>> =
+        suspend {
+            DailyForecastMapper.toEntityList(
+                weatherService.getDailyForecast(
+                    apiKey = BuildConfig.WEATHER_API_KEY,
+                    latitude = latitude,
+                    longitude = longitude,
+                    language = language.code,
+                    units = units.value,
+                    count = count
+                )
+            )
+        }.asResultFlow()
 
-    suspend fun getPossibleCities(
+    fun getPossibleCities(
         cityName: String,
         limit: Int = 5
-    ): List<CityEntity> {
-        val response = weatherService.getPossibleCities(
-            apiKey = BuildConfig.WEATHER_API_KEY,
-            cityName = cityName,
-            limit = limit
-        )
-        return com.eslamdev.weathroza.data.models.mapper.CityMapper.toEntityList(response)
-    }
+    ): Flow<Result<List<CityEntity>>> =
+        suspend {
+            CityMapper.toEntityList(
+                weatherService.getPossibleCities(
+                    apiKey = BuildConfig.WEATHER_API_KEY,
+                    cityName = cityName,
+                    limit = limit
+                )
+            )
+        }.asResultFlow()
+
+    fun getCityNamesLocalized(
+        latitude: Double,
+        longitude: Double,
+        limit: Int = 1
+    ): Flow<Result<List<CityEntity>>> =
+        suspend {
+            CityMapper.toEntityList(
+                weatherService.getCityNamesLocalized(
+                    apiKey = BuildConfig.WEATHER_API_KEY,
+                    latitude = latitude,
+                    longitude = longitude,
+                    limit = limit
+                )
+            )
+        }.asResultFlow()
 }

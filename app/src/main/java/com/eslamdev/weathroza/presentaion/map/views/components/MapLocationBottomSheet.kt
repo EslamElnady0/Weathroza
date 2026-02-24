@@ -1,6 +1,5 @@
 package com.eslamdev.weathroza.presentaion.map.views.components
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -44,8 +43,9 @@ fun MapLocationBottomSheet(
     settings: UserSettings,
     sheetState: SheetState,
     selectedLatLng: LatLng?,
+    confirmLabel: String,
     onDismiss: () -> Unit,
-    onConfirm: (LatLng,Long) -> Unit,
+    onConfirm: (LatLng, Long) -> Unit,
     onRetry: () -> Unit
 ) {
     ModalBottomSheet(
@@ -82,13 +82,16 @@ fun MapLocationBottomSheet(
 
             when (weatherState) {
                 is UiState.Loading -> MapWeatherLoading()
-                is UiState.Error   -> MapWeatherError(message = weatherState.message, onRetry = onRetry)
+                is UiState.Error -> MapWeatherError(
+                    message = weatherState.message,
+                    onRetry = onRetry
+                )
+
                 is UiState.Success -> {
                     MapWeatherCard(weather = weatherState.data, settings = settings)
                     Button(
                         onClick = {
                             selectedLatLng?.let { onConfirm(it, weatherState.data.id.toLong()) }
-                            onDismiss()
                         },
                         modifier = Modifier
                             .fillMaxWidth()
@@ -101,13 +104,14 @@ fun MapLocationBottomSheet(
                         elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp)
                     ) {
                         Text(
-                            text = stringResource(R.string.map_select_as_location),
+                            text = confirmLabel,
                             fontWeight = FontWeight.SemiBold,
                             fontSize = 15.sp,
                             letterSpacing = 0.3.sp
                         )
                     }
                 }
+
                 else -> {}
             }
         }

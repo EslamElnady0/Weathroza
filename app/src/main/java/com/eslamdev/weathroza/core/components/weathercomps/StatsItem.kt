@@ -1,4 +1,4 @@
-package com.eslamdev.weathroza.presentaion.home.view.components
+package com.eslamdev.weathroza.core.components.weathercomps
 
 import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Composable

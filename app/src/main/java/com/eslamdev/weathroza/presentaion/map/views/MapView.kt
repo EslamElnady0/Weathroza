@@ -9,15 +9,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.eslamdev.weathroza.R
+import com.eslamdev.weathroza.core.enums.MapMode
 import com.eslamdev.weathroza.presentaion.map.viewmodel.MapViewModel
 import com.eslamdev.weathroza.presentaion.map.views.components.MapContent
 import com.eslamdev.weathroza.presentaion.map.views.components.MapLocationBottomSheet
 import com.eslamdev.weathroza.presentaion.map.views.components.MapTopBar
 import com.eslamdev.weathroza.presentaion.map.views.components.maptoolbarcomponents.MapCitySearchResults
-
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -62,7 +64,7 @@ fun MapView(
                 viewModel.onSearchQueryChange("")
                 viewModel.loadWeather(latLng)
             },
-            onRetry = { viewModel.getPossibleCities(mapState.uiState.searchQuery) },
+            onRetry = { viewModel.searchCities(mapState.uiState.searchQuery) },
             modifier = Modifier
                 .padding(top = 80.dp)
                 .statusBarsPadding()
@@ -72,15 +74,23 @@ fun MapView(
             MapLocationBottomSheet(
                 weatherState = weatherState,
                 settings = settings,
+                confirmLabel = when (viewModel.mode) {
+                    MapMode.SELECT_LOCATION -> stringResource(R.string.map_select_as_location)
+                    MapMode.ADD_FAVOURITE -> stringResource(R.string.map_add_to_favourites)
+                },
                 sheetState = mapState.sheetState,
                 selectedLatLng = mapState.uiState.selectedLatLng,
                 onDismiss = {
                     mapState.onBottomSheetDismiss()
                     viewModel.resetWeather()
                 },
-                onConfirm = { latLng,cityId ->
-                    viewModel.confirmLocation(latLng, cityId)
-                    navController.popBackStack() },
+                onConfirm = { latLng, cityId ->
+                    viewModel.confirmLocation(latLng, cityId) {
+                        mapState.onBottomSheetDismiss()
+                        viewModel.resetWeather()
+                        navController.popBackStack()
+                    }
+                },
                 onRetry = {
                     mapState.uiState.selectedLatLng?.let { viewModel.loadWeather(it) }
                 }

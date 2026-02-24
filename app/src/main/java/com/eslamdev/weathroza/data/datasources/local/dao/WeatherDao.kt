@@ -25,6 +25,6 @@ interface WeatherDao {
     suspend fun deleteWeatherByCityId(cityId: Long)
 
     @Query("Select * FROM weather WHERE id = :cityId")
-    suspend fun getWeatherByCityId(cityId: Long) : WeatherEntity
+    suspend fun getWeatherByCityId(cityId: Long): WeatherEntity?
 
 }
