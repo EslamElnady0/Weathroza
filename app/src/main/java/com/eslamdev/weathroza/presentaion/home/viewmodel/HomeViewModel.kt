@@ -1,16 +1,15 @@
 package com.eslamdev.weathroza.presentaion.home.viewmodel
 
-import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.eslamdev.weathroza.R
 import com.eslamdev.weathroza.core.common.UiState
-import com.eslamdev.weathroza.core.network.NetworkObserver
-import com.eslamdev.weathroza.core.settings.LocationType
-import com.eslamdev.weathroza.core.settings.SettingsDataStore
-import com.eslamdev.weathroza.core.settings.UserSettings
-import com.eslamdev.weathroza.core.settings.location.LocationManager
+import com.eslamdev.weathroza.core.network.ErrorHandler
+import com.eslamdev.weathroza.data.models.usersettings.LocationType
+import com.eslamdev.weathroza.data.models.usersettings.UserSettings
+import com.eslamdev.weathroza.data.repo.UserSettingsRepo
 import com.eslamdev.weathroza.data.repo.WeatherRepo
 import com.eslamdev.weathroza.presentaion.home.model.HomeViewData
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,14 +28,13 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class HomeViewModel(
-    private val repo: WeatherRepo,
-    private val context: Context
+    private val weatherRepo: WeatherRepo,
+    private val settingsRepo: UserSettingsRepo,
 ) : ViewModel() {
 
-    private val dataStore = SettingsDataStore(context)
-    private val networkObserver = NetworkObserver(context)
+    private val isConnectedFlow = settingsRepo.isConnected
 
-    val settings: StateFlow<UserSettings> = dataStore.settingsFlow
+    val settings: StateFlow<UserSettings> = settingsRepo.settingsFlow
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
@@ -59,20 +57,20 @@ class HomeViewModel(
     private fun loadHomeData() {
         viewModelScope.launch {
             // 1. Show cache immediately while we wait for network
-            val realSettings = dataStore.settingsFlow.first()
+            val realSettings = settingsRepo.getSettings()
             realSettings.cityId?.let { cityId ->
-                repo.getCachedHomeData(cityId)?.let { (weather, hourly, daily) ->
+                weatherRepo.getCachedHomeData(cityId)?.let { (weather, hourly, daily) ->
                     _uiState.value = UiState.Success(HomeViewData(weather, hourly, daily))
                 }
             }
 
-            val isOnlineNow = networkObserver.isConnected.first()
+            val isOnlineNow = isConnectedFlow.first()
             isInitialized = true
 
             if (isOnlineNow) refreshFromNetwork()
 
             // 2. Re-fetch whenever connection is restored
-            networkObserver.isConnected
+            isConnectedFlow
                 .drop(1)
                 .onEach { isOnline -> if (isOnline) refreshFromNetwork() }
                 .launchIn(viewModelScope)
@@ -107,24 +105,24 @@ class HomeViewModel(
     private fun onLocationChanged(lat: Double, lng: Double, oldCityId: Long?) {
         viewModelScope.launch {
             if (oldCityId != null && oldCityId != 0L)
-                repo.clearCityData(oldCityId)
+                weatherRepo.clearCityData(oldCityId)
         }
 
         _uiState.value = UiState.Loading
 
-        repo.refreshHomeData(lat, lng, settings.value.language)
+        weatherRepo.refreshHomeData(lat, lng, settings.value.language)
             .onStart { _isRefreshing.value = true }
             .onEach { result ->
                 result.fold(
                     onSuccess = { (weather, hourly, daily) ->
                         if (settings.value.locationType == LocationType.GPS) {
-                            dataStore.saveGpsLocation(lat, lng)
-                            dataStore.saveCityId(weather.id.toLong())
+                            ///////////////////////////////==== save gps location===/////////////////////////////////////////////////
+                            settingsRepo.saveCityId(weather.id.toLong())
                         }
                         _uiState.value = UiState.Success(HomeViewData(weather, hourly, daily))
                     },
                     onFailure = { e ->
-                        _uiState.value = UiState.Error(e.message ?: "Unknown error")
+                        _uiState.value = UiState.Error(ErrorHandler.handleException(e as Exception))
                     }
                 )
             }
@@ -139,26 +137,27 @@ class HomeViewModel(
 
         if (currentSettings.locationType == LocationType.NONE) {
             if (_uiState.value !is UiState.Success)
-                _uiState.value = UiState.Error("No location set")
+                _uiState.value = UiState.Error(R.string.no_location_set)
             return
         }
 
         val lat = currentSettings.userLat ?: return
         val lng = currentSettings.userLng ?: return
 
-        repo.refreshHomeData(lat, lng, currentSettings.language)
+        weatherRepo.refreshHomeData(lat, lng, currentSettings.language)
             .onStart { _isRefreshing.value = true }
             .onEach { result ->
                 result.fold(
                     onSuccess = { (weather, hourly, daily) ->
                         if (settings.value.locationType == LocationType.GPS)
-                            dataStore.saveCityId(weather.id.toLong())
+                            settingsRepo.saveCityId(weather.id.toLong())
 
                         _uiState.value = UiState.Success(HomeViewData(weather, hourly, daily))
                     },
                     onFailure = { e ->
                         if (_uiState.value !is UiState.Success)
-                            _uiState.value = UiState.Error(e.message ?: "Unknown error")
+                            _uiState.value =
+                                UiState.Error(ErrorHandler.handleException(e as Exception))
                     }
                 )
             }
@@ -171,28 +170,24 @@ class HomeViewModel(
     }
 
     fun fetchAndSaveGpsLocation() {
-        viewModelScope.launch {
-            runCatching {
-                val location = LocationManager(context).getCurrentLocation()
-                dataStore.saveGpsLocation(
-                    lat = location.latitude,
-                    lng = location.longitude
-                )
-            }.onFailure { e ->
-                Log.e("HomeVM", "fetchAndSaveGpsLocation: failed → ${e.message}")
+        settingsRepo.fetchAndSaveGpsLocation()
+            .onEach { result ->
+                result.onFailure { e ->
+                    Log.e("HomeVM", "fetchAndSaveGpsLocation failed → ${e.message}")
+                }
             }
-        }
+            .launchIn(viewModelScope)
     }
 }
 
 class HomeViewModelFactory(
     private val repo: WeatherRepo,
-    private val context: Context
+    private val settingsRepo: UserSettingsRepo,
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(HomeViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return HomeViewModel(repo, context) as T
+            return HomeViewModel(repo, settingsRepo) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

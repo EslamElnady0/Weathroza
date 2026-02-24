@@ -1,4 +1,4 @@
-package com.eslamdev.weathroza.core.settings
+package com.eslamdev.weathroza.data.models.usersettings
 
 import androidx.annotation.StringRes
 import com.eslamdev.weathroza.R

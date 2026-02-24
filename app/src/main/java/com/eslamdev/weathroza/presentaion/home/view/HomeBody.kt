@@ -9,15 +9,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.eslamdev.weathroza.R
 import com.eslamdev.weathroza.core.common.UiState
 import com.eslamdev.weathroza.core.components.weathercomps.HomeErrorState
 import com.eslamdev.weathroza.core.components.weathercomps.SharedWeatherBody
 import com.eslamdev.weathroza.core.helpers.AppColors
-import com.eslamdev.weathroza.core.settings.LocationType
 import com.eslamdev.weathroza.core.settings.location.LocationPermissionHelper
 import com.eslamdev.weathroza.core.settings.location.RequestLocationPermission
+import com.eslamdev.weathroza.data.models.usersettings.LocationType
 import com.eslamdev.weathroza.presentaion.home.model.HomeViewData
 import com.eslamdev.weathroza.presentaion.home.viewmodel.HomeViewModel
 
@@ -58,7 +60,9 @@ fun HomeBody(
 
         is UiState.Error -> {
             HomeErrorState(
-                message = (state as UiState.Error).message,
+                message = stringResource(
+                    (state as UiState.Error).messageRes ?: R.string.error_unknown
+                ),
                 onNavigateToSettings = onNavigateToSettings
             )
         }

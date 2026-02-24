@@ -6,12 +6,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.eslamdev.weathroza.R
 import com.eslamdev.weathroza.core.common.UiState
 import com.eslamdev.weathroza.core.components.weathercomps.HomeErrorState
 import com.eslamdev.weathroza.core.components.weathercomps.SharedWeatherBody
@@ -23,9 +26,16 @@ import com.eslamdev.weathroza.presentaion.home.model.HomeViewData
 fun FavWeatherDisplayView(
     viewModel: FavWeatherDisplayViewModel,
     bottomController: NavController,
+    lat: Double,
+    lng: Double,
+    cityId: Long,
     onNavigateBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    LaunchedEffect(lat, lng, cityId) {
+        viewModel.loadData(lat, lng, cityId)
+    }
+
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val settings by viewModel.settings.collectAsStateWithLifecycle()
     val isRefreshing by viewModel.isRefreshing.collectAsStateWithLifecycle()
@@ -42,8 +52,10 @@ fun FavWeatherDisplayView(
 
             is UiState.Error -> {
                 HomeErrorState(
-                    message = (state as UiState.Error).message,
-                    onNavigateToSettings = onNavigateBack // We use this callback to exit the screen if it fails
+                    message = stringResource(
+                        (state as UiState.Error).messageRes ?: R.string.error_unknown
+                    ),
+                    onNavigateToSettings = onNavigateBack
                 )
             }
 
@@ -55,7 +67,7 @@ fun FavWeatherDisplayView(
                     daily = data.dailyForecast,
                     settings = settings,
                     isRefreshing = isRefreshing,
-                    onRefresh = viewModel::refresh,
+                    onRefresh = { viewModel.refresh(lat, lng, cityId) },
                     modifier = Modifier.padding(top = 32.dp)
                 )
             }

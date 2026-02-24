@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.sp
 import com.eslamdev.weathroza.R
 import com.eslamdev.weathroza.core.common.UiState
 import com.eslamdev.weathroza.core.helpers.AppColors
-import com.eslamdev.weathroza.core.settings.UserSettings
+import com.eslamdev.weathroza.data.models.usersettings.UserSettings
 import com.eslamdev.weathroza.data.models.weather.WeatherEntity
 import com.eslamdev.weathroza.presentaion.map.views.components.mapbottomsheetcomponents.MapWeatherCard
 import com.eslamdev.weathroza.presentaion.map.views.components.mapbottomsheetcomponents.MapWeatherError
@@ -83,7 +83,7 @@ fun MapLocationBottomSheet(
             when (weatherState) {
                 is UiState.Loading -> MapWeatherLoading()
                 is UiState.Error -> MapWeatherError(
-                    message = weatherState.message,
+                    message = stringResource(weatherState.messageRes ?: R.string.error_unknown),
                     onRetry = onRetry
                 )
 

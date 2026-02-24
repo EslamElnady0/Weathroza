@@ -35,7 +35,7 @@ import com.eslamdev.weathroza.R
 import com.eslamdev.weathroza.core.common.UiState
 import com.eslamdev.weathroza.core.components.HeightSpacer
 import com.eslamdev.weathroza.core.helpers.AppColors
-import com.eslamdev.weathroza.core.settings.AppLanguage
+import com.eslamdev.weathroza.data.models.usersettings.AppLanguage
 import com.eslamdev.weathroza.presentaion.favourite.view.components.FavEmptyState
 import com.eslamdev.weathroza.presentaion.favourite.view.components.FavItem
 import com.eslamdev.weathroza.presentaion.favourite.view.components.FavSearchBar
@@ -113,7 +113,10 @@ fun FavView(
                             .fillMaxWidth(),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text(text = state.message, color = Color.Red)
+                        Text(
+                            text = stringResource(state.messageRes ?: R.string.error_unknown),
+                            color = Color.Red
+                        )
                     }
                 }
 

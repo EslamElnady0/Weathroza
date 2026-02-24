@@ -1,7 +1,5 @@
 package com.eslamdev.weathroza.data.datasources.local
 
-import android.content.Context
-import com.eslamdev.weathroza.data.config.db.WeatherDataBase
 import com.eslamdev.weathroza.data.datasources.local.dao.DailyForecastDao
 import com.eslamdev.weathroza.data.datasources.local.dao.FavouriteLocationDao
 import com.eslamdev.weathroza.data.datasources.local.dao.HourlyForecastDao
@@ -12,14 +10,12 @@ import com.eslamdev.weathroza.data.models.forecast.HourlyForecastEntity
 import com.eslamdev.weathroza.data.models.weather.WeatherEntity
 import kotlinx.coroutines.flow.Flow
 
-class WeatherLocalDataSource(val context: Context) {
-    private val weatherDao: WeatherDao = WeatherDataBase.getInstance(context).getWeatherDao()
-    private val hourlyForecastDao: HourlyForecastDao =
-        WeatherDataBase.getInstance(context).getHourlyForecastDao()
-    private val dailyForecastDao: DailyForecastDao =
-        WeatherDataBase.getInstance(context).getDailyForecastDao()
-    private val favouriteLocationDao: FavouriteLocationDao =
-        WeatherDataBase.getInstance(context).getFavouriteLocationDao()
+class WeatherLocalDataSource(
+    private val weatherDao: WeatherDao,
+    private val hourlyForecastDao: HourlyForecastDao,
+    private val dailyForecastDao: DailyForecastDao,
+    private val favouriteLocationDao: FavouriteLocationDao
+) {
 
     suspend fun insertWeather(weather: WeatherEntity) {
         weatherDao.insertWeather(weather)

@@ -1,15 +1,13 @@
 package com.eslamdev.weathroza.presentaion.favourite.viewmodel
 
-import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.eslamdev.weathroza.R
 import com.eslamdev.weathroza.core.common.UiState
 import com.eslamdev.weathroza.core.network.ErrorHandler
-import com.eslamdev.weathroza.core.network.NetworkObserver
-import com.eslamdev.weathroza.core.settings.SettingsDataStore
-import com.eslamdev.weathroza.core.settings.UserSettings
+import com.eslamdev.weathroza.data.models.usersettings.UserSettings
+import com.eslamdev.weathroza.data.repo.UserSettingsRepo
 import com.eslamdev.weathroza.data.repo.WeatherRepo
 import com.eslamdev.weathroza.presentaion.home.model.HomeViewData
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,20 +24,15 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.io.IOException
 
 class FavWeatherDisplayViewModel(
     private val repo: WeatherRepo,
-    private val context: Context,
-    private val lat: Double,
-    private val lng: Double,
-    private val cityId: Long
+    private val settingsRepo: UserSettingsRepo,
 ) : ViewModel() {
 
-    private val dataStore = SettingsDataStore(context)
-    private val networkObserver = NetworkObserver(context)
+    private val isConnectedFlow = settingsRepo.isConnected
 
-    val settings: StateFlow<UserSettings> = dataStore.settingsFlow
+    val settings: StateFlow<UserSettings> = settingsRepo.settingsFlow
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
@@ -54,43 +47,41 @@ class FavWeatherDisplayViewModel(
 
     private var isInitialized = false
 
-    init {
-        loadData()
-    }
-
-    private fun loadData() {
+    fun loadData(lat: Double, lng: Double, cityId: Long) {
         viewModelScope.launch {
             repo.getCachedHomeData(cityId)?.let { (weather, hourly, daily) ->
                 _uiState.value = UiState.Success(HomeViewData(weather, hourly, daily))
             }
 
-            val isOnlineNow = networkObserver.isConnected.first()
+            val isOnlineNow = isConnectedFlow.first()
             isInitialized = true
 
             if (isOnlineNow) {
-                refreshFromNetwork()
+                refreshFromNetwork(lat, lng, cityId)
             } else if (_uiState.value is UiState.Loading) {
-                _uiState.value = UiState.Error(
-                    ErrorHandler.handleException(
-                        IOException(context.getString(R.string.error_no_internet)), context
-                    )
-                )
+                _uiState.value =
+                    UiState.Error(R.string.error_no_internet)
+
             }
-            networkObserver.isConnected
+            isConnectedFlow
                 .drop(1)
-                .onEach { isOnline -> if (isOnline) refreshFromNetwork() }
+                .onEach { isOnline -> if (isOnline) refreshFromNetwork(lat, lng, cityId) }
                 .launchIn(viewModelScope)
 
             settings
                 .map { it.language }
                 .distinctUntilChanged()
                 .drop(1)
-                .onEach { refreshFromNetwork() }
+                .onEach { refreshFromNetwork(lat, lng, cityId) }
                 .launchIn(viewModelScope)
         }
     }
 
-    private fun refreshFromNetwork() {
+    fun refreshFromNetwork(
+        lat: Double,
+        lng: Double,
+        cityId: Long,
+    ) {
         if (!isInitialized) return
         val currentSettings = settings.value
 
@@ -109,9 +100,8 @@ class FavWeatherDisplayViewModel(
                     },
                     onFailure = { e ->
                         if (_uiState.value !is UiState.Success)
-                            _uiState.value = UiState.Error(
-                                ErrorHandler.handleException(e as Exception, context)
-                            )
+                            _uiState.value =
+                                UiState.Error(ErrorHandler.handleException(e as Exception))
                     }
                 )
             }
@@ -119,22 +109,21 @@ class FavWeatherDisplayViewModel(
             .launchIn(viewModelScope)
     }
 
-    fun refresh() {
-        refreshFromNetwork()
+    fun refresh(
+        lat: Double, lng: Double, cityId: Long,
+    ) {
+        refreshFromNetwork(lat, lng, cityId)
     }
 }
 
 class FavWeatherDisplayViewModelFactory(
     private val repo: WeatherRepo,
-    private val context: Context,
-    private val lat: Double,
-    private val lng: Double,
-    private val cityId: Long
+    private val settingsRepo: UserSettingsRepo,
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(FavWeatherDisplayViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return FavWeatherDisplayViewModel(repo, context, lat, lng, cityId) as T
+            return FavWeatherDisplayViewModel(repo, settingsRepo) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

@@ -1,8 +1,6 @@
 package com.eslamdev.weathroza.data.repo
 
-import android.content.Context
 import com.eslamdev.weathroza.core.enums.Units
-import com.eslamdev.weathroza.core.settings.AppLanguage
 import com.eslamdev.weathroza.data.datasources.local.WeatherLocalDataSource
 import com.eslamdev.weathroza.data.datasources.remote.WeatherRemoteDataSource
 import com.eslamdev.weathroza.data.models.fav.FavouriteLocationEntity
@@ -10,6 +8,7 @@ import com.eslamdev.weathroza.data.models.forecast.DailyForecastEntity
 import com.eslamdev.weathroza.data.models.forecast.HourlyForecastEntity
 import com.eslamdev.weathroza.data.models.geocoding.CityEntity
 import com.eslamdev.weathroza.data.models.mapper.FavouriteLocationMapper
+import com.eslamdev.weathroza.data.models.usersettings.AppLanguage
 import com.eslamdev.weathroza.data.models.weather.WeatherEntity
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.flow.Flow
@@ -18,10 +17,10 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 
-class WeatherRepo(val context: Context) {
-    private val localDataSource = WeatherLocalDataSource(context)
-    private val remoteDataSource = WeatherRemoteDataSource()
-
+class WeatherRepo(
+    private val localDataSource: WeatherLocalDataSource,
+    private val remoteDataSource: WeatherRemoteDataSource
+) {
     // ── Home ────────────────────────────────────────────────────
     fun getWeatherFromApi(
         latitude: Double,

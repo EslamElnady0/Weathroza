@@ -117,4 +117,5 @@
     <string name="delete_fav_title">Delete Favorite?</string>
     <string name="delete_fav_desc">Are you sure you want to delete %1$s, %2$s from your favorites?</string>
     <string name="delete">DELETE</string>
+    <string name="no_location_set">No Location Set</string>
 </resources>

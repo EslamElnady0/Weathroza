@@ -1,9 +1,19 @@
-package com.eslamdev.weathroza.core.settings
+package com.eslamdev.weathroza.data.datasources.local
 
 import android.content.Context
 import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.*
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.doublePreferencesKey
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.emptyPreferences
+import androidx.datastore.preferences.core.longPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.eslamdev.weathroza.data.models.usersettings.AppLanguage
+import com.eslamdev.weathroza.data.models.usersettings.LocationType
+import com.eslamdev.weathroza.data.models.usersettings.TemperatureUnit
+import com.eslamdev.weathroza.data.models.usersettings.UserSettings
+import com.eslamdev.weathroza.data.models.usersettings.WindSpeedUnit
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
@@ -16,10 +26,10 @@ class SettingsDataStore(private val context: Context) {
         val TEMP_UNIT = stringPreferencesKey("temp_unit")
         val WIND_UNIT = stringPreferencesKey("wind_unit")
         val LANGUAGE = stringPreferencesKey("language")
-        val USER_LAT     = doublePreferencesKey("user_lat")
-        val USER_LNG     = doublePreferencesKey("user_lng")
+        val USER_LAT = doublePreferencesKey("user_lat")
+        val USER_LNG = doublePreferencesKey("user_lng")
 
-        val CITY_ID     = longPreferencesKey("city_id")
+        val CITY_ID = longPreferencesKey("city_id")
         val LOCATION_TYPE = stringPreferencesKey("location_type")
     }
 
@@ -77,7 +87,8 @@ class SettingsDataStore(private val context: Context) {
             it[LOCATION_TYPE] = LocationType.GPS.name
         }
     }
-    suspend fun saveCityId( cityId: Long) {
+
+    suspend fun saveCityId(cityId: Long) {
         context.dataStore.edit {
             it[CITY_ID] = cityId
         }

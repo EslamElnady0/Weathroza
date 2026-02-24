@@ -3,8 +3,6 @@ package com.eslamdev.weathroza.data.datasources.remote
 import com.eslamdev.weathroza.BuildConfig
 import com.eslamdev.weathroza.core.enums.Units
 import com.eslamdev.weathroza.core.helpers.asResultFlow
-import com.eslamdev.weathroza.core.settings.AppLanguage
-import com.eslamdev.weathroza.data.config.network.RetrofitHelper
 import com.eslamdev.weathroza.data.datasources.remote.service.WeatherService
 import com.eslamdev.weathroza.data.models.forecast.DailyForecastEntity
 import com.eslamdev.weathroza.data.models.forecast.HourlyForecastEntity
@@ -13,12 +11,11 @@ import com.eslamdev.weathroza.data.models.mapper.CityMapper
 import com.eslamdev.weathroza.data.models.mapper.DailyForecastMapper
 import com.eslamdev.weathroza.data.models.mapper.HourlyForecastMapper
 import com.eslamdev.weathroza.data.models.mapper.WeatherMapper
+import com.eslamdev.weathroza.data.models.usersettings.AppLanguage
 import com.eslamdev.weathroza.data.models.weather.WeatherEntity
 import kotlinx.coroutines.flow.Flow
 
-class WeatherRemoteDataSource {
-    private val weatherService: WeatherService = RetrofitHelper.weatherService
-
+class WeatherRemoteDataSource(private val weatherService: WeatherService) {
     fun getWeather(
         latitude: Double,
         longitude: Double,

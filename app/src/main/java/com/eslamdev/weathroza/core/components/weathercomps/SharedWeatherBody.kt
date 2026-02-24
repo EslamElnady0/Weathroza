@@ -36,10 +36,10 @@ import com.eslamdev.weathroza.core.helpers.convertWind
 import com.eslamdev.weathroza.core.helpers.formatLocalized
 import com.eslamdev.weathroza.core.helpers.label
 import com.eslamdev.weathroza.core.helpers.toLocalizedPercentage
-import com.eslamdev.weathroza.core.settings.UserSettings
-import com.eslamdev.weathroza.core.settings.toLocale
 import com.eslamdev.weathroza.data.models.forecast.DailyForecastEntity
 import com.eslamdev.weathroza.data.models.forecast.HourlyForecastEntity
+import com.eslamdev.weathroza.data.models.usersettings.UserSettings
+import com.eslamdev.weathroza.data.models.usersettings.toLocale
 import com.eslamdev.weathroza.data.models.weather.WeatherEntity
 
 @OptIn(ExperimentalMaterial3Api::class)
