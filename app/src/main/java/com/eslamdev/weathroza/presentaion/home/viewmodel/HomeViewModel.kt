@@ -18,7 +18,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onCompletion
@@ -48,46 +47,51 @@ class HomeViewModel(
     val isRefreshing: StateFlow<Boolean> = _isRefreshing.asStateFlow()
 
     private var isInitialized = false
+    private var previousCityId: Long? = null
 
     init {
-        loadHomeData()
-        observeLocationChanges()
+        viewModelScope.launch { initialize() }
     }
 
-    private fun loadHomeData() {
-        viewModelScope.launch {
-            // 1. Show cache immediately while we wait for network
-            val realSettings = settingsRepo.getSettings()
-            realSettings.cityId?.let { cityId ->
-                weatherRepo.getCachedHomeData(cityId)?.let { (weather, hourly, daily) ->
-                    _uiState.value = UiState.Success(HomeViewData(weather, hourly, daily))
-                }
-            }
+    private suspend fun initialize() {
+        loadCache()
+        isInitialized = true
+        previousCityId = settings.value.cityId
 
-            val isOnlineNow = isConnectedFlow.first()
-            isInitialized = true
+        tryRefresh(showErrorIfHasCache = false)
 
-            if (isOnlineNow) refreshFromNetwork()
+        observeNetwork()
+        observeLanguage()
+        observeLocation()
+    }
 
-            // 2. Re-fetch whenever connection is restored
-            isConnectedFlow
-                .drop(1)
-                .onEach { isOnline -> if (isOnline) refreshFromNetwork() }
-                .launchIn(viewModelScope)
-
-            // 3. Re-fetch whenever language changes
-            settings
-                .map { it.language }
-                .distinctUntilChanged()
-                .drop(1)
-                .onEach { refreshFromNetwork() }
-                .launchIn(viewModelScope)
+    private suspend fun loadCache() {
+        val cityId = settingsRepo.getSettings().cityId ?: return
+        weatherRepo.getCachedHomeData(cityId)?.let { (weather, hourly, daily) ->
+            _uiState.value = UiState.Success(HomeViewData(weather, hourly, daily))
         }
     }
 
-    private fun observeLocationChanges() {
-        var previousCityId: Long? = null
+    private fun observeNetwork() {
+        isConnectedFlow
+            .drop(1)
+            .distinctUntilChanged()
+            .onEach { isOnline ->
+                if (isOnline) tryRefresh(showErrorIfHasCache = false)
+            }
+            .launchIn(viewModelScope)
+    }
 
+    private fun observeLanguage() {
+        settings
+            .map { it.language }
+            .distinctUntilChanged()
+            .drop(1)
+            .onEach { tryRefresh(showErrorIfHasCache = false) }
+            .launchIn(viewModelScope)
+    }
+
+    private fun observeLocation() {
         settings
             .map { it.userLat to it.userLng }
             .distinctUntilChanged()
@@ -96,41 +100,13 @@ class HomeViewModel(
                 if (lat != null && lng != null && isInitialized) {
                     val oldCityId = previousCityId
                     previousCityId = settings.value.cityId
-                    onLocationChanged(lat, lng, oldCityId)
+                    onLocationChanged(oldCityId)
                 }
             }
             .launchIn(viewModelScope)
     }
 
-    private fun onLocationChanged(lat: Double, lng: Double, oldCityId: Long?) {
-        viewModelScope.launch {
-            if (oldCityId != null && oldCityId != 0L)
-                weatherRepo.clearCityData(oldCityId)
-        }
-
-        _uiState.value = UiState.Loading
-
-        weatherRepo.refreshHomeData(lat, lng, settings.value.language)
-            .onStart { _isRefreshing.value = true }
-            .onEach { result ->
-                result.fold(
-                    onSuccess = { (weather, hourly, daily) ->
-                        if (settings.value.locationType == LocationType.GPS) {
-                            ///////////////////////////////==== save gps location===/////////////////////////////////////////////////
-                            settingsRepo.saveCityId(weather.id.toLong())
-                        }
-                        _uiState.value = UiState.Success(HomeViewData(weather, hourly, daily))
-                    },
-                    onFailure = { e ->
-                        _uiState.value = UiState.Error(ErrorHandler.handleException(e as Exception))
-                    }
-                )
-            }
-            .onCompletion { _isRefreshing.value = false }
-            .launchIn(viewModelScope)
-    }
-
-    private fun refreshFromNetwork() {
+    private fun tryRefresh(showErrorIfHasCache: Boolean) {
         if (!isInitialized) return
 
         val currentSettings = settings.value
@@ -149,13 +125,13 @@ class HomeViewModel(
             .onEach { result ->
                 result.fold(
                     onSuccess = { (weather, hourly, daily) ->
-                        if (settings.value.locationType == LocationType.GPS)
+                        if (currentSettings.locationType == LocationType.GPS)
                             settingsRepo.saveCityId(weather.id.toLong())
-
                         _uiState.value = UiState.Success(HomeViewData(weather, hourly, daily))
                     },
                     onFailure = { e ->
-                        if (_uiState.value !is UiState.Success)
+                        val hasCache = _uiState.value is UiState.Success
+                        if (!hasCache || showErrorIfHasCache)
                             _uiState.value =
                                 UiState.Error(ErrorHandler.handleException(e as Exception))
                     }
@@ -165,9 +141,16 @@ class HomeViewModel(
             .launchIn(viewModelScope)
     }
 
-    fun refresh() {
-        refreshFromNetwork()
+    private fun onLocationChanged(oldCityId: Long?) {
+        viewModelScope.launch {
+            if (oldCityId != null)
+                weatherRepo.clearCityData(oldCityId)
+        }
+        _uiState.value = UiState.Loading
+        tryRefresh(showErrorIfHasCache = true)
     }
+
+    fun refresh() = tryRefresh(showErrorIfHasCache = false)
 
     fun fetchAndSaveGpsLocation() {
         settingsRepo.fetchAndSaveGpsLocation()
