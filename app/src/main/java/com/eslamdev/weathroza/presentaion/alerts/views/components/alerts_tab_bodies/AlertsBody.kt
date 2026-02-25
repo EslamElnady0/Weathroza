@@ -1,4 +1,4 @@
-package com.eslamdev.weathroza.presentaion.alerts.views.components
+package com.eslamdev.weathroza.presentaion.alerts.views.components.alerts_tab_bodies
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,6 +14,8 @@ import com.eslamdev.weathroza.core.common.UiState
 import com.eslamdev.weathroza.core.helpers.AppColors
 import com.eslamdev.weathroza.data.models.alert.AlertEntity
 import com.eslamdev.weathroza.data.models.usersettings.UserSettings
+import com.eslamdev.weathroza.presentaion.alerts.views.components.alerts_components.AlertsList
+import com.eslamdev.weathroza.presentaion.alerts.views.components.alerts_components.EmptyAlertsState
 
 @Composable
 fun AlertsBody(

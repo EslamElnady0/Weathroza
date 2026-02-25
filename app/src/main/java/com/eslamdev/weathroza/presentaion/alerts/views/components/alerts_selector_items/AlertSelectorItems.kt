@@ -1,4 +1,4 @@
-package com.eslamdev.weathroza.presentaion.alerts.views.components
+package com.eslamdev.weathroza.presentaion.alerts.views.components.alerts_selector_items
 
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.icons.Icons
@@ -8,8 +8,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.eslamdev.weathroza.R
 import com.eslamdev.weathroza.core.components.SettingSelectorItem
-
-enum class AlertTab { SCHEDULED, WEATHER }
 
 @Composable
 fun RowScope.ScheduledSelectorItem(isSelected: Boolean, onClick: () -> Unit) {
