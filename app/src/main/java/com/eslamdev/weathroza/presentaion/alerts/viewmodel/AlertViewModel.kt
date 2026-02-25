@@ -65,6 +65,7 @@ class AlertsViewModel(
                 startMinute = startMinute,
                 endHour = endHour,
                 endMinute = endMinute,
+                settings = settings.value,
             )
             weatherRepo.insertAlert(entity)
         }
@@ -162,6 +163,7 @@ class AlertsViewModel(
                     startMinute = current.startMinute.takeIf { it != -1 },
                     endHour = current.endHour.takeIf { it != -1 },
                     endMinute = current.endMinute.takeIf { it != -1 },
+                    settings = settings.value,
                 )
                 weatherRepo.insertAlert(entity)
                 _createAlertState.value = CreateAlertUiState()

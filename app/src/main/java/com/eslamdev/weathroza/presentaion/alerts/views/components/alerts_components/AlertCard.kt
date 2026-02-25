@@ -29,6 +29,7 @@ import com.eslamdev.weathroza.core.components.DeleteDialog
 import com.eslamdev.weathroza.core.components.SwipeToDeleteBox
 import com.eslamdev.weathroza.core.helpers.AppColors
 import com.eslamdev.weathroza.core.helpers.DateTimeHelper
+import com.eslamdev.weathroza.core.helpers.resolveDisplayThreshold
 import com.eslamdev.weathroza.data.models.alert.AlertEntity
 import com.eslamdev.weathroza.data.models.alert.WeatherParameter
 import com.eslamdev.weathroza.data.models.alert.resolveConfig
@@ -76,7 +77,8 @@ fun AlertCard(
                         val context = LocalContext.current
                         val config = item.parameter.resolveConfig(settings, context)
                         val sign = if (item.isAbove) ">" else "<"
-                        "$sign ${item.threshold.toInt()}${config.unit}"
+                        val displayValue = item.resolveDisplayThreshold(settings)
+                        "$sign $displayValue${config.unit}"
                     } else null,
                     timeRange = formatTimeRange(item.startTimeMillis, item.endTimeMillis, settings),
                     modifier = Modifier.weight(1f),
