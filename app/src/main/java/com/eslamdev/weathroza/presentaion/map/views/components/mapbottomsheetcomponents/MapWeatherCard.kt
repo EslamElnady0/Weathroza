@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -36,6 +37,7 @@ import com.eslamdev.weathroza.data.models.weather.WeatherEntity
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun MapWeatherCard(weather: WeatherEntity, settings: UserSettings) {
+    val context = LocalContext.current
     val locale = settings.language.toLocale()
 
     Column(
@@ -96,14 +98,16 @@ fun MapWeatherCard(weather: WeatherEntity, settings: UserSettings) {
             }
         }
 
-        Box(modifier = Modifier
-            .fillMaxWidth()
-            .height(1.dp)
-            .background(AppColors.divider))
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(1.dp)
+                .background(AppColors.divider)
+        )
 
         val feelsLikeLabel = "${
             weather.feelsLike.convertTemp(settings.temperatureUnit).formatLocalized(locale, "%d")
-        }°${settings.temperatureUnit.label()}"
+        }°${settings.temperatureUnit.label(context)}"
 
         Row(
             verticalAlignment = Alignment.CenterVertically,

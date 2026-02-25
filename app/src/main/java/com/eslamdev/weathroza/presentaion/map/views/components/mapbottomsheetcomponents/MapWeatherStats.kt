@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -32,7 +33,7 @@ import com.eslamdev.weathroza.data.models.weather.WeatherEntity
 @Composable
 fun MapWeatherStats(weather: WeatherEntity, settings: UserSettings) {
     val locale = settings.language.toLocale()
-
+    val context = LocalContext.current
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -52,7 +53,7 @@ fun MapWeatherStats(weather: WeatherEntity, settings: UserSettings) {
             value = "${
                 weather.windSpeed.convertWind(settings.windSpeedUnit)
                     .formatLocalized(locale, "%.1f")
-            } ${settings.windSpeedUnit.label()}"
+            } ${settings.windSpeedUnit.label(context)}"
         )
         MapVerticalDivider()
         MapWeatherStatItem(

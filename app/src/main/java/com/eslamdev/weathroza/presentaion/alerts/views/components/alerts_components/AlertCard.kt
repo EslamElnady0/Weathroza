@@ -19,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -30,8 +31,8 @@ import com.eslamdev.weathroza.core.helpers.AppColors
 import com.eslamdev.weathroza.core.helpers.DateTimeHelper
 import com.eslamdev.weathroza.data.models.alert.AlertEntity
 import com.eslamdev.weathroza.data.models.alert.WeatherParameter
-import com.eslamdev.weathroza.data.models.usersettings.UserSettings
 import com.eslamdev.weathroza.data.models.alert.resolveConfig
+import com.eslamdev.weathroza.data.models.usersettings.UserSettings
 import com.eslamdev.weathroza.data.models.usersettings.toLocale
 
 @Composable
@@ -72,7 +73,8 @@ fun AlertCard(
                 AlertCardInfo(
                     title = item.name,
                     threshold = if (item.parameter.hasThreshold) {
-                        val config = item.parameter.resolveConfig(settings)
+                        val context = LocalContext.current
+                        val config = item.parameter.resolveConfig(settings, context)
                         val sign = if (item.isAbove) ">" else "<"
                         "$sign ${item.threshold.toInt()}${config.unit}"
                     } else null,

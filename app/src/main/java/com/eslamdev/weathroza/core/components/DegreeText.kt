@@ -4,6 +4,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
@@ -22,6 +23,7 @@ fun DegreeText(
     settings: UserSettings,
     fontWeight: FontWeight = FontWeight.Normal
 ) {
+    val context = LocalContext.current
     Text(
         "${
             degree.convertTemp(settings.temperatureUnit)
@@ -29,7 +31,7 @@ fun DegreeText(
                     locale = settings.language.toLocale(),
                     pattern = "%d"
                 )
-        }°${settings.temperatureUnit.label()}",
+        }°${settings.temperatureUnit.label(context)}",
         fontSize = fontSize,
         color = color,
         fontWeight = fontWeight,

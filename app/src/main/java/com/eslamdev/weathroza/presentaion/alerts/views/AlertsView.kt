@@ -42,6 +42,7 @@ fun AlertsView(
     val uiState by viewModel.alerts.collectAsStateWithLifecycle()
     var selectedTab by remember { mutableStateOf(AlertTab.SCHEDULED) }
     var showCreateSheet by remember { mutableStateOf(false) }
+    val createAlertState by viewModel.createAlertState.collectAsStateWithLifecycle()
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -101,11 +102,13 @@ fun AlertsView(
         }
     }
 
+
     if (showCreateSheet) {
         CreateAlertBottomSheet(
             settings = settings,
+            state = createAlertState,
+            onIntent = viewModel::onCreateAlertIntent,
             onDismiss = { showCreateSheet = false },
-            onCreateAlert = viewModel::createAlert
         )
     }
 }

@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -166,6 +167,7 @@ fun HeaderSection(weather: WeatherEntity, settings: UserSettings) {
 @Composable
 fun WeatherDetailsSection(weather: WeatherEntity, settings: UserSettings) {
     val locale = settings.language.toLocale()
+    val context = LocalContext.current
     Row {
         StatusItem(
             icon = R.drawable.humidity_ic,
@@ -181,7 +183,7 @@ fun WeatherDetailsSection(weather: WeatherEntity, settings: UserSettings) {
             value = "${
                 weather.windSpeed.convertWind(settings.windSpeedUnit)
                     .formatLocalized(locale, "%.2f")
-            } ${settings.windSpeedUnit.label()}",
+            } ${settings.windSpeedUnit.label(context)}",
             contentDesc = stringResource(R.string.wind_icon_desc),
             modifier = Modifier.weight(1f)
         )

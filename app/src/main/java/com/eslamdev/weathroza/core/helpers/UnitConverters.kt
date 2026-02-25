@@ -1,20 +1,17 @@
 package com.eslamdev.weathroza.core.helpers
 
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.res.stringResource
+import android.content.Context
 import com.eslamdev.weathroza.R
 import com.eslamdev.weathroza.data.models.usersettings.TemperatureUnit
 import com.eslamdev.weathroza.data.models.usersettings.WindSpeedUnit
 
-@Composable
-fun TemperatureUnit.label(): String = when (this) {
-    TemperatureUnit.CELSIUS -> stringResource(R.string.celsius_symbol)
-    TemperatureUnit.FAHRENHEIT -> stringResource(R.string.fahrenheit_symbol)
-    TemperatureUnit.KELVIN -> stringResource(R.string.kelvin_symbol)
+fun TemperatureUnit.label(context: Context): String = when (this) {
+    TemperatureUnit.CELSIUS -> context.getString(R.string.celsius_symbol)
+    TemperatureUnit.FAHRENHEIT -> context.getString(R.string.fahrenheit_symbol)
+    TemperatureUnit.KELVIN -> context.getString(R.string.kelvin_symbol)
 }
 
-@Composable
-fun WindSpeedUnit.label(): String = when (this) {
-    WindSpeedUnit.MS -> stringResource(R.string.unit_ms)
-    WindSpeedUnit.MPH -> stringResource(R.string.unit_mph)
+fun WindSpeedUnit.label(context: Context): String = when (this) {
+    WindSpeedUnit.MS -> context.getString(R.string.unit_ms)
+    WindSpeedUnit.MPH -> context.getString(R.string.unit_mph)
 }

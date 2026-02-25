@@ -1,14 +1,13 @@
 package com.eslamdev.weathroza.data.models.alert
 
+import android.content.Context
 import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Air
 import androidx.compose.material.icons.filled.Thermostat
 import androidx.compose.material.icons.filled.Umbrella
 import androidx.compose.material.icons.filled.WaterDrop
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.stringResource
 import com.eslamdev.weathroza.R
 import com.eslamdev.weathroza.core.helpers.label
 import com.eslamdev.weathroza.data.models.usersettings.TemperatureUnit
@@ -34,45 +33,65 @@ data class ParameterConfig(
     val expectedMax: Float,
 )
 
-@Composable
-fun WeatherParameter.resolveConfig(settings: UserSettings): ParameterConfig = when (this) {
-    WeatherParameter.TEMP -> when (settings.temperatureUnit) {
-        TemperatureUnit.CELSIUS -> ParameterConfig(
-            settings.temperatureUnit.label(),
-            -20f,
-            50f,
-            20f,
-            35f
-        )
+fun WeatherParameter.resolveConfig(settings: UserSettings, context: Context): ParameterConfig =
+    when (this) {
+        WeatherParameter.TEMP -> when (settings.temperatureUnit) {
+            TemperatureUnit.CELSIUS -> ParameterConfig(
+                settings.temperatureUnit.label(context),
+                -20f,
+                50f,
+                20f,
+                35f
+            )
 
-        TemperatureUnit.FAHRENHEIT -> ParameterConfig(
-            settings.temperatureUnit.label(),
+            TemperatureUnit.FAHRENHEIT -> ParameterConfig(
+                settings.temperatureUnit.label(context),
+                0f,
+                120f,
+                68f,
+                95f
+            )
+
+            TemperatureUnit.KELVIN -> ParameterConfig(
+                settings.temperatureUnit.label(context),
+                253f,
+                323f,
+                293f,
+                308f
+            )
+        }
+
+        WeatherParameter.WIND -> when (settings.windSpeedUnit) {
+            WindSpeedUnit.MS -> ParameterConfig(
+                settings.windSpeedUnit.label(context),
+                0f,
+                40f,
+                2f,
+                10f
+            )
+
+            WindSpeedUnit.MPH -> ParameterConfig(
+                settings.windSpeedUnit.label(context),
+                0f,
+                90f,
+                4f,
+                22f
+            )
+        }
+
+        WeatherParameter.RAIN -> ParameterConfig(
+            context.getString(R.string.unit_mm),
             0f,
-            120f,
-            68f,
-            95f
+            50f,
+            0f,
+            10f
         )
 
-        TemperatureUnit.KELVIN -> ParameterConfig(
-            settings.temperatureUnit.label(),
-            253f,
-            323f,
-            293f,
-            308f
+        WeatherParameter.HUMIDITY -> ParameterConfig(
+            context.getString(R.string.unit_percent),
+            0f,
+            100f,
+            40f,
+            70f
         )
     }
-
-    WeatherParameter.WIND -> when (settings.windSpeedUnit) {
-        WindSpeedUnit.MS -> ParameterConfig(settings.windSpeedUnit.label(), 0f, 40f, 2f, 10f)
-        WindSpeedUnit.MPH -> ParameterConfig(settings.windSpeedUnit.label(), 0f, 90f, 4f, 22f)
-    }
-
-    WeatherParameter.RAIN -> ParameterConfig(stringResource(R.string.unit_mm), 0f, 50f, 0f, 10f)
-    WeatherParameter.HUMIDITY -> ParameterConfig(
-        stringResource(R.string.unit_percent),
-        0f,
-        100f,
-        40f,
-        70f
-    )
-}

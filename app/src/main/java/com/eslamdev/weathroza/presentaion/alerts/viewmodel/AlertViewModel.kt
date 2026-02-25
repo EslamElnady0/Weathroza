@@ -3,7 +3,9 @@ package com.eslamdev.weathroza.presentaion.alerts.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.eslamdev.weathroza.R
 import com.eslamdev.weathroza.core.common.UiState
+import com.eslamdev.weathroza.core.helpers.AlertTimeValidator
 import com.eslamdev.weathroza.data.models.alert.AlertEntity
 import com.eslamdev.weathroza.data.models.alert.AlertFrequency
 import com.eslamdev.weathroza.data.models.alert.WeatherParameter
@@ -11,8 +13,10 @@ import com.eslamdev.weathroza.data.models.mapper.AlertMapper
 import com.eslamdev.weathroza.data.models.usersettings.UserSettings
 import com.eslamdev.weathroza.data.repo.UserSettingsRepo
 import com.eslamdev.weathroza.data.repo.WeatherRepo
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -72,6 +76,111 @@ class AlertsViewModel(
 
     fun deleteAlert(id: Long) {
         viewModelScope.launch { weatherRepo.deleteAlert(id) }
+    }
+
+    private val _createAlertState = MutableStateFlow(CreateAlertUiState())
+    val createAlertState: StateFlow<CreateAlertUiState> = _createAlertState.asStateFlow()
+
+    fun onCreateAlertIntent(intent: CreateAlertIntent) {
+        val current = _createAlertState.value
+        _createAlertState.value = when (intent) {
+            is CreateAlertIntent.SetName ->
+                current.copy(alertName = intent.name)
+
+            is CreateAlertIntent.SetParameter ->
+                current.copy(
+                    selectedParam = intent.param,
+                    thresholdValue = intent.initialThreshold,
+                    startError = null,
+                    endError = null,
+                )
+
+            is CreateAlertIntent.SetAbove ->
+                current.copy(isAbove = intent.isAbove)
+
+            is CreateAlertIntent.SetFrequency -> if (intent.frequency == AlertFrequency.PERIODIC) {
+                current.copy(
+                    frequency = intent.frequency,
+                    startHour = -1, startMinute = -1,
+                    endHour = -1, endMinute = -1,
+                    startTimeDisplay = null, endTimeDisplay = null,
+                    startError = null, endError = null,
+                )
+            } else {
+                current.copy(frequency = intent.frequency)
+            }
+
+            is CreateAlertIntent.SetStartTime -> {
+                val startError = when {
+                    !AlertTimeValidator.isInFuture(intent.hour, intent.minute) ->
+                        R.string.error_start_time_past
+
+                    !AlertTimeValidator.isWithinMaxFuture(intent.hour, intent.minute) ->
+                        R.string.error_time_too_far
+
+                    else -> null
+                }
+                val endError = if (current.endHour != -1) validateEnd(
+                    intent.hour, intent.minute, current.endHour, current.endMinute
+                ) else current.endError
+
+                current.copy(
+                    startHour = intent.hour,
+                    startMinute = intent.minute,
+                    startTimeDisplay = intent.display,
+                    startError = startError,
+                    endError = endError,
+                )
+            }
+
+            is CreateAlertIntent.SetEndTime -> {
+                val endError = validateEnd(
+                    current.startHour, current.startMinute, intent.hour, intent.minute
+                )
+                current.copy(
+                    endHour = intent.hour,
+                    endMinute = intent.minute,
+                    endTimeDisplay = intent.display,
+                    endError = endError,
+                )
+            }
+
+            is CreateAlertIntent.Submit -> current
+            is CreateAlertIntent.SetThreshold ->
+                current.copy(thresholdValue = intent.value)
+        }
+
+        if (intent is CreateAlertIntent.Submit && current.isFormValid) {
+            viewModelScope.launch {
+                val entity = AlertMapper.create(
+                    name = current.alertName,
+                    parameter = current.selectedParam,
+                    threshold = current.thresholdValue,
+                    isAbove = current.isAbove,
+                    frequency = current.frequency,
+                    startHour = current.startHour.takeIf { it != -1 },
+                    startMinute = current.startMinute.takeIf { it != -1 },
+                    endHour = current.endHour.takeIf { it != -1 },
+                    endMinute = current.endMinute.takeIf { it != -1 },
+                )
+                weatherRepo.insertAlert(entity)
+                _createAlertState.value = CreateAlertUiState()
+            }
+        }
+    }
+
+    private fun validateEnd(
+        startHour: Int, startMinute: Int,
+        endHour: Int, endMinute: Int,
+    ): Int? = when {
+        !AlertTimeValidator.isWithinMaxFuture(endHour, endMinute) ->
+            R.string.error_time_too_far
+
+        startHour != -1 && !AlertTimeValidator.isEndAfterStart(
+            startHour, startMinute, endHour, endMinute
+        ) -> R.string.error_end_before_start
+
+        else -> null
     }
 }
 
