@@ -3,7 +3,6 @@
     <string name="app_name">Weathroza</string>
     <string name="home">الرئيسية</string>
     <string name="favourites">المفضلة</string>
-    <string name="alerts">التنبيهات</string>
     <string name="settings">الإعدادات</string>
 
     <!-- Home Body Strings -->
@@ -114,4 +113,11 @@
     <string name="delete_fav_desc">هل أنت متأكد من أنك تريد حذف %1$s، %2$s من المفضلة؟</string>
     <string name="delete">حذف</string>
     <string name="no_location_set">لم يتم اختيار مكان بعد</string>
+    <string name="alerts">التنبيهات</string>
+    <string name="scheduled">المجدول</string>
+    <string name="weather">الطقس</string>
+    <string name="alert_enabled">التنبيه مفعّل</string>
+    <string name="alert_disabled">التنبيه معطّل</string>
+    <string name="no_alerts">لا توجد تنبيهات بعد</string>
+    <string name="add_alert">إضافة تنبيه</string>
 </resources>

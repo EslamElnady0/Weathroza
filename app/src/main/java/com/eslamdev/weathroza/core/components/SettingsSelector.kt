@@ -1,4 +1,4 @@
-package com.eslamdev.weathroza.presentaion.settings.view.components
+package com.eslamdev.weathroza.core.components
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
@@ -26,8 +26,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.eslamdev.weathroza.core.components.CardWithBoarder
-import com.eslamdev.weathroza.core.components.HeightSpacer
 import com.eslamdev.weathroza.core.helpers.AppColors
 
 @Composable

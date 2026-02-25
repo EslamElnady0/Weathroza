@@ -118,4 +118,10 @@
     <string name="delete_fav_desc">Are you sure you want to delete %1$s, %2$s from your favorites?</string>
     <string name="delete">DELETE</string>
     <string name="no_location_set">No Location Set</string>
+    <string name="scheduled">Scheduled</string>
+    <string name="weather">Weather</string>
+    <string name="alert_enabled">Alert enabled</string>
+    <string name="alert_disabled">Alert disabled</string>
+    <string name="no_alerts">No alerts yet</string>
+    <string name="add_alert">Add Alert</string>
 </resources>
