@@ -3,6 +3,7 @@ package com.eslamdev.weathroza.data.repo.impl
 import com.eslamdev.weathroza.core.enums.Units
 import com.eslamdev.weathroza.data.datasources.local.WeatherLocalDataSource
 import com.eslamdev.weathroza.data.datasources.remote.WeatherRemoteDataSource
+import com.eslamdev.weathroza.data.models.alert.AlertEntity
 import com.eslamdev.weathroza.data.models.fav.FavouriteLocationEntity
 import com.eslamdev.weathroza.data.models.forecast.DailyForecastEntity
 import com.eslamdev.weathroza.data.models.forecast.HourlyForecastEntity
@@ -119,4 +120,31 @@ class WeatherRepoImpl(
     override suspend fun refreshFavouriteWeather(cityId: Long, temp: Double, iconUrl: String) {
         localDataSource.updateLastTemp(cityId = cityId, temp = temp, iconUrl = iconUrl)
     }
+
+    // ── Alert ──────────────────────────────────────────────
+
+    override fun getScheduledAlerts(): Flow<Result<List<AlertEntity>>> =
+        localDataSource.getScheduledAlerts()
+            .map { Result.success(it) }
+            .catch { emit(Result.failure(it)) }
+
+    override fun getWeatherAlerts(): Flow<Result<List<AlertEntity>>> =
+        localDataSource.getWeatherAlerts()
+            .map { Result.success(it) }
+            .catch { emit(Result.failure(it)) }
+
+    override fun getAllAlerts(): Flow<Result<List<AlertEntity>>> =
+        localDataSource.getAllAlerts()
+            .map { Result.success(it) }
+            .catch { emit(Result.failure(it)) }
+
+    override suspend fun insertAlert(alert: AlertEntity): Long =
+        localDataSource.insertAlert(alert)
+
+    override suspend fun toggleAlert(id: Long, isEnabled: Boolean) =
+        localDataSource.updateEnabled(id, isEnabled)
+
+    override suspend fun deleteAlert(id: Long) =
+        localDataSource.deleteAlert(id)
+
 }

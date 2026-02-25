@@ -38,10 +38,10 @@ import com.eslamdev.weathroza.core.components.CardWithBoarder
 import com.eslamdev.weathroza.core.components.HeightSpacer
 import com.eslamdev.weathroza.core.helpers.AppColors
 import com.eslamdev.weathroza.core.helpers.formatLocalized
+import com.eslamdev.weathroza.data.models.alert.ParameterConfig
+import com.eslamdev.weathroza.data.models.alert.WeatherParameter
 import com.eslamdev.weathroza.data.models.usersettings.UserSettings
 import com.eslamdev.weathroza.data.models.usersettings.toLocale
-import com.eslamdev.weathroza.presentaion.alerts.model.ParameterConfig
-import com.eslamdev.weathroza.presentaion.alerts.model.WeatherParameter
 import kotlin.math.roundToInt
 
 // ── Section label ─────────────────────────────────────────────────────────────

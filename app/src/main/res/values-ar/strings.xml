@@ -148,5 +148,7 @@
     <string name="error_end_before_start">يجب أن يكون وقت النهاية بعد وقت البداية</string>
     <string name="periodic_info">سيتم تشغيل هذا التنبيه كل ساعة طالما كان نشطاً.</string>
     <string name="error_time_too_far">يجب أن يكون الوقت خلال الـ %1$d ساعات القادمة</string>
-
+    <string name="delete_alert">حذف التنبيه</string>
+    <string name="delete_alert_title">حذف التنبيه</string>
+    <string name="delete_alert_desc">هل أنت متأكد من حذف "%1$s"؟</string>
 </resources>

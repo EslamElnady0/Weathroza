@@ -25,11 +25,11 @@ import com.eslamdev.weathroza.R
 import com.eslamdev.weathroza.core.components.HeightSpacer
 import com.eslamdev.weathroza.core.helpers.AlertTimeValidator
 import com.eslamdev.weathroza.core.helpers.DateTimeHelper
+import com.eslamdev.weathroza.data.models.alert.AlertFrequency
+import com.eslamdev.weathroza.data.models.alert.WeatherParameter
+import com.eslamdev.weathroza.data.models.alert.resolveConfig
 import com.eslamdev.weathroza.data.models.usersettings.UserSettings
 import com.eslamdev.weathroza.data.models.usersettings.toLocale
-import com.eslamdev.weathroza.presentaion.alerts.model.AlertFrequency
-import com.eslamdev.weathroza.presentaion.alerts.model.WeatherParameter
-import com.eslamdev.weathroza.presentaion.alerts.model.resolveConfig
 import java.util.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -43,8 +43,10 @@ fun CreateAlertBottomSheet(
         threshold: Float,
         isAbove: Boolean,
         frequency: AlertFrequency,
-        startTime: String?,
-        endTime: String?,
+        startHour: Int?,
+        startMinute: Int?,
+        endHour: Int?,
+        endMinute: Int?,
     ) -> Unit,
 ) {
     var alertName by remember { mutableStateOf("") }
@@ -208,8 +210,15 @@ fun CreateAlertBottomSheet(
                 onClick = {
                     if (validateTimes() || frequency == AlertFrequency.PERIODIC) {
                         onCreateAlert(
-                            alertName, selectedParam, thresholdValue, isAbove,
-                            frequency, startTimeDisplay, endTimeDisplay,
+                            alertName,
+                            selectedParam,
+                            thresholdValue,
+                            isAbove,
+                            frequency,
+                            startHour.takeIf { it != -1 },
+                            startMinute.takeIf { it != -1 },
+                            endHour.takeIf { it != -1 },
+                            endMinute.takeIf { it != -1 },
                         )
                         onDismiss()
                     }

@@ -7,6 +7,7 @@ import com.eslamdev.weathroza.data.datasources.local.LocationManager
 import com.eslamdev.weathroza.data.datasources.local.NetworkObserver
 import com.eslamdev.weathroza.data.datasources.local.SettingsDataStore
 import com.eslamdev.weathroza.data.datasources.local.WeatherLocalDataSource
+import com.eslamdev.weathroza.data.datasources.local.dao.AlertDao
 import com.eslamdev.weathroza.data.datasources.local.dao.DailyForecastDao
 import com.eslamdev.weathroza.data.datasources.local.dao.FavouriteLocationDao
 import com.eslamdev.weathroza.data.datasources.local.dao.HourlyForecastDao
@@ -31,6 +32,8 @@ interface AppContainer {
     val hourlyForecastDao: HourlyForecastDao
     val weatherDao: WeatherDao
     val favLocationDao: FavouriteLocationDao
+
+    val alertDao: AlertDao
     val weatherService: WeatherService
     val weatherLocalDataSource: WeatherLocalDataSource
     val weatherRemoteDataSource: WeatherRemoteDataSource
@@ -61,6 +64,9 @@ class AppContainerImpl(private val context: Context) : AppContainer {
     override val favLocationDao: FavouriteLocationDao by lazy {
         WeatherDataBase.getInstance(context).getFavouriteLocationDao()
     }
+    override val alertDao: AlertDao by lazy {
+        WeatherDataBase.getInstance(context).getAlertDao()
+    }
     override val weatherService: WeatherService by lazy {
         RetrofitHelper.weatherService
     }
@@ -69,7 +75,8 @@ class AppContainerImpl(private val context: Context) : AppContainer {
             weatherDao = weatherDao,
             hourlyForecastDao = hourlyForecastDao,
             dailyForecastDao = dailyForecastDao,
-            favouriteLocationDao = favLocationDao
+            favouriteLocationDao = favLocationDao,
+            alertDao = alertDao
         )
     }
     override val weatherRemoteDataSource: WeatherRemoteDataSource by lazy {

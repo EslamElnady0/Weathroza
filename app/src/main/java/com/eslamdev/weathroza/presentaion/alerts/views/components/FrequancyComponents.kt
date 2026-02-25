@@ -19,7 +19,7 @@ import com.eslamdev.weathroza.R
 import com.eslamdev.weathroza.core.components.SettingSelectorItem
 import com.eslamdev.weathroza.core.components.SettingsSelector
 import com.eslamdev.weathroza.core.helpers.AppColors
-import com.eslamdev.weathroza.presentaion.alerts.model.AlertFrequency
+import com.eslamdev.weathroza.data.models.alert.AlertFrequency
 
 @Composable
 fun FrequencySelector(

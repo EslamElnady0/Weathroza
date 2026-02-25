@@ -1,4 +1,4 @@
-package com.eslamdev.weathroza.presentaion.alerts.model
+package com.eslamdev.weathroza.data.models.alert
 
 import androidx.annotation.StringRes
 import com.eslamdev.weathroza.R

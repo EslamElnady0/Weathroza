@@ -14,9 +14,9 @@ import androidx.navigation.NavController
 import com.eslamdev.weathroza.core.components.AddFab
 import com.eslamdev.weathroza.core.components.HeightSpacer
 import com.eslamdev.weathroza.presentaion.alerts.viewmodel.AlertsViewModel
+import com.eslamdev.weathroza.presentaion.alerts.views.components.AlertsBody
 import com.eslamdev.weathroza.presentaion.alerts.views.components.AlertsHeader
 import com.eslamdev.weathroza.presentaion.alerts.views.components.CreateAlertBottomSheet
-import com.eslamdev.weathroza.presentaion.alerts.views.components.ScheduledTabBody
 
 @Composable
 fun AlertsView(
@@ -25,15 +25,18 @@ fun AlertsView(
     modifier: Modifier = Modifier,
 ) {
     val settings by viewModel.settings.collectAsStateWithLifecycle()
+    val alerts by viewModel.alerts.collectAsStateWithLifecycle()
     var showCreateSheet by remember { mutableStateOf(false) }
-    var scheduledAlerts by remember { mutableStateOf(viewModel.scheduledAlerts) }
 
     if (showCreateSheet) {
         CreateAlertBottomSheet(
             settings = settings,
             onDismiss = { showCreateSheet = false },
-            onCreateAlert = { name, param, threshold, isAbove, frequency, start, end ->
-                viewModel.createAlert(name, param, threshold, isAbove, frequency, start, end)
+            onCreateAlert = { name, param, threshold, isAbove, frequency, startHour, startMinute, endHour, endMinute ->
+                viewModel.createAlert(
+                    name, param, threshold, isAbove, frequency,
+                    startHour, startMinute, endHour, endMinute,
+                )
             },
         )
     }
@@ -51,16 +54,13 @@ fun AlertsView(
             HeightSpacer(16.0)
             AlertsHeader()
             HeightSpacer(24.0)
-            ScheduledTabBody(
-                alerts = scheduledAlerts,
-                onToggle = { id, enabled ->
-                    scheduledAlerts = scheduledAlerts.map {
-                        if (it.id == id) it.copy(isEnabled = enabled) else it
-                    }
-                    viewModel.toggleAlert(id, enabled)
-                },
+
+            AlertsBody(
+                uiState = alerts,
+                onToggle = viewModel::toggleAlert,
+                onDelete = viewModel::deleteAlert,
+                settings = settings
             )
         }
-
     }
 }

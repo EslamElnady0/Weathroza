@@ -3,33 +3,41 @@ package com.eslamdev.weathroza.presentaion.alerts.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.eslamdev.weathroza.core.common.UiState
+import com.eslamdev.weathroza.data.models.alert.AlertEntity
+import com.eslamdev.weathroza.data.models.alert.AlertFrequency
+import com.eslamdev.weathroza.data.models.alert.WeatherParameter
+import com.eslamdev.weathroza.data.models.mapper.AlertMapper
 import com.eslamdev.weathroza.data.models.usersettings.UserSettings
 import com.eslamdev.weathroza.data.repo.UserSettingsRepo
-import com.eslamdev.weathroza.presentaion.alerts.model.AlertFrequency
-import com.eslamdev.weathroza.presentaion.alerts.model.AlertItem
-import com.eslamdev.weathroza.presentaion.alerts.model.WeatherParameter
+import com.eslamdev.weathroza.data.repo.WeatherRepo
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
 class AlertsViewModel(
     private val settingsRepo: UserSettingsRepo,
+    private val weatherRepo: WeatherRepo,
 ) : ViewModel() {
 
     val settings: StateFlow<UserSettings> = settingsRepo.settingsFlow
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), UserSettings())
+
+    val alerts: StateFlow<UiState<List<AlertEntity>>> = weatherRepo.getAllAlerts()
+        .map { result ->
+            result.fold(
+                onSuccess = { UiState.Success(it) },
+                onFailure = { UiState.Error(message = it.message ?: "Unknown error") },
+            )
+        }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = UserSettings(),
+            initialValue = UiState.Loading,
         )
 
-    val scheduledAlerts = listOf(
-        AlertItem(1, "Morning Briefing", "08:00 AM - 09:30 AM", "New York, NY", true),
-        AlertItem(2, "Commute Update", "05:00 PM - 06:30 PM", "Brooklyn, NY", false),
-    )
-    
-    fun toggleAlert(id: Int, enabled: Boolean) {
-    }
 
     fun createAlert(
         name: String,
@@ -37,16 +45,42 @@ class AlertsViewModel(
         threshold: Float,
         isAbove: Boolean,
         frequency: AlertFrequency,
-        startTime: String?,
-        endTime: String?,
+        startHour: Int?,
+        startMinute: Int?,
+        endHour: Int?,
+        endMinute: Int?,
     ) {
+        viewModelScope.launch {
+            val entity = AlertMapper.create(
+                name = name,
+                parameter = parameter,
+                threshold = threshold,
+                isAbove = isAbove,
+                frequency = frequency,
+                startHour = startHour,
+                startMinute = startMinute,
+                endHour = endHour,
+                endMinute = endMinute,
+            )
+            weatherRepo.insertAlert(entity)
+        }
+    }
+
+    fun toggleAlert(id: Long, isEnabled: Boolean) {
+        viewModelScope.launch { weatherRepo.toggleAlert(id, isEnabled) }
+    }
+
+    fun deleteAlert(id: Long) {
+        viewModelScope.launch { weatherRepo.deleteAlert(id) }
     }
 }
 
-class AlertViewModelFactory(private val settingsRepo: UserSettingsRepo) :
-    ViewModelProvider.Factory {
+class AlertViewModelFactory(
+    private val settingsRepo: UserSettingsRepo,
+    private val weatherRepo: WeatherRepo,
+) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         @Suppress("UNCHECKED_CAST")
-        return AlertsViewModel(settingsRepo) as T
+        return AlertsViewModel(settingsRepo, weatherRepo) as T
     }
 }

@@ -152,5 +152,8 @@
     <string name="error_end_before_start">End time must be after start time</string>
     <string name="periodic_info">This alert will trigger every hour while active.</string>
     <string name="error_time_too_far">Time must be within the next %1$d hours</string>
+    <string name="delete_alert">Delete alert</string>
+    <string name="delete_alert_title">Delete Alert</string>
+    <string name="delete_alert_desc">Are you sure you want to delete "%1$s"?</string>
 
 </resources>

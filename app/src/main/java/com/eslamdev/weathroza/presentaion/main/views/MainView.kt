@@ -101,7 +101,12 @@ fun MainView(
             }
 
             composable<BottomRoute.Alerts> {
-                val factory = remember { AlertViewModelFactory(appContainer.userSettingsRepo) }
+                val factory = remember {
+                    AlertViewModelFactory(
+                        appContainer.userSettingsRepo,
+                        appContainer.weatherRepo
+                    )
+                }
                 val viewModel = viewModel<AlertsViewModel>(factory = factory)
                 AlertsView(bottomController, viewModel)
             }
