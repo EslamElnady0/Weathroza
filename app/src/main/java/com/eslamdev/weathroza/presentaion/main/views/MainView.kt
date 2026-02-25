@@ -14,6 +14,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.eslamdev.weathroza.WeathrozaApp
 import com.eslamdev.weathroza.core.enums.MapMode
+import com.eslamdev.weathroza.presentaion.alerts.viewmodel.AlertViewModelFactory
+import com.eslamdev.weathroza.presentaion.alerts.viewmodel.AlertsViewModel
 import com.eslamdev.weathroza.presentaion.alerts.views.AlertsView
 import com.eslamdev.weathroza.presentaion.favourite.view.FavView
 import com.eslamdev.weathroza.presentaion.favourite.viewmodel.FavViewModel
@@ -99,11 +101,12 @@ fun MainView(
             }
 
             composable<BottomRoute.Alerts> {
-                AlertsView(bottomController)
+                val factory = remember { AlertViewModelFactory(appContainer.userSettingsRepo) }
+                val viewModel = viewModel<AlertsViewModel>(factory = factory)
+                AlertsView(bottomController, viewModel)
             }
 
             composable<BottomRoute.Settings> {
-                val context = LocalContext.current
                 val settingsViewModel =
                     viewModel<SettingsViewModel>(factory = SettingsViewModelFactory(appContainer.userSettingsRepo))
                 SettingsView(
@@ -116,12 +119,3 @@ fun MainView(
         }
     }
 }
-
-//
-//@Preview(showBackground = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
-//@Composable
-//fun HomeBodyPreview(modifier: Modifier = Modifier) {
-//    MaterialTheme(colorScheme = darkColorScheme()) {
-//        MainView(controller = rememberNavController())
-//    }
-//}

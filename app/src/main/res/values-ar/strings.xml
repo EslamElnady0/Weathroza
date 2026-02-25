@@ -120,4 +120,33 @@
     <string name="alert_disabled">التنبيه معطّل</string>
     <string name="no_alerts">لا توجد تنبيهات بعد</string>
     <string name="add_alert">إضافة تنبيه</string>
+    <string name="create_new_alert">إنشاء تنبيه جديد</string>
+    <string name="scheduled_alert">تنبيه مجدول</string>
+    <string name="scheduled_alert_desc">تعيين إشعار متكرر على أساس الوقت</string>
+    <string name="weather_alert">تنبيه طقس</string>
+    <string name="weather_alert_desc">احصل على إشعار عند تغير الأحوال الجوية</string>
+    <string name="create_alert">إنشاء تنبيه</string>
+    <string name="alert_name">اسم التنبيه</string>
+    <string name="alert_name_hint">مثال: إحاطة الصباح</string>
+    <string name="select_parameter">اختر المعامل</string>
+    <string name="set_threshold">تحديد العتبة</string>
+    <string name="above">فوق</string>
+    <string name="below">تحت</string>
+    <string name="start_time">وقت البداية</string>
+    <string name="end_time">وقت النهاية</string>
+    <string name="optional">اختياري</string>
+    <string name="temp">الحرارة</string>
+    <string name="rain">المطر</string>
+    <string name="expected_today">المتوقع اليوم: %1$s – %2$s</string>
+    <string name="unit_percent">%</string>
+    <string name="unit_mm">mm</string>
+    <string name="one_time">مرة واحدة</string>
+    <string name="periodic">دوري</string>
+    <string name="frequency">التكرار</string>
+    <string name="pick_time">اختر وقتا</string>
+    <string name="error_start_time_past">لا يمكن أن يكون وقت البداية في الماضي</string>
+    <string name="error_end_before_start">يجب أن يكون وقت النهاية بعد وقت البداية</string>
+    <string name="periodic_info">سيتم تشغيل هذا التنبيه كل ساعة طالما كان نشطاً.</string>
+    <string name="error_time_too_far">يجب أن يكون الوقت خلال الـ %1$d ساعات القادمة</string>
+
 </resources>
