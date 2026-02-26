@@ -4,6 +4,10 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
 
     <application
         android:name=".WeathrozaApp"
@@ -27,6 +31,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <receiver
+            android:name=".core.receiver.AlertReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.eslamdev.weathroza.ACTION_ALERT_START" />
+                <action android:name="com.eslamdev.weathroza.ACTION_ALERT_END" />
+                <action android:name="com.eslamdev.weathroza.ACTION_DISMISS_ALERT" />
+            </intent-filter>
+        </receiver>
         <service
             android:name="androidx.appcompat.app.AppLocalesMetadataHolderService"
             android:enabled="false"

@@ -165,7 +165,12 @@ class AlertsViewModel(
                     endMinute = current.endMinute.takeIf { it != -1 },
                     settings = settings.value,
                 )
-                weatherRepo.insertAlert(entity)
+
+                when (entity.frequency) {
+                    AlertFrequency.ONE_TIME -> weatherRepo.insertOneTimeAlert(entity)
+                    AlertFrequency.PERIODIC -> weatherRepo.insertAlert(entity)
+                }
+
                 _createAlertState.value = CreateAlertUiState()
             }
         }
