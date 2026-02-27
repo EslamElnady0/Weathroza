@@ -97,12 +97,6 @@ class WeatherLocalDataSourceImpl(
     override fun getAllAlerts(): Flow<List<AlertEntity>> =
         alertDao.getAllAlerts()
 
-    override fun getScheduledAlerts(): Flow<List<AlertEntity>> =
-        alertDao.getScheduledAlerts()
-
-    override fun getWeatherAlerts(): Flow<List<AlertEntity>> =
-        alertDao.getWeatherAlerts()
-
     override fun getAlertById(id: Long): Flow<AlertEntity?> = alertDao.getAlertById(id)
 
     override suspend fun insertAlert(alert: AlertEntity): Long =
@@ -119,4 +113,7 @@ class WeatherLocalDataSourceImpl(
 
     override suspend fun updateAlertStartTime(alertId: Long, newStartMillis: Long) =
         alertDao.updateAlertStartTime(alertId, newStartMillis)
+
+    override fun getContinuousAlerts(): Flow<List<AlertEntity>> = alertDao.getContinuousAlerts()
+
 }

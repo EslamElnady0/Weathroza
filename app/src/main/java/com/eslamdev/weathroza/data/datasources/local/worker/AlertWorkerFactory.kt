@@ -29,6 +29,9 @@ class AlertWorkerFactory(
                     alarmScheduler
                 )
 
+            ContinuousAlertWorker::class.java.name ->
+                ContinuousAlertWorker(appContext, workerParameters, weatherRepo, settingsRepo)
+
             else -> null
         }
     }

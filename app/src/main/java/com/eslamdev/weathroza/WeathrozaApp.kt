@@ -21,6 +21,5 @@ class WeathrozaApp : Application(), Configuration.Provider {
                     settingsRepo = appContainer.userSettingsRepo,
                     alarmScheduler = appContainer.alarmScheduler
                 )
-            )
-            .build()
+            ).build()
 }

@@ -19,12 +19,6 @@ interface AlertDao {
     @Query("SELECT * FROM alerts ORDER BY createdAt DESC")
     fun getAllAlerts(): Flow<List<AlertEntity>>
 
-    @Query("SELECT * FROM alerts WHERE frequency = 'ONE_TIME' ORDER BY createdAt DESC")
-    fun getScheduledAlerts(): Flow<List<AlertEntity>>
-
-    @Query("SELECT * FROM alerts WHERE frequency = 'PERIODIC' ORDER BY createdAt DESC")
-    fun getWeatherAlerts(): Flow<List<AlertEntity>>
-
     @Query("UPDATE alerts SET isEnabled = :isEnabled WHERE id = :id")
     suspend fun updateEnabled(id: Long, isEnabled: Boolean)
 
@@ -36,4 +30,7 @@ interface AlertDao {
 
     @Query("UPDATE alerts SET startTimeMillis = :newStartMillis WHERE id = :alertId")
     suspend fun updateAlertStartTime(alertId: Long, newStartMillis: Long)
+
+    @Query("SELECT * FROM alerts WHERE frequency = 'CONTINUOUS' AND isEnabled = 1")
+    fun getContinuousAlerts(): Flow<List<AlertEntity>>
 }

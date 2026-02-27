@@ -5,4 +5,5 @@ import com.eslamdev.weathroza.data.models.alert.AlertEntity
 interface AlarmScheduler {
     fun scheduleAlert(alert: AlertEntity)
     fun cancelAlert(alertId: Long)
+    fun scheduleContinuousAlerts()
 }

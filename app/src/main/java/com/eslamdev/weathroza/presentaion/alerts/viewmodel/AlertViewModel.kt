@@ -25,6 +25,10 @@ class AlertsViewModel(
     private val weatherRepo: WeatherRepo,
 ) : ViewModel() {
 
+    init {
+        weatherRepo.startContinuousAlertsIfNeeded()
+    }
+
     val settings: StateFlow<UserSettings> = settingsRepo.settingsFlow
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), UserSettings())
 
@@ -150,11 +154,7 @@ class AlertsViewModel(
                     endMinute = current.endMinute.takeIf { it != -1 },
                     settings = settings.value,
                 )
-
-                when (entity.frequency) {
-                    AlertFrequency.TIME_BASED -> weatherRepo.insertTimeBasedAlert(entity)
-                    AlertFrequency.CONTINUOUS -> weatherRepo.insertAlert(entity)
-                }
+                weatherRepo.insertAlert(entity)
 
                 _createAlertState.value = CreateAlertUiState()
             }

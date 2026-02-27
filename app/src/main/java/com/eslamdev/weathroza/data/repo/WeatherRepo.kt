@@ -56,14 +56,13 @@ interface WeatherRepo {
     suspend fun refreshFavouriteWeather(cityId: Long, temp: Double, iconUrl: String)
 
     // ── Alerts ──────────────────────────────────────────────
-    fun getScheduledAlerts(): Flow<Result<List<AlertEntity>>>
-    fun getWeatherAlerts(): Flow<Result<List<AlertEntity>>>
     fun getAllAlerts(): Flow<Result<List<AlertEntity>>>
     fun getAlertById(id: Long): Flow<Result<AlertEntity?>>
     suspend fun insertAlert(alert: AlertEntity): Long
     suspend fun toggleAlert(id: Long, isEnabled: Boolean)
     suspend fun deleteAlert(id: Long)
-    suspend fun insertTimeBasedAlert(alert: AlertEntity): Long
     suspend fun cancelTimeBasedAlert(alertId: Long)
     suspend fun updateAlertStartTime(alertId: Long, newStartMillis: Long)
+    fun getContinuousAlerts(): Flow<Result<List<AlertEntity>>>
+    fun startContinuousAlertsIfNeeded()
 }

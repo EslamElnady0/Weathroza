@@ -5,6 +5,7 @@ import com.eslamdev.weathroza.data.datasources.local.AlarmScheduler
 import com.eslamdev.weathroza.data.datasources.local.WeatherLocalDataSource
 import com.eslamdev.weathroza.data.datasources.remote.WeatherRemoteDataSource
 import com.eslamdev.weathroza.data.models.alert.AlertEntity
+import com.eslamdev.weathroza.data.models.alert.AlertFrequency
 import com.eslamdev.weathroza.data.models.fav.FavouriteLocationEntity
 import com.eslamdev.weathroza.data.models.forecast.DailyForecastEntity
 import com.eslamdev.weathroza.data.models.forecast.HourlyForecastEntity
@@ -124,16 +125,9 @@ class WeatherRepoImpl(
     }
 
     // ── Alert ──────────────────────────────────────────────
-
-    override fun getScheduledAlerts(): Flow<Result<List<AlertEntity>>> =
-        localDataSource.getScheduledAlerts()
-            .map { Result.success(it) }
-            .catch { emit(Result.failure(it)) }
-
-    override fun getWeatherAlerts(): Flow<Result<List<AlertEntity>>> =
-        localDataSource.getWeatherAlerts()
-            .map { Result.success(it) }
-            .catch { emit(Result.failure(it)) }
+    override fun startContinuousAlertsIfNeeded() {
+        alarmScheduler.scheduleContinuousAlerts()
+    }
 
     override fun getAllAlerts(): Flow<Result<List<AlertEntity>>> =
         localDataSource.getAllAlerts()
@@ -145,21 +139,19 @@ class WeatherRepoImpl(
             .map { Result.success(it) }
             .catch { emit(Result.failure(it)) }
 
-    override suspend fun insertAlert(alert: AlertEntity): Long =
-        localDataSource.insertAlert(alert)
+    override suspend fun insertAlert(alert: AlertEntity): Long {
+        val id = localDataSource.insertAlert(alert)
+        if (alert.frequency == AlertFrequency.TIME_BASED) {
+            alarmScheduler.scheduleAlert(alert.copy(id = id))
+        }
+        return id
+    }
 
     override suspend fun toggleAlert(id: Long, isEnabled: Boolean) =
         localDataSource.updateEnabled(id, isEnabled)
 
     override suspend fun deleteAlert(id: Long) =
         localDataSource.deleteAlert(id)
-
-    override suspend fun insertTimeBasedAlert(alert: AlertEntity): Long {
-        val id = localDataSource.insertAlert(alert)
-        val alertWithId = alert.copy(id = id)
-        alarmScheduler.scheduleAlert(alertWithId)
-        return id
-    }
 
     override suspend fun cancelTimeBasedAlert(alertId: Long) {
         alarmScheduler.cancelAlert(alertId)
@@ -169,4 +161,9 @@ class WeatherRepoImpl(
 
     override suspend fun updateAlertStartTime(alertId: Long, newStartMillis: Long) =
         localDataSource.updateAlertStartTime(alertId, newStartMillis)
+
+    override fun getContinuousAlerts(): Flow<Result<List<AlertEntity>>> =
+        localDataSource.getContinuousAlerts()
+            .map { Result.success(it) }
+            .catch { emit(Result.failure(it)) }
 }
