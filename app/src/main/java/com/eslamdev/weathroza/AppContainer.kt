@@ -35,13 +35,11 @@ interface AppContainer {
     val hourlyForecastDao: HourlyForecastDao
     val weatherDao: WeatherDao
     val favLocationDao: FavouriteLocationDao
-
     val alertDao: AlertDao
     val weatherService: WeatherService
     val weatherLocalDataSource: WeatherLocalDataSource
     val weatherRemoteDataSource: WeatherRemoteDataSource
     val alarmScheduler: AlarmScheduler
-    val alarmManager: AlarmManager
     val weatherRepo: WeatherRepo
     val userSettingsRepo: UserSettingsRepo
 }
@@ -87,14 +85,14 @@ class AppContainerImpl(private val context: Context) : AppContainer {
     override val weatherRemoteDataSource: WeatherRemoteDataSource by lazy {
         WeatherRemoteDataSourceImpl(weatherService)
     }
-    override val alarmManager: AlarmManager by lazy {
+    private val alarmManager: AlarmManager by lazy {
         context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
     }
 
     override val alarmScheduler: AlarmScheduler by lazy {
         AlarmSchedulerImpl(context, alarmManager)
     }
-    
+
     override val weatherRepo: WeatherRepo by lazy {
         WeatherRepoImpl(
             localDataSource = weatherLocalDataSource,
