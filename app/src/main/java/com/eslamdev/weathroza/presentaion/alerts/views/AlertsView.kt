@@ -81,9 +81,9 @@ fun AlertsView(
                 if (uiState is UiState.Success) {
                     val filtered = (uiState as UiState.Success).data.filter {
                         if (selectedTab == AlertTab.SCHEDULED) {
-                            it.frequency == AlertFrequency.ONE_TIME
+                            it.frequency == AlertFrequency.TIME_BASED
                         } else {
-                            it.frequency == AlertFrequency.PERIODIC
+                            it.frequency == AlertFrequency.CONTINUOUS
                         }
                     }
                     UiState.Success(filtered)

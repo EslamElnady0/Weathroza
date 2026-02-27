@@ -51,5 +51,6 @@ interface WeatherLocalDataSource {
     suspend fun updateEnabled(id: Long, isEnabled: Boolean)
     suspend fun deleteAlert(id: Long)
     suspend fun deleteAllAlerts()
+    suspend fun updateAlertStartTime(alertId: Long, newStartMillis: Long)
 }
 

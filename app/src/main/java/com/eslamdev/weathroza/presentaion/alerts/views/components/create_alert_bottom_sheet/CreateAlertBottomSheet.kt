@@ -55,6 +55,7 @@ fun CreateAlertBottomSheet(
             )
         )
     }
+
     fun showTimePicker(isStart: Boolean) {
         val cal = Calendar.getInstance()
         TimePickerDialog(context, { _, hour, minute ->
@@ -123,6 +124,8 @@ fun CreateAlertBottomSheet(
 
             FrequencyBody(
                 frequency = state.frequency,
+                selectedDays = state.selectedDays,
+                onDayToggle = { onIntent(CreateAlertIntent.ToggleDay(it)) },
                 startTime = state.startTimeDisplay,
                 endTime = state.endTimeDisplay,
                 startError = state.startError,

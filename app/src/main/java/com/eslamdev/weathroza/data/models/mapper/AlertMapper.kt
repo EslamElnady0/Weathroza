@@ -1,5 +1,6 @@
 package com.eslamdev.weathroza.data.models.mapper
 
+import com.eslamdev.weathroza.data.models.alert.AlertDay
 import com.eslamdev.weathroza.data.models.alert.AlertEntity
 import com.eslamdev.weathroza.data.models.alert.AlertFrequency
 import com.eslamdev.weathroza.data.models.alert.WeatherParameter
@@ -7,6 +8,7 @@ import com.eslamdev.weathroza.data.models.usersettings.UserSettings
 import java.util.Calendar
 
 object AlertMapper {
+
     fun create(
         name: String,
         parameter: WeatherParameter,
@@ -14,6 +16,7 @@ object AlertMapper {
         isAbove: Boolean,
         frequency: AlertFrequency,
         settings: UserSettings,
+        selectedDays: Set<AlertDay> = emptySet(),
         startHour: Int?,
         startMinute: Int?,
         endHour: Int?,
@@ -26,6 +29,7 @@ object AlertMapper {
         thresholdWindUnit = if (parameter == WeatherParameter.WIND) settings.windSpeedUnit else null,
         isAbove = isAbove,
         frequency = frequency,
+        repeatDays = selectedDays,
         startTimeMillis = toMillis(startHour, startMinute),
         endTimeMillis = toMillis(endHour, endMinute),
     )

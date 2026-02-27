@@ -63,6 +63,7 @@ interface WeatherRepo {
     suspend fun insertAlert(alert: AlertEntity): Long
     suspend fun toggleAlert(id: Long, isEnabled: Boolean)
     suspend fun deleteAlert(id: Long)
-    suspend fun insertOneTimeAlert(alert: AlertEntity): Long
-    suspend fun cancelOneTimeAlert(alertId: Long)
+    suspend fun insertTimeBasedAlert(alert: AlertEntity): Long
+    suspend fun cancelTimeBasedAlert(alertId: Long)
+    suspend fun updateAlertStartTime(alertId: Long, newStartMillis: Long)
 }

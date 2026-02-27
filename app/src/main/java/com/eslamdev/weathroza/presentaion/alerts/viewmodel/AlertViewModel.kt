@@ -8,7 +8,6 @@ import com.eslamdev.weathroza.core.common.UiState
 import com.eslamdev.weathroza.core.helpers.AlertTimeValidator
 import com.eslamdev.weathroza.data.models.alert.AlertEntity
 import com.eslamdev.weathroza.data.models.alert.AlertFrequency
-import com.eslamdev.weathroza.data.models.alert.WeatherParameter
 import com.eslamdev.weathroza.data.models.mapper.AlertMapper
 import com.eslamdev.weathroza.data.models.usersettings.UserSettings
 import com.eslamdev.weathroza.data.repo.UserSettingsRepo
@@ -42,35 +41,6 @@ class AlertsViewModel(
             initialValue = UiState.Loading,
         )
 
-
-    fun createAlert(
-        name: String,
-        parameter: WeatherParameter,
-        threshold: Float,
-        isAbove: Boolean,
-        frequency: AlertFrequency,
-        startHour: Int?,
-        startMinute: Int?,
-        endHour: Int?,
-        endMinute: Int?,
-    ) {
-        viewModelScope.launch {
-            val entity = AlertMapper.create(
-                name = name,
-                parameter = parameter,
-                threshold = threshold,
-                isAbove = isAbove,
-                frequency = frequency,
-                startHour = startHour,
-                startMinute = startMinute,
-                endHour = endHour,
-                endMinute = endMinute,
-                settings = settings.value,
-            )
-            weatherRepo.insertAlert(entity)
-        }
-    }
-
     fun toggleAlert(id: Long, isEnabled: Boolean) {
         viewModelScope.launch { weatherRepo.toggleAlert(id, isEnabled) }
     }
@@ -79,11 +49,14 @@ class AlertsViewModel(
         viewModelScope.launch { weatherRepo.deleteAlert(id) }
     }
 
+    // ── Create Alert ─────────────────────────────────────────────
+
     private val _createAlertState = MutableStateFlow(CreateAlertUiState())
     val createAlertState: StateFlow<CreateAlertUiState> = _createAlertState.asStateFlow()
 
     fun onCreateAlertIntent(intent: CreateAlertIntent) {
         val current = _createAlertState.value
+
         _createAlertState.value = when (intent) {
             is CreateAlertIntent.SetName ->
                 current.copy(alertName = intent.name)
@@ -99,17 +72,30 @@ class AlertsViewModel(
             is CreateAlertIntent.SetAbove ->
                 current.copy(isAbove = intent.isAbove)
 
-            is CreateAlertIntent.SetFrequency -> if (intent.frequency == AlertFrequency.PERIODIC) {
-                current.copy(
-                    frequency = intent.frequency,
-                    startHour = -1, startMinute = -1,
-                    endHour = -1, endMinute = -1,
-                    startTimeDisplay = null, endTimeDisplay = null,
-                    startError = null, endError = null,
-                )
-            } else {
-                current.copy(frequency = intent.frequency)
+            is CreateAlertIntent.SetThreshold ->
+                current.copy(thresholdValue = intent.value)
+
+            is CreateAlertIntent.ToggleDay -> {
+                val updated = if (intent.day in current.selectedDays)
+                    current.selectedDays - intent.day
+                else
+                    current.selectedDays + intent.day
+                current.copy(selectedDays = updated)
             }
+
+            is CreateAlertIntent.SetFrequency ->
+                if (intent.frequency == AlertFrequency.CONTINUOUS) {
+                    current.copy(
+                        frequency = intent.frequency,
+                        selectedDays = emptySet(),
+                        startHour = -1, startMinute = -1,
+                        endHour = -1, endMinute = -1,
+                        startTimeDisplay = null, endTimeDisplay = null,
+                        startError = null, endError = null,
+                    )
+                } else {
+                    current.copy(frequency = intent.frequency)
+                }
 
             is CreateAlertIntent.SetStartTime -> {
                 val startError = when {
@@ -122,7 +108,7 @@ class AlertsViewModel(
                     else -> null
                 }
                 val endError = if (current.endHour != -1) validateEnd(
-                    intent.hour, intent.minute, current.endHour, current.endMinute
+                    intent.hour, intent.minute, current.endHour, current.endMinute,
                 ) else current.endError
 
                 current.copy(
@@ -136,7 +122,7 @@ class AlertsViewModel(
 
             is CreateAlertIntent.SetEndTime -> {
                 val endError = validateEnd(
-                    current.startHour, current.startMinute, intent.hour, intent.minute
+                    current.startHour, current.startMinute, intent.hour, intent.minute,
                 )
                 current.copy(
                     endHour = intent.hour,
@@ -147,8 +133,6 @@ class AlertsViewModel(
             }
 
             is CreateAlertIntent.Submit -> current
-            is CreateAlertIntent.SetThreshold ->
-                current.copy(thresholdValue = intent.value)
         }
 
         if (intent is CreateAlertIntent.Submit && current.isFormValid) {
@@ -159,6 +143,7 @@ class AlertsViewModel(
                     threshold = current.thresholdValue,
                     isAbove = current.isAbove,
                     frequency = current.frequency,
+                    selectedDays = current.selectedDays,
                     startHour = current.startHour.takeIf { it != -1 },
                     startMinute = current.startMinute.takeIf { it != -1 },
                     endHour = current.endHour.takeIf { it != -1 },
@@ -167,8 +152,8 @@ class AlertsViewModel(
                 )
 
                 when (entity.frequency) {
-                    AlertFrequency.ONE_TIME -> weatherRepo.insertOneTimeAlert(entity)
-                    AlertFrequency.PERIODIC -> weatherRepo.insertAlert(entity)
+                    AlertFrequency.TIME_BASED -> weatherRepo.insertTimeBasedAlert(entity)
+                    AlertFrequency.CONTINUOUS -> weatherRepo.insertAlert(entity)
                 }
 
                 _createAlertState.value = CreateAlertUiState()
@@ -184,7 +169,7 @@ class AlertsViewModel(
             R.string.error_time_too_far
 
         startHour != -1 && !AlertTimeValidator.isEndAfterStart(
-            startHour, startMinute, endHour, endMinute
+            startHour, startMinute, endHour, endMinute,
         ) -> R.string.error_end_before_start
 
         else -> null

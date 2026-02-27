@@ -1,6 +1,7 @@
 package com.eslamdev.weathroza.data.config.db
 
 import androidx.room.TypeConverter
+import com.eslamdev.weathroza.data.models.alert.AlertDay
 import com.eslamdev.weathroza.data.models.alert.AlertFrequency
 import com.eslamdev.weathroza.data.models.alert.WeatherParameter
 import com.eslamdev.weathroza.data.models.usersettings.TemperatureUnit
@@ -31,4 +32,15 @@ class AlertConverters {
 
     @TypeConverter
     fun fromWindSpeedUnit(value: WindSpeedUnit?) = value?.name
+
+    @TypeConverter
+    fun fromAlertDaySet(days: Set<AlertDay>): String =
+        days.joinToString(",") { it.name }
+
+    @TypeConverter
+    fun toAlertDaySet(value: String): Set<AlertDay> =
+        if (value.isBlank()) emptySet()
+        else value.split(",").mapNotNull {
+            runCatching { AlertDay.valueOf(it) }.getOrNull()
+        }.toSet()
 }

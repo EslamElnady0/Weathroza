@@ -7,6 +7,7 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.eslamdev.weathroza.R
 import com.eslamdev.weathroza.core.receiver.AlertReceiver
+import com.eslamdev.weathroza.data.datasources.local.AlarmScheduler
 import com.eslamdev.weathroza.data.models.alert.WeatherParameter
 import com.eslamdev.weathroza.data.models.usersettings.TemperatureUnit
 import com.eslamdev.weathroza.data.models.usersettings.WindSpeedUnit
@@ -20,6 +21,7 @@ class AlertCheckWorker(
     params: WorkerParameters,
     private val weatherRepo: WeatherRepo,
     private val settingsRepo: UserSettingsRepo,
+    private val alarmScheduler: AlarmScheduler,
 ) : CoroutineWorker(appContext, params) {
 
     override suspend fun doWork(): Result {
@@ -37,76 +39,90 @@ class AlertCheckWorker(
         val settings = settingsRepo.settingsFlow.first()
         val latLng = settings.userLatLng ?: return Result.failure()
 
-        // 3. Fetch weather — retry on any failure
+        // 3. Fetch weather — retry on failure
         val weather = weatherRepo
             .getWeatherFromApi(latLng.latitude, latLng.longitude, settings.language)
             .first()
             .getOrNull() ?: return Result.retry()
 
-        // 4. Compute current value
-        val currentValue = extractValue(
-            alert.parameter, weather,
-            settings.temperatureUnit, settings.windSpeedUnit,
-        )
-
-        // 5. Build localized display strings
-        val unit = resolveUnit(alert.parameter, settings.temperatureUnit, settings.windSpeedUnit)
-        val operator = appContext.getString(
-            if (alert.isAbove) R.string.alert_operator_above else R.string.alert_operator_below
-        )
-        val currentDisplay = "%.1f %s".format(currentValue, unit)
-        val thresholdDisplay = "%.1f %s".format(alert.threshold, unit)
-
-        // 6. Check condition
+        // 4. Check condition
+        val currentValue =
+            extractValue(alert.parameter, weather, settings.temperatureUnit, settings.windSpeedUnit)
         val conditionMet = if (alert.isAbove) currentValue >= alert.threshold
         else currentValue <= alert.threshold
 
-        // 7. Build notification title + body
+        // 5. Build notification content
+        val unit = resolveUnit(alert.parameter, settings.temperatureUnit, settings.windSpeedUnit)
+        val operator =
+            appContext.getString(if (alert.isAbove) R.string.alert_operator_above else R.string.alert_operator_below)
+        val currentDisplay = "%.1f %s".format(currentValue, unit)
+        val thresholdDisplay = "%.1f %s".format(alert.threshold, unit)
         val title = resolveTitle(alert.parameter, conditionMet)
-        val body = if (conditionMet) {
-            appContext.getString(
-                R.string.alert_met_body,
-                currentDisplay,
-                operator,
-                thresholdDisplay
-            )
-        } else {
-            appContext.getString(
-                R.string.alert_not_met_body,
-                alert.name,
-                currentDisplay,
-                operator,
-                thresholdDisplay,
-            )
-        }
+        val body = buildBody(conditionMet, alert.name, currentDisplay, operator, thresholdDisplay)
+        val durationText = resolveDurationText(alert.endTimeMillis)
 
-        // 8. Build duration text
-        val durationText = alert.endTimeMillis?.let { end ->
-            val mins = (end - System.currentTimeMillis()) / 60_000
-            if (mins > 0) appContext.getString(R.string.alert_active_duration, mins.toInt())
-            else appContext.getString(R.string.alert_active_now)
-        } ?: appContext.getString(R.string.alert_active_now)
+        // 6. Fire broadcast
+        sendBroadcast(
+            conditionMet,
+            alert.id,
+            alert.name,
+            alert.startTimeMillis,
+            alert.endTimeMillis,
+            title,
+            body,
+            durationText
+        )
 
-        // 9. Fire broadcast — AlertReceiver handles sound/notification
+        // 7. Reschedule or clean up
+        rescheduleOrCancel(alert.id, alert)
+
+        return Result.success()
+    }
+
+    // ── Broadcast ────────────────────────────────────────────────
+
+    private fun sendBroadcast(
+        conditionMet: Boolean,
+        alertId: Long,
+        alertName: String,
+        startMillis: Long?,
+        endMillis: Long?,
+        title: String,
+        body: String,
+        durationText: String,
+    ) {
         val action = if (conditionMet) AlertReceiver.ACTION_ALERT_START
         else AlertReceiver.ACTION_ALERT_NOT_MET
 
         val intent = Intent(appContext, AlertReceiver::class.java).apply {
             this.action = action
-            putExtra(AlertReceiver.EXTRA_ALERT_ID, alert.id)
-            putExtra(AlertReceiver.EXTRA_ALERT_NAME, alert.name)
-            putExtra(AlertReceiver.EXTRA_START_MILLIS, alert.startTimeMillis)
-            putExtra(AlertReceiver.EXTRA_END_MILLIS, alert.endTimeMillis ?: -1L)
+            putExtra(AlertReceiver.EXTRA_ALERT_ID, alertId)
+            putExtra(AlertReceiver.EXTRA_ALERT_NAME, alertName)
+            putExtra(AlertReceiver.EXTRA_START_MILLIS, startMillis)
+            putExtra(AlertReceiver.EXTRA_END_MILLIS, endMillis ?: -1L)
             putExtra(AlertReceiver.EXTRA_NOTIFICATION_TITLE, title)
             putExtra(AlertReceiver.EXTRA_NOTIFICATION_BODY, body)
             putExtra(AlertReceiver.EXTRA_DURATION_TEXT, durationText)
         }
         appContext.sendBroadcast(intent)
+    }
 
-        // 10. Clean up
-        weatherRepo.cancelOneTimeAlert(alertId)
+    // ── Reschedule ───────────────────────────────────────────────
 
-        return Result.success()
+    private suspend fun rescheduleOrCancel(
+        alertId: Long,
+        alert: com.eslamdev.weathroza.data.models.alert.AlertEntity
+    ) {
+        val nextMillis = AlertSchedulingStrategy.nextTriggerMillis(alert)
+
+        if (nextMillis != null) {
+            // Repeating alert — update startTimeMillis to next trigger and reschedule
+            val updatedAlert = alert.copy(startTimeMillis = nextMillis)
+            weatherRepo.updateAlertStartTime(alertId, nextMillis)
+            alarmScheduler.scheduleAlert(updatedAlert)
+        } else {
+            weatherRepo.cancelTimeBasedAlert(alertId)
+        }
     }
 
     // ── Value extraction ─────────────────────────────────────────
@@ -173,6 +189,32 @@ class AlertCheckWorker(
             }
         }
         return appContext.getString(resId)
+    }
+
+    private fun buildBody(
+        conditionMet: Boolean,
+        alertName: String,
+        currentDisplay: String,
+        operator: String,
+        thresholdDisplay: String,
+    ): String = if (conditionMet) {
+        appContext.getString(R.string.alert_met_body, currentDisplay, operator, thresholdDisplay)
+    } else {
+        appContext.getString(
+            R.string.alert_not_met_body,
+            alertName,
+            currentDisplay,
+            operator,
+            thresholdDisplay
+        )
+    }
+
+    private fun resolveDurationText(endTimeMillis: Long?): String {
+        return endTimeMillis?.let { end ->
+            val mins = (end - System.currentTimeMillis()) / 60_000
+            if (mins > 0) appContext.getString(R.string.alert_active_duration, mins.toInt())
+            else appContext.getString(R.string.alert_active_now)
+        } ?: appContext.getString(R.string.alert_active_now)
     }
 
     companion object {

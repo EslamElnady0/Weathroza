@@ -166,5 +166,15 @@
     <string name="alert_operator_above">≥</string>
     <string name="alert_operator_below">≤</string>
     <string name="dismiss">ايقاف</string>
-
+    <string name="time_based">مبني على الوقت</string>
+    <string name="continuous">مستمر</string>
+    <string name="continuous_info">يفحص الطقس كل ساعة وينبهك عند تحقق الشرط</string>
+    <string name="day_mon">الإثنين</string>
+    <string name="day_tue">الثلاثاء</string>
+    <string name="day_wed">الأربعاء</string>
+    <string name="day_thu">الخميس</string>
+    <string name="day_fri">الجمعة</string>
+    <string name="day_sat">السبت</string>
+    <string name="day_sun">الأحد</string>
+    <string name="repeat_on">تكرار في</string>
 </resources>

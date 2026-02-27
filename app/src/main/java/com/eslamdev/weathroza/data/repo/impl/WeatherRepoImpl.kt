@@ -154,17 +154,19 @@ class WeatherRepoImpl(
     override suspend fun deleteAlert(id: Long) =
         localDataSource.deleteAlert(id)
 
-    override suspend fun insertOneTimeAlert(alert: AlertEntity): Long {
+    override suspend fun insertTimeBasedAlert(alert: AlertEntity): Long {
         val id = localDataSource.insertAlert(alert)
         val alertWithId = alert.copy(id = id)
         alarmScheduler.scheduleAlert(alertWithId)
         return id
     }
 
-    override suspend fun cancelOneTimeAlert(alertId: Long) {
+    override suspend fun cancelTimeBasedAlert(alertId: Long) {
         alarmScheduler.cancelAlert(alertId)
         localDataSource.updateEnabled(alertId, false)
         localDataSource.deleteAlert(alertId)
     }
 
+    override suspend fun updateAlertStartTime(alertId: Long, newStartMillis: Long) =
+        localDataSource.updateAlertStartTime(alertId, newStartMillis)
 }

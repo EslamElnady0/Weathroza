@@ -33,4 +33,7 @@ interface AlertDao {
 
     @Query("DELETE FROM alerts")
     suspend fun deleteAllAlerts()
+
+    @Query("UPDATE alerts SET startTimeMillis = :newStartMillis WHERE id = :alertId")
+    suspend fun updateAlertStartTime(alertId: Long, newStartMillis: Long)
 }

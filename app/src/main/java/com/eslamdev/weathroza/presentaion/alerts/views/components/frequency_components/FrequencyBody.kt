@@ -17,12 +17,17 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.eslamdev.weathroza.R
 import com.eslamdev.weathroza.core.helpers.AppColors
+import com.eslamdev.weathroza.data.models.alert.AlertDay
 import com.eslamdev.weathroza.data.models.alert.AlertFrequency
+import com.eslamdev.weathroza.presentaion.alerts.views.components.create_alert_sheet_components.AlertDaySelector
+import com.eslamdev.weathroza.presentaion.alerts.views.components.create_alert_sheet_components.SheetSectionLabel
 import com.eslamdev.weathroza.presentaion.alerts.views.components.create_alert_sheet_components.TimePickerRow
 
 @Composable
 fun FrequencyBody(
     frequency: AlertFrequency,
+    selectedDays: Set<AlertDay>,
+    onDayToggle: (AlertDay) -> Unit,
     startTime: String?,
     endTime: String?,
     startError: Int?,
@@ -32,12 +37,14 @@ fun FrequencyBody(
     modifier: Modifier = Modifier,
 ) {
     AnimatedVisibility(
-        visible = frequency == AlertFrequency.ONE_TIME,
+        visible = frequency == AlertFrequency.TIME_BASED,
         enter = fadeIn() + expandVertically(),
         exit = fadeOut() + shrinkVertically(),
         modifier = modifier,
     ) {
-        OneTimeTimeSection(
+        TimeBasedSection(
+            selectedDays = selectedDays,
+            onDayToggle = onDayToggle,
             startTime = startTime,
             endTime = endTime,
             startError = startError,
@@ -48,17 +55,19 @@ fun FrequencyBody(
     }
 
     AnimatedVisibility(
-        visible = frequency == AlertFrequency.PERIODIC,
+        visible = frequency == AlertFrequency.CONTINUOUS,
         enter = fadeIn() + expandVertically(),
         exit = fadeOut() + shrinkVertically(),
         modifier = modifier,
     ) {
-        PeriodicInfoLabel()
+        ContinuousInfoLabel()
     }
 }
 
 @Composable
-private fun OneTimeTimeSection(
+private fun TimeBasedSection(
+    selectedDays: Set<AlertDay>,
+    onDayToggle: (AlertDay) -> Unit,
     startTime: String?,
     endTime: String?,
     startError: Int?,
@@ -69,23 +78,31 @@ private fun OneTimeTimeSection(
 ) {
     Column(
         modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
+        SheetSectionLabel(text = stringResource(R.string.repeat_on))
+
+        AlertDaySelector(
+            selectedDays = selectedDays,
+            onDayToggle = onDayToggle,
+        )
+
         TimePickerRow(
             startTime = startTime,
             endTime = endTime,
             onStartClick = onStartClick,
             onEndClick = onEndClick,
         )
+
         startError?.let { TimeErrorLabel(messageRes = it) }
         endError?.let { TimeErrorLabel(messageRes = it) }
     }
 }
 
 @Composable
-private fun PeriodicInfoLabel(modifier: Modifier = Modifier) {
+private fun ContinuousInfoLabel(modifier: Modifier = Modifier) {
     Text(
-        text = stringResource(R.string.periodic_info),
+        text = stringResource(R.string.continuous_info),
         style = MaterialTheme.typography.bodySmall,
         color = AppColors.lightGray,
         modifier = modifier,

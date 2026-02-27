@@ -16,8 +16,9 @@ data class AlertEntity(
     val frequency: AlertFrequency,
     val thresholdTempUnit: TemperatureUnit? = null,
     val thresholdWindUnit: WindSpeedUnit? = null,
-    val startTimeMillis: Long?,
-    val endTimeMillis: Long?,
+    val startTimeMillis: Long? = null,
+    val endTimeMillis: Long? = null,
+    val repeatDays: Set<AlertDay> = emptySet(),
     val isEnabled: Boolean = true,
     val createdAt: Long = System.currentTimeMillis(),
 )

@@ -4,12 +4,14 @@ import android.content.Context
 import androidx.work.ListenableWorker
 import androidx.work.WorkerFactory
 import androidx.work.WorkerParameters
+import com.eslamdev.weathroza.data.datasources.local.AlarmScheduler
 import com.eslamdev.weathroza.data.repo.UserSettingsRepo
 import com.eslamdev.weathroza.data.repo.WeatherRepo
 
 class AlertWorkerFactory(
     private val weatherRepo: WeatherRepo,
     private val settingsRepo: UserSettingsRepo,
+    private val alarmScheduler: AlarmScheduler,
 ) : WorkerFactory() {
 
     override fun createWorker(
@@ -19,7 +21,13 @@ class AlertWorkerFactory(
     ): ListenableWorker? {
         return when (workerClassName) {
             AlertCheckWorker::class.java.name ->
-                AlertCheckWorker(appContext, workerParameters, weatherRepo, settingsRepo)
+                AlertCheckWorker(
+                    appContext,
+                    workerParameters,
+                    weatherRepo,
+                    settingsRepo,
+                    alarmScheduler
+                )
 
             else -> null
         }

@@ -19,6 +19,7 @@ class WeathrozaApp : Application(), Configuration.Provider {
                 AlertWorkerFactory(
                     weatherRepo = appContainer.weatherRepo,
                     settingsRepo = appContainer.userSettingsRepo,
+                    alarmScheduler = appContainer.alarmScheduler
                 )
             )
             .build()

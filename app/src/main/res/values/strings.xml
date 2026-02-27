@@ -170,6 +170,17 @@
     <string name="alert_operator_above">≥</string>
     <string name="alert_operator_below">≤</string>
     <string name="dismiss">Dismiss</string>
+    <string name="time_based">Time Based</string>
+    <string name="continuous">Continuous</string>
+    <string name="continuous_info">Checks weather every hour and alerts when your condition is met</string>
+    <string name="day_mon">Mon</string>
+    <string name="day_tue">Tue</string>
+    <string name="day_wed">Wed</string>
+    <string name="day_thu">Thu</string>
+    <string name="day_fri">Fri</string>
+    <string name="day_sat">Sat</string>
+    <string name="day_sun">Sun</string>
+    <string name="repeat_on">Repeat on</string>
 
 
 </resources>
