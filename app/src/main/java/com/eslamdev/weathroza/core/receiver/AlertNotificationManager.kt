@@ -21,7 +21,6 @@ class AlertNotificationManager(private val context: Context) {
     }
 
     // ── Public ───────────────────────────────────────────────────
-
     @SuppressLint("RemoteViewLayout")
     fun show(alertId: Long, alertName: String, endMillis: Long, isAlarm: Boolean = true) {
         val durationText = if (endMillis > 0) {
@@ -54,7 +53,6 @@ class AlertNotificationManager(private val context: Context) {
             .setVibrate(longArrayOf(0, 500, 200, 500))
             .addAction(R.drawable.sunrise_ic, "Dismiss", buildDismissPendingIntent(alertId))
             .build()
-
         notificationManager.notify(alertId.toInt(), notification)
     }
 
