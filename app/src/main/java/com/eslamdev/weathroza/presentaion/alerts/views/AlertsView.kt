@@ -60,7 +60,6 @@ fun AlertsView(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
         ) {
             AlertsHeader()
 

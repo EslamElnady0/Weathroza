@@ -18,6 +18,7 @@ import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 
@@ -147,8 +148,15 @@ class WeatherRepoImpl(
         return id
     }
 
-    override suspend fun toggleAlert(id: Long, isEnabled: Boolean) =
+    override suspend fun toggleAlert(id: Long, isEnabled: Boolean) {
         localDataSource.updateEnabled(id, isEnabled)
+        if (!isEnabled) {
+            val alert = localDataSource.getAlertById(id).first() ?: return
+            if (alert.frequency == AlertFrequency.TIME_BASED) {
+                alarmScheduler.cancelAlert(id)
+            }
+        }
+    }
 
     override suspend fun deleteAlert(id: Long) =
         localDataSource.deleteAlert(id)
