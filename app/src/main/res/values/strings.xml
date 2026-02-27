@@ -155,5 +155,21 @@
     <string name="delete_alert">Delete alert</string>
     <string name="delete_alert_title">Delete Alert</string>
     <string name="delete_alert_desc">Are you sure you want to delete "%1$s"?</string>
+    <string name="alert_met_title_temp">Heads up! Temperature alert triggered 🌡️</string>
+    <string name="alert_met_title_wind">Watch out! Wind is picking up 💨</string>
+    <string name="alert_met_title_humidity">Just so you know! Humidity alert 💧</string>
+    <string name="alert_met_title_rain">Rain alert! Grab your umbrella ☂️</string>
+    <string name="alert_met_body">%1$s %2$s %3$s — your threshold was crossed</string>
+    <string name="alert_not_met_title_temp">All clear on temperature 🌡️</string>
+    <string name="alert_not_met_title_wind">Wind is calm right now 💨</string>
+    <string name="alert_not_met_title_humidity">Humidity looks fine 💧</string>
+    <string name="alert_not_met_title_rain">No rain detected ☂️</string>
+    <string name="alert_not_met_body">"%1$s" checked in — %2$s is still %3$s %4$s, no worries</string>
+    <string name="alert_active_duration">Active for ~%1$d min</string>
+    <string name="alert_active_now">Active now</string>
+    <string name="alert_operator_above">≥</string>
+    <string name="alert_operator_below">≤</string>
+    <string name="dismiss">Dismiss</string>
+
 
 </resources>

@@ -140,6 +140,11 @@ class WeatherRepoImpl(
             .map { Result.success(it) }
             .catch { emit(Result.failure(it)) }
 
+    override fun getAlertById(id: Long): Flow<Result<AlertEntity?>> =
+        localDataSource.getAlertById(id)
+            .map { Result.success(it) }
+            .catch { emit(Result.failure(it)) }
+
     override suspend fun insertAlert(alert: AlertEntity): Long =
         localDataSource.insertAlert(alert)
 

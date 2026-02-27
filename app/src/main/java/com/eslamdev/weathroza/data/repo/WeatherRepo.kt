@@ -17,7 +17,7 @@ interface WeatherRepo {
         latitude: Double,
         longitude: Double,
         language: AppLanguage,
-        units: Units
+        units: Units = Units.METRIC
     ): Flow<Result<WeatherEntity>>
 
     fun refreshHomeData(
@@ -59,6 +59,7 @@ interface WeatherRepo {
     fun getScheduledAlerts(): Flow<Result<List<AlertEntity>>>
     fun getWeatherAlerts(): Flow<Result<List<AlertEntity>>>
     fun getAllAlerts(): Flow<Result<List<AlertEntity>>>
+    fun getAlertById(id: Long): Flow<Result<AlertEntity?>>
     suspend fun insertAlert(alert: AlertEntity): Long
     suspend fun toggleAlert(id: Long, isEnabled: Boolean)
     suspend fun deleteAlert(id: Long)

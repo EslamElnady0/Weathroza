@@ -46,6 +46,7 @@ interface WeatherLocalDataSource {
     fun getAllAlerts(): Flow<List<AlertEntity>>
     fun getScheduledAlerts(): Flow<List<AlertEntity>>
     fun getWeatherAlerts(): Flow<List<AlertEntity>>
+    fun getAlertById(id: Long): Flow<AlertEntity?>
     suspend fun insertAlert(alert: AlertEntity): Long
     suspend fun updateEnabled(id: Long, isEnabled: Boolean)
     suspend fun deleteAlert(id: Long)

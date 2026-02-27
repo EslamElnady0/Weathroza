@@ -93,7 +93,7 @@ class WeatherLocalDataSourceImpl(
         favouriteLocationDao.updateLastWeather(cityId, temp, iconUrl)
 
     // ── Alerts ───────────────────────────────────────────────
-    
+
     override fun getAllAlerts(): Flow<List<AlertEntity>> =
         alertDao.getAllAlerts()
 
@@ -103,6 +103,8 @@ class WeatherLocalDataSourceImpl(
     override fun getWeatherAlerts(): Flow<List<AlertEntity>> =
         alertDao.getWeatherAlerts()
 
+    override fun getAlertById(id: Long): Flow<AlertEntity?> = alertDao.getAlertById(id)
+    
     override suspend fun insertAlert(alert: AlertEntity): Long =
         alertDao.insertAlert(alert)
 
@@ -114,4 +116,5 @@ class WeatherLocalDataSourceImpl(
 
     override suspend fun deleteAllAlerts() =
         alertDao.deleteAllAlerts()
+
 }

@@ -33,7 +33,6 @@ class WeatherRemoteDataSourceImpl(
                     latitude = latitude,
                     longitude = longitude,
                     language = language.code,
-                    units = units.value
                 )
             )
         }.asResultFlow()

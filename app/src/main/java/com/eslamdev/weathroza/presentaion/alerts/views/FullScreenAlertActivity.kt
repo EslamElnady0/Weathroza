@@ -1,4 +1,4 @@
-package com.eslamdev.weathroza.core.receiver
+package com.eslamdev.weathroza.presentaion.alerts.views
 
 import android.content.Intent
 import android.os.Build
@@ -49,6 +49,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.eslamdev.weathroza.core.helpers.AppColors
+import com.eslamdev.weathroza.core.receiver.AlertReceiver
 import com.eslamdev.weathroza.ui.theme.WeathrozaTheme
 import kotlinx.coroutines.delay
 import java.util.concurrent.TimeUnit
@@ -59,9 +60,10 @@ class FullScreenAlertActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val alertId = intent.getLongExtra(AlertReceiver.EXTRA_ALERT_ID, -1L)
-        val alertName = intent.getStringExtra(AlertReceiver.EXTRA_ALERT_NAME) ?: "Weather Alert"
-        val endMillis = intent.getLongExtra(AlertReceiver.EXTRA_END_MILLIS, -1L)
+        val alertId = intent.getLongExtra(AlertReceiver.Companion.EXTRA_ALERT_ID, -1L)
+        val alertName =
+            intent.getStringExtra(AlertReceiver.Companion.EXTRA_ALERT_NAME) ?: "Weather Alert"
+        val endMillis = intent.getLongExtra(AlertReceiver.Companion.EXTRA_END_MILLIS, -1L)
         Log.d("FullScreenAlert", "Activity launched! alertName=$alertName")
 
         setShowWhenLocked(true)
@@ -73,12 +75,12 @@ class FullScreenAlertActivity : ComponentActivity() {
                     alertName = alertName,
                     endMillis = endMillis,
                     onDismiss = {
-                        sendBroadcast(Intent(AlertReceiver.ACTION_DISMISS).apply {
+                        sendBroadcast(Intent(AlertReceiver.Companion.ACTION_DISMISS).apply {
                             setClass(
                                 this@FullScreenAlertActivity,
                                 AlertReceiver::class.java
                             )
-                            putExtra(AlertReceiver.EXTRA_NOTIFICATION_ID, alertId.toInt())
+                            putExtra(AlertReceiver.Companion.EXTRA_NOTIFICATION_ID, alertId.toInt())
                         })
                         finish()
                     }

@@ -13,6 +13,9 @@ interface AlertDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAlert(alert: AlertEntity): Long
 
+    @Query("SELECT * FROM alerts WHERE id = :id LIMIT 1")
+    fun getAlertById(id: Long): Flow<AlertEntity?>
+
     @Query("SELECT * FROM alerts ORDER BY createdAt DESC")
     fun getAllAlerts(): Flow<List<AlertEntity>>
 

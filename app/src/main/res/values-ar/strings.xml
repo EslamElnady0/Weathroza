@@ -151,4 +151,20 @@
     <string name="delete_alert">حذف التنبيه</string>
     <string name="delete_alert_title">حذف التنبيه</string>
     <string name="delete_alert_desc">هل أنت متأكد من حذف "%1$s"؟</string>
+    <string name="alert_met_title_temp">انتبه! تنبيه درجة الحرارة مفعّل 🌡️</string>
+    <string name="alert_met_title_wind">احترس! الرياح تشتد 💨</string>
+    <string name="alert_met_title_humidity">للعلم! تنبيه الرطوبة مفعّل 💧</string>
+    <string name="alert_met_title_rain">تنبيه مطر! خذ مظلتك ☂️</string>
+    <string name="alert_met_body">%1$s %2$s %3$s — تم تجاوز الحد المحدد</string>
+    <string name="alert_not_met_title_temp">لا شيء يقلق في درجة الحرارة 🌡️</string>
+    <string name="alert_not_met_title_wind">الرياح هادئة الآن 💨</string>
+    <string name="alert_not_met_title_humidity">الرطوبة تبدو بخير 💧</string>
+    <string name="alert_not_met_title_rain">لا مطر حتى الآن ☂️</string>
+    <string name="alert_not_met_body">"%1$s" تم الفحص — %2$s لا يزال %3$s %4$s، لا داعي للقلق</string>
+    <string name="alert_active_duration">نشط لمدة ~%1$d دقيقة</string>
+    <string name="alert_active_now">نشط الآن</string>
+    <string name="alert_operator_above">≥</string>
+    <string name="alert_operator_below">≤</string>
+    <string name="dismiss">ايقاف</string>
+
 </resources>
