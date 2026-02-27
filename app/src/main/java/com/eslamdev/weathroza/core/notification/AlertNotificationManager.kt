@@ -53,7 +53,7 @@ class AlertNotificationManager(private val context: Context) {
             title = title,
             body = body,
             smallIcon = R.drawable.sunrise_ic,
-            priority = NotificationCompat.PRIORITY_LOW,
+            priority = NotificationCompat.PRIORITY_HIGH,
             ongoing = false,
             autoCancel = true,
         )
@@ -70,7 +70,7 @@ class AlertNotificationManager(private val context: Context) {
         notificationHelper.createChannel(
             channelId = CHANNEL_ID,
             channelName = "Weather Notifications",
-            importance = NotificationManager.IMPORTANCE_LOW,
+            importance = NotificationManager.IMPORTANCE_HIGH,
             description = "General weather check results",
             enableVibration = false,
         )
