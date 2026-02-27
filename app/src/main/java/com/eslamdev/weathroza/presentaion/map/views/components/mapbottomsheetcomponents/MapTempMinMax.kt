@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -18,14 +19,15 @@ import com.eslamdev.weathroza.data.models.weather.WeatherEntity
 
 @Composable
 fun MapTempMinMax(weather: WeatherEntity, settings: UserSettings) {
+    val context = LocalContext.current
     val locale = settings.language.toLocale()
 
     val minLabel = "${
         weather.tempMin.convertTemp(settings.temperatureUnit).formatLocalized(locale, "%d")
-    }°${settings.temperatureUnit.label()}"
+    }°${settings.temperatureUnit.label(context)}"
     val maxLabel = "${
         weather.tempMax.convertTemp(settings.temperatureUnit).formatLocalized(locale, "%d")
-    }°${settings.temperatureUnit.label()}"
+    }°${settings.temperatureUnit.label(context)}"
 
     Row(
         horizontalArrangement = Arrangement.spacedBy(8.dp),

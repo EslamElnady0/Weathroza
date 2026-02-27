@@ -1,10 +1,12 @@
 package com.eslamdev.weathroza.data.datasources.local.impl
 
 import com.eslamdev.weathroza.data.datasources.local.WeatherLocalDataSource
+import com.eslamdev.weathroza.data.datasources.local.dao.AlertDao
 import com.eslamdev.weathroza.data.datasources.local.dao.DailyForecastDao
 import com.eslamdev.weathroza.data.datasources.local.dao.FavouriteLocationDao
 import com.eslamdev.weathroza.data.datasources.local.dao.HourlyForecastDao
 import com.eslamdev.weathroza.data.datasources.local.dao.WeatherDao
+import com.eslamdev.weathroza.data.models.alert.AlertEntity
 import com.eslamdev.weathroza.data.models.fav.FavouriteLocationEntity
 import com.eslamdev.weathroza.data.models.forecast.DailyForecastEntity
 import com.eslamdev.weathroza.data.models.forecast.HourlyForecastEntity
@@ -15,7 +17,8 @@ class WeatherLocalDataSourceImpl(
     private val weatherDao: WeatherDao,
     private val hourlyForecastDao: HourlyForecastDao,
     private val dailyForecastDao: DailyForecastDao,
-    private val favouriteLocationDao: FavouriteLocationDao
+    private val favouriteLocationDao: FavouriteLocationDao,
+    private val alertDao: AlertDao,
 ) : WeatherLocalDataSource {
 
     // ── Weather ──────────────────────────────────────────────────
@@ -88,4 +91,29 @@ class WeatherLocalDataSourceImpl(
 
     override suspend fun updateLastTemp(cityId: Long, temp: Double, iconUrl: String) =
         favouriteLocationDao.updateLastWeather(cityId, temp, iconUrl)
+
+    // ── Alerts ───────────────────────────────────────────────
+
+    override fun getAllAlerts(): Flow<List<AlertEntity>> =
+        alertDao.getAllAlerts()
+
+    override fun getAlertById(id: Long): Flow<AlertEntity?> = alertDao.getAlertById(id)
+
+    override suspend fun insertAlert(alert: AlertEntity): Long =
+        alertDao.insertAlert(alert)
+
+    override suspend fun updateEnabled(id: Long, isEnabled: Boolean) =
+        alertDao.updateEnabled(id, isEnabled)
+
+    override suspend fun deleteAlert(id: Long) =
+        alertDao.deleteAlert(id)
+
+    override suspend fun deleteAllAlerts() =
+        alertDao.deleteAllAlerts()
+
+    override suspend fun updateAlertStartTime(alertId: Long, newStartMillis: Long) =
+        alertDao.updateAlertStartTime(alertId, newStartMillis)
+
+    override fun getContinuousAlerts(): Flow<List<AlertEntity>> = alertDao.getContinuousAlerts()
+
 }

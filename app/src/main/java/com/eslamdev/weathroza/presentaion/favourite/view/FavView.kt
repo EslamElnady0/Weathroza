@@ -5,15 +5,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,8 +27,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.eslamdev.weathroza.R
 import com.eslamdev.weathroza.core.common.UiState
+import com.eslamdev.weathroza.core.components.AddFab
 import com.eslamdev.weathroza.core.components.HeightSpacer
-import com.eslamdev.weathroza.core.helpers.AppColors
 import com.eslamdev.weathroza.data.models.usersettings.AppLanguage
 import com.eslamdev.weathroza.presentaion.favourite.view.components.FavEmptyState
 import com.eslamdev.weathroza.presentaion.favourite.view.components.FavItem
@@ -55,19 +49,9 @@ fun FavView(
     Scaffold(
         modifier = modifier.fillMaxSize(),
         floatingActionButton = {
-            FloatingActionButton(
+            AddFab(
                 onClick = onNavigateToMap,
-                shape = CircleShape,
-                containerColor = AppColors.primary,
-                contentColor = Color.Black,
-                modifier = Modifier.size(64.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = stringResource(R.string.map_add_to_favourites),
-                    modifier = Modifier.size(32.dp)
-                )
-            }
+            )
         }
     ) { paddingValues ->
         Column(

@@ -1,8 +1,11 @@
 package com.eslamdev.weathroza.data.repo.impl
 
 import com.eslamdev.weathroza.core.enums.Units
+import com.eslamdev.weathroza.data.datasources.local.AlarmScheduler
 import com.eslamdev.weathroza.data.datasources.local.WeatherLocalDataSource
 import com.eslamdev.weathroza.data.datasources.remote.WeatherRemoteDataSource
+import com.eslamdev.weathroza.data.models.alert.AlertEntity
+import com.eslamdev.weathroza.data.models.alert.AlertFrequency
 import com.eslamdev.weathroza.data.models.fav.FavouriteLocationEntity
 import com.eslamdev.weathroza.data.models.forecast.DailyForecastEntity
 import com.eslamdev.weathroza.data.models.forecast.HourlyForecastEntity
@@ -15,13 +18,15 @@ import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 
 
 class WeatherRepoImpl(
     private val localDataSource: WeatherLocalDataSource,
-    private val remoteDataSource: WeatherRemoteDataSource
+    private val remoteDataSource: WeatherRemoteDataSource,
+    private val alarmScheduler: AlarmScheduler,
 ) : WeatherRepo {
 
     override fun getWeatherFromApi(
@@ -119,4 +124,54 @@ class WeatherRepoImpl(
     override suspend fun refreshFavouriteWeather(cityId: Long, temp: Double, iconUrl: String) {
         localDataSource.updateLastTemp(cityId = cityId, temp = temp, iconUrl = iconUrl)
     }
+
+    // ── Alert ──────────────────────────────────────────────
+    override fun startContinuousAlertsIfNeeded() {
+        alarmScheduler.scheduleContinuousAlerts()
+    }
+
+    override fun getAllAlerts(): Flow<Result<List<AlertEntity>>> =
+        localDataSource.getAllAlerts()
+            .map { Result.success(it) }
+            .catch { emit(Result.failure(it)) }
+
+    override fun getAlertById(id: Long): Flow<Result<AlertEntity?>> =
+        localDataSource.getAlertById(id)
+            .map { Result.success(it) }
+            .catch { emit(Result.failure(it)) }
+
+    override suspend fun insertAlert(alert: AlertEntity): Long {
+        val id = localDataSource.insertAlert(alert)
+        if (alert.frequency == AlertFrequency.TIME_BASED) {
+            alarmScheduler.scheduleAlert(alert.copy(id = id))
+        }
+        return id
+    }
+
+    override suspend fun toggleAlert(id: Long, isEnabled: Boolean) {
+        localDataSource.updateEnabled(id, isEnabled)
+        if (!isEnabled) {
+            val alert = localDataSource.getAlertById(id).first() ?: return
+            if (alert.frequency == AlertFrequency.TIME_BASED) {
+                alarmScheduler.cancelAlert(id)
+            }
+        }
+    }
+
+    override suspend fun deleteAlert(id: Long) =
+        localDataSource.deleteAlert(id)
+
+    override suspend fun cancelTimeBasedAlert(alertId: Long) {
+        alarmScheduler.cancelAlert(alertId)
+        localDataSource.updateEnabled(alertId, false)
+        localDataSource.deleteAlert(alertId)
+    }
+
+    override suspend fun updateAlertStartTime(alertId: Long, newStartMillis: Long) =
+        localDataSource.updateAlertStartTime(alertId, newStartMillis)
+
+    override fun getContinuousAlerts(): Flow<Result<List<AlertEntity>>> =
+        localDataSource.getContinuousAlerts()
+            .map { Result.success(it) }
+            .catch { emit(Result.failure(it)) }
 }

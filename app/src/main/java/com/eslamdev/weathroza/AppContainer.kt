@@ -3,10 +3,12 @@ package com.eslamdev.weathroza
 import android.content.Context
 import com.eslamdev.weathroza.data.config.db.WeatherDataBase
 import com.eslamdev.weathroza.data.config.network.RetrofitHelper
+import com.eslamdev.weathroza.data.datasources.local.AlarmScheduler
 import com.eslamdev.weathroza.data.datasources.local.LocationManager
 import com.eslamdev.weathroza.data.datasources.local.NetworkObserver
 import com.eslamdev.weathroza.data.datasources.local.SettingsDataStore
 import com.eslamdev.weathroza.data.datasources.local.WeatherLocalDataSource
+import com.eslamdev.weathroza.data.datasources.local.dao.AlertDao
 import com.eslamdev.weathroza.data.datasources.local.dao.DailyForecastDao
 import com.eslamdev.weathroza.data.datasources.local.dao.FavouriteLocationDao
 import com.eslamdev.weathroza.data.datasources.local.dao.HourlyForecastDao
@@ -15,6 +17,7 @@ import com.eslamdev.weathroza.data.datasources.local.impl.LocationManagerImpl
 import com.eslamdev.weathroza.data.datasources.local.impl.NetworkObserverImpl
 import com.eslamdev.weathroza.data.datasources.local.impl.SettingsDataStoreImpl
 import com.eslamdev.weathroza.data.datasources.local.impl.WeatherLocalDataSourceImpl
+import com.eslamdev.weathroza.data.datasources.local.impl.WorkManagerAlertScheduler
 import com.eslamdev.weathroza.data.datasources.remote.WeatherRemoteDataSource
 import com.eslamdev.weathroza.data.datasources.remote.impl.WeatherRemoteDataSourceImpl
 import com.eslamdev.weathroza.data.datasources.remote.service.WeatherService
@@ -31,14 +34,17 @@ interface AppContainer {
     val hourlyForecastDao: HourlyForecastDao
     val weatherDao: WeatherDao
     val favLocationDao: FavouriteLocationDao
+    val alertDao: AlertDao
     val weatherService: WeatherService
     val weatherLocalDataSource: WeatherLocalDataSource
     val weatherRemoteDataSource: WeatherRemoteDataSource
+    val alarmScheduler: AlarmScheduler
     val weatherRepo: WeatherRepo
     val userSettingsRepo: UserSettingsRepo
 }
 
 class AppContainerImpl(private val context: Context) : AppContainer {
+
     override val locationManager: LocationManager by lazy {
         LocationManagerImpl(context)
     }
@@ -48,7 +54,6 @@ class AppContainerImpl(private val context: Context) : AppContainer {
     override val networkObserver: NetworkObserver by lazy {
         NetworkObserverImpl(context)
     }
-
     override val dailyForecastDao: DailyForecastDao by lazy {
         WeatherDataBase.getInstance(context).getDailyForecastDao()
     }
@@ -61,6 +66,9 @@ class AppContainerImpl(private val context: Context) : AppContainer {
     override val favLocationDao: FavouriteLocationDao by lazy {
         WeatherDataBase.getInstance(context).getFavouriteLocationDao()
     }
+    override val alertDao: AlertDao by lazy {
+        WeatherDataBase.getInstance(context).getAlertDao()
+    }
     override val weatherService: WeatherService by lazy {
         RetrofitHelper.weatherService
     }
@@ -69,24 +77,30 @@ class AppContainerImpl(private val context: Context) : AppContainer {
             weatherDao = weatherDao,
             hourlyForecastDao = hourlyForecastDao,
             dailyForecastDao = dailyForecastDao,
-            favouriteLocationDao = favLocationDao
+            favouriteLocationDao = favLocationDao,
+            alertDao = alertDao,
         )
     }
     override val weatherRemoteDataSource: WeatherRemoteDataSource by lazy {
         WeatherRemoteDataSourceImpl(weatherService)
     }
+
+    override val alarmScheduler: AlarmScheduler by lazy {
+        WorkManagerAlertScheduler(context)
+    }
+
     override val weatherRepo: WeatherRepo by lazy {
         WeatherRepoImpl(
             localDataSource = weatherLocalDataSource,
             remoteDataSource = weatherRemoteDataSource,
+            alarmScheduler = alarmScheduler,
         )
     }
     override val userSettingsRepo: UserSettingsRepo by lazy {
         UserSettingsRepoImpl(
             dataStore = settingsDataStore,
             locationManager = locationManager,
-            networkObserver = networkObserver
+            networkObserver = networkObserver,
         )
     }
-
 }

@@ -4,12 +4,18 @@ package com.eslamdev.weathroza.presentaion.settings.view.components
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Map
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.eslamdev.weathroza.R
+import com.eslamdev.weathroza.core.components.SettingSelectorItem
+import com.eslamdev.weathroza.core.components.SettingsSelector
 import com.eslamdev.weathroza.core.settings.location.LocationPermissionHelper
 import com.eslamdev.weathroza.core.settings.location.RequestLocationPermission
 
@@ -22,8 +28,8 @@ fun LocationSelector(
 ) {
     val context = LocalContext.current
 
-    var showMapDialog    by remember { mutableStateOf(false) }
-    var showGpsDialog    by remember { mutableStateOf(false) }
+    var showMapDialog by remember { mutableStateOf(false) }
+    var showGpsDialog by remember { mutableStateOf(false) }
     var requestPermission by remember { mutableStateOf(false) }
     var showLocationDisabledDialog by remember { mutableStateOf(false) }
     var showPermanentlyDeniedDialog by remember { mutableStateOf(false) }

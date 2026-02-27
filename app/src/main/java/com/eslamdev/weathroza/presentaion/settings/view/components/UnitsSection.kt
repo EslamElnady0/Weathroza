@@ -20,13 +20,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.eslamdev.weathroza.R
 import com.eslamdev.weathroza.core.components.CardWithBoarder
 import com.eslamdev.weathroza.core.components.HeightSpacer
+import com.eslamdev.weathroza.core.components.SettingSelectorItem
+import com.eslamdev.weathroza.core.components.SettingsSelector
 import com.eslamdev.weathroza.core.helpers.AppColors
-import androidx.compose.ui.res.stringResource
-import com.eslamdev.weathroza.R
 
 @Composable
 fun UnitsSection(

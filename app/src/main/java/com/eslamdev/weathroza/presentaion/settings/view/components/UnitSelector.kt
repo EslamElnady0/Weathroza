@@ -2,9 +2,11 @@ package com.eslamdev.weathroza.presentaion.settings.view.components
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import com.eslamdev.weathroza.R
+import com.eslamdev.weathroza.core.components.SettingSelectorItem
+import com.eslamdev.weathroza.core.components.SettingsSelector
 
 @Composable
 fun UnitSelector(

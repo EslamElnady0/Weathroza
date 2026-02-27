@@ -1,6 +1,7 @@
 package com.eslamdev.weathroza.data.repo
 
 import com.eslamdev.weathroza.core.enums.Units
+import com.eslamdev.weathroza.data.models.alert.AlertEntity
 import com.eslamdev.weathroza.data.models.fav.FavouriteLocationEntity
 import com.eslamdev.weathroza.data.models.forecast.DailyForecastEntity
 import com.eslamdev.weathroza.data.models.forecast.HourlyForecastEntity
@@ -16,7 +17,7 @@ interface WeatherRepo {
         latitude: Double,
         longitude: Double,
         language: AppLanguage,
-        units: Units
+        units: Units = Units.METRIC
     ): Flow<Result<WeatherEntity>>
 
     fun refreshHomeData(
@@ -53,4 +54,15 @@ interface WeatherRepo {
     suspend fun removeFavourite(cityId: Long)
 
     suspend fun refreshFavouriteWeather(cityId: Long, temp: Double, iconUrl: String)
+
+    // ── Alerts ──────────────────────────────────────────────
+    fun getAllAlerts(): Flow<Result<List<AlertEntity>>>
+    fun getAlertById(id: Long): Flow<Result<AlertEntity?>>
+    suspend fun insertAlert(alert: AlertEntity): Long
+    suspend fun toggleAlert(id: Long, isEnabled: Boolean)
+    suspend fun deleteAlert(id: Long)
+    suspend fun cancelTimeBasedAlert(alertId: Long)
+    suspend fun updateAlertStartTime(alertId: Long, newStartMillis: Long)
+    fun getContinuousAlerts(): Flow<Result<List<AlertEntity>>>
+    fun startContinuousAlertsIfNeeded()
 }
