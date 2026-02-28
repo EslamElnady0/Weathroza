@@ -11,6 +11,7 @@ import android.media.RingtoneManager
 import android.os.Build
 import android.util.Log
 import com.eslamdev.weathroza.core.notification.AlertNotificationManager
+import com.eslamdev.weathroza.data.models.alert.AlertNotifyType
 import java.util.Date
 
 class AlertReceiver : BroadcastReceiver() {
@@ -23,6 +24,7 @@ class AlertReceiver : BroadcastReceiver() {
         const val EXTRA_NOTIFICATION_TITLE = "notification_title"
         const val EXTRA_NOTIFICATION_BODY = "notification_body"
         const val EXTRA_DURATION_TEXT = "duration_text"
+        const val EXTRA_NOTIFY_TYPE = "notify_type"
         const val ACTION_ALERT_START = "com.eslamdev.weathroza.ACTION_ALERT_START"
         const val ACTION_ALERT_NOT_MET = "com.eslamdev.weathroza.ACTION_ALERT_NOT_MET"
         const val ACTION_ALERT_END = "com.eslamdev.weathroza.ACTION_ALERT_END"
@@ -52,21 +54,28 @@ class AlertReceiver : BroadcastReceiver() {
         val title = intent.getStringExtra(EXTRA_NOTIFICATION_TITLE) ?: alertName
         val body = intent.getStringExtra(EXTRA_NOTIFICATION_BODY) ?: ""
         val durationText = intent.getStringExtra(EXTRA_DURATION_TEXT) ?: ""
+        val notifyType = intent.getStringExtra(EXTRA_NOTIFY_TYPE)
+            ?.let { runCatching { AlertNotifyType.valueOf(it) }.getOrNull() }
+            ?: AlertNotifyType.ALARM
 
         Log.d(
             "AlertReceiver",
-            "START: id=$alertId name=$alertName endAt=${if (endMillis > 0) Date(endMillis) else "none"}"
+            "START: id=$alertId notifyType=$notifyType endAt=${if (endMillis > 0) Date(endMillis) else "none"}"
         )
 
-        AlertNotificationManager(context).showAlertMet(
-            alertId,
-            title,
-            body,
-            durationText,
-            endMillis
-        )
-        playAlarmSound(context)
-        scheduleEndAlarm(context, alertId, endMillis)
+        val notificationManager = AlertNotificationManager(context)
+
+        when (notifyType) {
+            AlertNotifyType.ALARM -> {
+                notificationManager.showAlertMet(alertId, title, body, durationText, endMillis)
+                playAlarmSound(context)
+                scheduleEndAlarm(context, alertId, endMillis)
+            }
+
+            AlertNotifyType.NOTIFICATION_SOUND -> {
+                notificationManager.showAlertMetAsNotification(alertId, title, body)
+            }
+        }
     }
 
     private fun handleAlertNotMet(context: Context, intent: Intent) {

@@ -21,4 +21,5 @@ data class AlertEntity(
     val repeatDays: Set<AlertDay> = emptySet(),
     val isEnabled: Boolean = true,
     val createdAt: Long = System.currentTimeMillis(),
+    val notifyType: AlertNotifyType = AlertNotifyType.ALARM
 )

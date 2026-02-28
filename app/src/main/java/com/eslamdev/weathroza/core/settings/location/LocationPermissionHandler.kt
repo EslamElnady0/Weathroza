@@ -28,13 +28,12 @@ fun RequestLocationPermission(
                 LocationPermissionHelper.permissions.any {
                     ActivityCompat.shouldShowRequestPermissionRationale(act, it)
                 }
-            } ?: false
-
-            if (!showRationale) {
+            } ?: run {
                 onPermanentlyDenied()
-            } else {
-                onDenied()
+                return@rememberLauncherForActivityResult
             }
+
+            if (!showRationale) onPermanentlyDenied() else onDenied()
         }
     }
 

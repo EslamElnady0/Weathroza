@@ -81,7 +81,7 @@ fun SettingsViewImpl(
             .padding(horizontal = 16.dp)
             .verticalScroll(rememberScrollState())
     ) {
-        HeightSpacer(32.0)
+        HeightSpacer(16.0)
         Text(stringResource(R.string.settings), fontSize = 30.sp, fontWeight = FontWeight.Bold)
         HeightSpacer(16.0)
         Text(

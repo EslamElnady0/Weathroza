@@ -14,6 +14,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.eslamdev.weathroza.R
+import com.eslamdev.weathroza.core.components.ObserveOnResume
 import com.eslamdev.weathroza.core.components.SettingSelectorItem
 import com.eslamdev.weathroza.core.components.SettingsSelector
 import com.eslamdev.weathroza.core.settings.location.LocationPermissionHelper
@@ -33,6 +34,18 @@ fun LocationSelector(
     var requestPermission by remember { mutableStateOf(false) }
     var showLocationDisabledDialog by remember { mutableStateOf(false) }
     var showPermanentlyDeniedDialog by remember { mutableStateOf(false) }
+    var waitingForLocationSettings by remember { mutableStateOf(false) }
+
+    ObserveOnResume(
+        enabled = waitingForLocationSettings,
+        onResume = {
+            if (LocationPermissionHelper.isLocationEnabled(context)) {
+                waitingForLocationSettings = false
+                onGpsSelected()
+            }
+        }
+    )
+
 
     // Map dialog
     if (showMapDialog) {
@@ -86,6 +99,7 @@ fun LocationSelector(
 
     if (showPermanentlyDeniedDialog) {
         PermanentlyDeniedDialog(
+            desc = R.string.permission_permanently_denied,
             onDismiss = { showPermanentlyDeniedDialog = false },
             onOpenSettings = {
                 showPermanentlyDeniedDialog = false
@@ -99,6 +113,7 @@ fun LocationSelector(
             onDismiss = { showLocationDisabledDialog = false },
             onOpenSettings = {
                 showLocationDisabledDialog = false
+                waitingForLocationSettings = true
                 LocationPermissionHelper.openLocationSettings(context)
             }
         )

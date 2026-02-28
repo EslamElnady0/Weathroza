@@ -134,10 +134,15 @@ class AlertsViewModel(
                     endTimeDisplay = intent.display,
                     endError = endError,
                 )
+
             }
+
+            is CreateAlertIntent.SetNotifyType ->
+                current.copy(notifyType = intent.notifyType)
 
             is CreateAlertIntent.Submit -> current
         }
+
 
         if (intent is CreateAlertIntent.Submit && current.isFormValid) {
             viewModelScope.launch {
@@ -153,6 +158,7 @@ class AlertsViewModel(
                     endHour = current.endHour.takeIf { it != -1 },
                     endMinute = current.endMinute.takeIf { it != -1 },
                     settings = settings.value,
+                    notifyType = current.notifyType,
                 )
                 weatherRepo.insertAlert(entity)
 

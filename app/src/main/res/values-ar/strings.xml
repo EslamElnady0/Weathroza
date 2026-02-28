@@ -177,4 +177,10 @@
     <string name="day_sat">السبت</string>
     <string name="day_sun">الأحد</string>
     <string name="repeat_on">تكرار في</string>
+    <string name="notification_permission_permanently_denied">تم رفض إذن الإشعارات عدة مرات. يرجى منح إذن الإشعارات من إعدادات التطبيق لاستخدام هذه الميزة.</string>
+    <string name="notify_when_met">عند تحقق الشرط</string>
+    <string name="notify_type_alarm">إنذار</string>
+    <string name="notify_type_alarm_desc">شاشة كاملة + صوت</string>
+    <string name="notify_type_notification">إشعار</string>
+    <string name="notify_type_notification_desc">إشعار بصوت</string>
 </resources>

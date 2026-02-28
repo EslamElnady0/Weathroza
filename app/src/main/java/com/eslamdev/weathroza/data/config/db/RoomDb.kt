@@ -19,7 +19,7 @@ import com.eslamdev.weathroza.data.models.weather.WeatherEntity
 @TypeConverters(AlertConverters::class)
 @Database(
     entities = [WeatherEntity::class, HourlyForecastEntity::class, DailyForecastEntity::class, FavouriteLocationEntity::class, AlertEntity::class],
-    version = 4
+    version = 6
 )
 abstract class WeatherDataBase : RoomDatabase() {
     abstract fun getWeatherDao(): WeatherDao
@@ -37,6 +37,7 @@ abstract class WeatherDataBase : RoomDatabase() {
                 val instance = Room.databaseBuilder(
                     ctx.applicationContext, WeatherDataBase::class.java, "color_database"
                 )
+                    .fallbackToDestructiveMigration(false)
                     .build()
                 INSTANCE = instance
                 instance

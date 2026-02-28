@@ -5,8 +5,10 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
+import com.eslamdev.weathroza.MainActivity
 
 class NotificationHelper(private val context: Context) {
 
@@ -49,6 +51,15 @@ class NotificationHelper(private val context: Context) {
         fullScreenIntent: PendingIntent? = null,
         actions: List<NotificationCompat.Action> = emptyList(),
     ): Notification {
+        val contentIntent = PendingIntent.getActivity(
+            context,
+            0,
+            Intent(context, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            },
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+        )
+
         val builder = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(smallIcon)
             .setContentTitle(title)
@@ -58,6 +69,7 @@ class NotificationHelper(private val context: Context) {
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setOngoing(ongoing)
             .setAutoCancel(autoCancel)
+            .setContentIntent(contentIntent)
 
         vibrate?.let { builder.setVibrate(it) }
         fullScreenIntent?.let { builder.setFullScreenIntent(it, true) }

@@ -2,6 +2,7 @@ package com.eslamdev.weathroza.presentaion.alerts.viewmodel
 
 import com.eslamdev.weathroza.data.models.alert.AlertDay
 import com.eslamdev.weathroza.data.models.alert.AlertFrequency
+import com.eslamdev.weathroza.data.models.alert.AlertNotifyType
 import com.eslamdev.weathroza.data.models.alert.WeatherParameter
 
 data class CreateAlertUiState(
@@ -19,6 +20,7 @@ data class CreateAlertUiState(
     val endTimeDisplay: String? = null,
     val startError: Int? = null,
     val endError: Int? = null,
+    val notifyType: AlertNotifyType = AlertNotifyType.ALARM,
 ) {
     val isFormValid: Boolean
         get() = alertName.isNotBlank()
