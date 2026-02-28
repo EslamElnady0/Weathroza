@@ -21,7 +21,7 @@
         android:localeConfig="@xml/locales_config"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Weathroza">
+        android:theme="@style/Theme.Weathroza.Splash">
         <provider
             android:name="androidx.startup.InitializationProvider"
             android:authorities="${applicationId}.androidx-startup"
@@ -37,7 +37,7 @@
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.Weathroza">
+            android:theme="@style/Theme.Weathroza.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -48,7 +48,7 @@
             android:name=".presentaion.alerts.views.FullScreenAlertActivity"
             android:exported="false"
             android:showOnLockScreen="true"
-            android:theme="@style/Theme.Weathroza"
+            android:theme="@style/Theme.Weathroza.Splash"
             android:turnScreenOn="true" />
 
         <receiver
