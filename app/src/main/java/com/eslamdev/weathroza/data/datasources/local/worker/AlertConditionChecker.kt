@@ -5,6 +5,7 @@ import android.content.Intent
 import com.eslamdev.weathroza.R
 import com.eslamdev.weathroza.core.receiver.AlertReceiver
 import com.eslamdev.weathroza.data.models.alert.AlertEntity
+import com.eslamdev.weathroza.data.models.alert.AlertNotifyType
 import com.eslamdev.weathroza.data.models.alert.WeatherParameter
 import com.eslamdev.weathroza.data.models.usersettings.TemperatureUnit
 import com.eslamdev.weathroza.data.models.usersettings.UserSettings
@@ -64,6 +65,10 @@ object AlertConditionChecker {
             putExtra(AlertReceiver.EXTRA_NOTIFICATION_TITLE, title)
             putExtra(AlertReceiver.EXTRA_NOTIFICATION_BODY, body)
             putExtra(AlertReceiver.EXTRA_DURATION_TEXT, durationText)
+            putExtra(
+                AlertReceiver.EXTRA_NOTIFY_TYPE,
+                if (conditionMet) alert.notifyType.name else AlertNotifyType.NOTIFICATION_SOUND.name
+            )
         }
         context.sendBroadcast(intent)
     }

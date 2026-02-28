@@ -2,6 +2,7 @@ package com.eslamdev.weathroza.presentaion.alerts.viewmodel
 
 import com.eslamdev.weathroza.data.models.alert.AlertDay
 import com.eslamdev.weathroza.data.models.alert.AlertFrequency
+import com.eslamdev.weathroza.data.models.alert.AlertNotifyType
 import com.eslamdev.weathroza.data.models.alert.WeatherParameter
 
 sealed class CreateAlertIntent {
@@ -17,5 +18,6 @@ sealed class CreateAlertIntent {
 
     data class SetEndTime(val hour: Int, val minute: Int, val display: String) : CreateAlertIntent()
     data class ToggleDay(val day: AlertDay) : CreateAlertIntent()
+    data class SetNotifyType(val notifyType: AlertNotifyType) : CreateAlertIntent()
     object Submit : CreateAlertIntent()
 }

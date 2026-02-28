@@ -182,6 +182,10 @@
     <string name="day_sun">Sun</string>
     <string name="repeat_on">Repeat on</string>
     <string name="notification_permission_permanently_denied">Notification permission was denied too many times. Please grant the notification permission from the app settings to use this feature.</string>
-
+    <string name="notify_when_met">When condition is met</string>
+    <string name="notify_type_alarm">Alarm</string>
+    <string name="notify_type_alarm_desc">Full screen + sound</string>
+    <string name="notify_type_notification">Notification</string>
+    <string name="notify_type_notification_desc">Sound notification</string>
 
 </resources>

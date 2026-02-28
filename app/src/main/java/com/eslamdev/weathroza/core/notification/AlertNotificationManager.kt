@@ -60,6 +60,20 @@ class AlertNotificationManager(private val context: Context) {
         notificationHelper.show(alertId.toInt(), notification)
     }
 
+
+    fun showAlertMetAsNotification(alertId: Long, title: String, body: String) {
+        val notification = notificationHelper.buildNotification(
+            channelId = ALARM_CHANNEL_ID,
+            title = title,
+            body = body,
+            smallIcon = R.drawable.sunrise_ic,
+            priority = NotificationCompat.PRIORITY_HIGH,
+            ongoing = true,
+            autoCancel = true,
+        )
+        notificationHelper.show(alertId.toInt(), notification)
+    }
+
     fun cancel(alertId: Long) {
         notificationHelper.cancel(alertId.toInt())
     }

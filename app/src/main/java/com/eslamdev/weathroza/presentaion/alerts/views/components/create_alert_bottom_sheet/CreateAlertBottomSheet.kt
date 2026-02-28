@@ -27,6 +27,7 @@ import com.eslamdev.weathroza.presentaion.alerts.viewmodel.CreateAlertIntent
 import com.eslamdev.weathroza.presentaion.alerts.viewmodel.CreateAlertUiState
 import com.eslamdev.weathroza.presentaion.alerts.views.components.create_alert_sheet_components.AlertNameField
 import com.eslamdev.weathroza.presentaion.alerts.views.components.create_alert_sheet_components.CreateAlertButton
+import com.eslamdev.weathroza.presentaion.alerts.views.components.create_alert_sheet_components.NotifyTypeSelector
 import com.eslamdev.weathroza.presentaion.alerts.views.components.create_alert_sheet_components.ParameterSelector
 import com.eslamdev.weathroza.presentaion.alerts.views.components.create_alert_sheet_components.SheetSectionLabel
 import com.eslamdev.weathroza.presentaion.alerts.views.components.create_alert_sheet_components.ThresholdSection
@@ -132,6 +133,11 @@ fun CreateAlertBottomSheet(
                 endError = state.endError,
                 onStartClick = { showTimePicker(isStart = true) },
                 onEndClick = { showTimePicker(isStart = false) },
+            )
+            SheetSectionLabel(text = stringResource(R.string.notify_when_met))
+            NotifyTypeSelector(
+                selected = state.notifyType,
+                onSelect = { onIntent(CreateAlertIntent.SetNotifyType(it)) },
             )
 
             HeightSpacer(4.0)

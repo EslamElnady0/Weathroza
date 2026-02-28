@@ -3,6 +3,7 @@ package com.eslamdev.weathroza.data.models.mapper
 import com.eslamdev.weathroza.data.models.alert.AlertDay
 import com.eslamdev.weathroza.data.models.alert.AlertEntity
 import com.eslamdev.weathroza.data.models.alert.AlertFrequency
+import com.eslamdev.weathroza.data.models.alert.AlertNotifyType
 import com.eslamdev.weathroza.data.models.alert.WeatherParameter
 import com.eslamdev.weathroza.data.models.usersettings.UserSettings
 import java.util.Calendar
@@ -16,6 +17,7 @@ object AlertMapper {
         isAbove: Boolean,
         frequency: AlertFrequency,
         settings: UserSettings,
+        notifyType: AlertNotifyType,
         selectedDays: Set<AlertDay> = emptySet(),
         startHour: Int?,
         startMinute: Int?,
@@ -30,6 +32,7 @@ object AlertMapper {
         isAbove = isAbove,
         frequency = frequency,
         repeatDays = selectedDays,
+        notifyType = notifyType,
         startTimeMillis = toMillis(startHour, startMinute),
         endTimeMillis = toMillis(endHour, endMinute),
     )
