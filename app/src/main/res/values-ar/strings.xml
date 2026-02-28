@@ -183,4 +183,5 @@
     <string name="notify_type_alarm_desc">شاشة كاملة + صوت</string>
     <string name="notify_type_notification">إشعار</string>
     <string name="notify_type_notification_desc">إشعار بصوت</string>
+    <string name="widget_description">Weathroza weather widget</string>
 </resources>

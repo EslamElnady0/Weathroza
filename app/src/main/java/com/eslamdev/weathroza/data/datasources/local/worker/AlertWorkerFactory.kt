@@ -7,6 +7,7 @@ import androidx.work.WorkerParameters
 import com.eslamdev.weathroza.data.datasources.local.AlarmScheduler
 import com.eslamdev.weathroza.data.repo.UserSettingsRepo
 import com.eslamdev.weathroza.data.repo.WeatherRepo
+import com.eslamdev.weathroza.homewidget.WeatherWidgetWorker
 
 class AlertWorkerFactory(
     private val weatherRepo: WeatherRepo,
@@ -31,6 +32,9 @@ class AlertWorkerFactory(
 
             ContinuousAlertWorker::class.java.name ->
                 ContinuousAlertWorker(appContext, workerParameters, weatherRepo, settingsRepo)
+
+            WeatherWidgetWorker::class.java.name ->
+                WeatherWidgetWorker(appContext, workerParameters, weatherRepo, settingsRepo)
 
             else -> null
         }

@@ -187,5 +187,6 @@
     <string name="notify_type_alarm_desc">Full screen + sound</string>
     <string name="notify_type_notification">Notification</string>
     <string name="notify_type_notification_desc">Sound notification</string>
+    <string name="widget_description">Weathroza weather widget</string>
 
 </resources>
