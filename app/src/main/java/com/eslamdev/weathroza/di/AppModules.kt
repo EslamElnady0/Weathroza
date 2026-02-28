@@ -13,13 +13,15 @@ import com.eslamdev.weathroza.data.datasources.local.impl.NetworkObserverImpl
 import com.eslamdev.weathroza.data.datasources.local.impl.SettingsDataStoreImpl
 import com.eslamdev.weathroza.data.datasources.local.impl.WeatherLocalDataSourceImpl
 import com.eslamdev.weathroza.data.datasources.local.impl.WorkManagerAlertScheduler
-import com.eslamdev.weathroza.data.datasources.local.worker.AlertWorkerFactory
+import com.eslamdev.weathroza.data.datasources.local.worker.AlertCheckWorker
+import com.eslamdev.weathroza.data.datasources.local.worker.ContinuousAlertWorker
 import com.eslamdev.weathroza.data.datasources.remote.WeatherRemoteDataSource
 import com.eslamdev.weathroza.data.datasources.remote.impl.WeatherRemoteDataSourceImpl
 import com.eslamdev.weathroza.data.repo.UserSettingsRepo
 import com.eslamdev.weathroza.data.repo.WeatherRepo
 import com.eslamdev.weathroza.data.repo.impl.UserSettingsRepoImpl
 import com.eslamdev.weathroza.data.repo.impl.WeatherRepoImpl
+import com.eslamdev.weathroza.homewidget.WeatherWidgetWorker
 import com.eslamdev.weathroza.presentaion.alerts.viewmodel.AlertsViewModel
 import com.eslamdev.weathroza.presentaion.favourite.viewmodel.FavViewModel
 import com.eslamdev.weathroza.presentaion.favourite.viewmodel.FavWeatherDisplayViewModel
@@ -28,6 +30,7 @@ import com.eslamdev.weathroza.presentaion.map.viewmodel.MapViewModel
 import com.eslamdev.weathroza.presentaion.settings.viewmodel.SettingsViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.androidx.workmanager.dsl.worker
 import org.koin.dsl.module
 
 val databaseModule = module {
@@ -78,13 +81,9 @@ val repositoryModule = module {
 }
 
 val workerModule = module {
-    single {
-        AlertWorkerFactory(
-            weatherRepo = get(),
-            settingsRepo = get(),
-            alarmScheduler = get(),
-        )
-    }
+    worker { AlertCheckWorker(get(), get(), get(), get(), get()) }
+    worker { ContinuousAlertWorker(get(), get(), get(), get()) }
+    worker { WeatherWidgetWorker(get(), get(), get(), get()) }
 }
 
 val viewModelModule = module {
