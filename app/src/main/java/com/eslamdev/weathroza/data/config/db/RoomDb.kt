@@ -27,6 +27,7 @@ abstract class WeatherDataBase : RoomDatabase() {
     abstract fun getDailyForecastDao(): DailyForecastDao
     abstract fun getFavouriteLocationDao(): FavouriteLocationDao
 
+    
     abstract fun getAlertDao(): AlertDao
 
     companion object {
