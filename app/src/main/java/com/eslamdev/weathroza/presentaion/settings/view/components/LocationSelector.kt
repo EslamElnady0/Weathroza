@@ -99,6 +99,7 @@ fun LocationSelector(
 
     if (showPermanentlyDeniedDialog) {
         PermanentlyDeniedDialog(
+            desc = R.string.permission_permanently_denied,
             onDismiss = { showPermanentlyDeniedDialog = false },
             onOpenSettings = {
                 showPermanentlyDeniedDialog = false

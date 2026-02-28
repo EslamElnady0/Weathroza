@@ -181,6 +181,7 @@
     <string name="day_sat">Sat</string>
     <string name="day_sun">Sun</string>
     <string name="repeat_on">Repeat on</string>
+    <string name="notification_permission_permanently_denied">Notification permission was denied too many times. Please grant the notification permission from the app settings to use this feature.</string>
 
 
 </resources>

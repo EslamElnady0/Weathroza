@@ -52,7 +52,7 @@ fun AlertsView(
             FloatingActionButton(
                 onClick = { checkPermissions = true },
                 containerColor = AppColors.primary,
-                contentColor = Color.Black,
+                contentColor = Color.White,
                 shape = MaterialTheme.shapes.large,
             ) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = null)

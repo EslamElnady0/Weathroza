@@ -9,6 +9,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
+import com.eslamdev.weathroza.R
 import com.eslamdev.weathroza.core.components.ObserveOnResume
 import com.eslamdev.weathroza.core.notification.AlarmPermissionHelper
 import com.eslamdev.weathroza.core.notification.NotificationPermissionHelper
@@ -61,6 +62,7 @@ fun AlertPermissionsHandler(
 
     if (showPermanentlyDeniedDialog) {
         PermanentlyDeniedDialog(
+            desc = R.string.notification_permission_permanently_denied,
             onDismiss = {
                 showPermanentlyDeniedDialog = false
                 onDismiss()

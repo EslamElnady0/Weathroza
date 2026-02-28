@@ -177,4 +177,5 @@
     <string name="day_sat">السبت</string>
     <string name="day_sun">الأحد</string>
     <string name="repeat_on">تكرار في</string>
+    <string name="notification_permission_permanently_denied">تم رفض إذن الإشعارات عدة مرات. يرجى منح إذن الإشعارات من إعدادات التطبيق لاستخدام هذه الميزة.</string>
 </resources>
