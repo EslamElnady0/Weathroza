@@ -6,6 +6,7 @@ import androidx.glance.appwidget.state.updateAppWidgetState
 import androidx.glance.appwidget.updateAll
 import androidx.work.CoroutineWorker
 import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
@@ -93,6 +94,12 @@ class WeatherWidgetWorker(
                 WORK_NAME,
                 ExistingPeriodicWorkPolicy.UPDATE,
                 PeriodicWorkRequestBuilder<WeatherWidgetWorker>(1, TimeUnit.HOURS).build(),
+            )
+        }
+
+        fun runOnce(context: Context) {
+            WorkManager.getInstance(context).enqueue(
+                OneTimeWorkRequestBuilder<WeatherWidgetWorker>().build()
             )
         }
     }
