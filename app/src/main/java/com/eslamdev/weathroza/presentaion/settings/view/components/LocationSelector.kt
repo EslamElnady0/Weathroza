@@ -5,6 +5,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Map
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -13,6 +14,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.eslamdev.weathroza.R
 import com.eslamdev.weathroza.core.components.SettingSelectorItem
 import com.eslamdev.weathroza.core.components.SettingsSelector
@@ -33,6 +37,16 @@ fun LocationSelector(
     var requestPermission by remember { mutableStateOf(false) }
     var showLocationDisabledDialog by remember { mutableStateOf(false) }
     var showPermanentlyDeniedDialog by remember { mutableStateOf(false) }
+    var waitingForLocationSettings by remember { mutableStateOf(false) }
+
+    ObserveLocationEnabled(
+        enabled = waitingForLocationSettings,
+        onLocationEnabled = {
+            waitingForLocationSettings = false
+            onGpsSelected()
+        }
+    )
+
 
     // Map dialog
     if (showMapDialog) {
@@ -99,6 +113,7 @@ fun LocationSelector(
             onDismiss = { showLocationDisabledDialog = false },
             onOpenSettings = {
                 showLocationDisabledDialog = false
+                waitingForLocationSettings = true
                 LocationPermissionHelper.openLocationSettings(context)
             }
         )
@@ -120,3 +135,26 @@ fun LocationSelector(
     }
 }
 
+@Composable
+fun ObserveLocationEnabled(
+    enabled: Boolean,
+    onLocationEnabled: () -> Unit
+) {
+    val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    DisposableEffect(enabled, lifecycleOwner) {
+        if (!enabled) return@DisposableEffect onDispose {}
+
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                if (LocationPermissionHelper.isLocationEnabled(context)) {
+                    onLocationEnabled()
+                }
+            }
+        }
+
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+    }
+}

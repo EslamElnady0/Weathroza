@@ -66,9 +66,7 @@ class HomeViewModel(
         loadCache()
         isInitialized = true
         previousCityId = settings.value.cityId
-
         tryRefresh()
-
         observeNetwork()
         observeLanguage()
         observeLocation()
