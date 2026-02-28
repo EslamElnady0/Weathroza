@@ -7,10 +7,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
+import com.eslamdev.weathroza.core.components.ObserveOnResume
 import com.eslamdev.weathroza.core.settings.location.LocationPermissionHelper
 import com.eslamdev.weathroza.core.settings.location.RequestLocationPermission
 import com.eslamdev.weathroza.presentaion.settings.view.components.LocationDisabledDialog
-import com.eslamdev.weathroza.presentaion.settings.view.components.ObserveLocationEnabled
 
 @Composable
 fun GpsLocationHandler(
@@ -21,11 +21,13 @@ fun GpsLocationHandler(
     var showLocationDisabledDialog by remember { mutableStateOf(false) }
     var waitingForLocationSettings by remember { mutableStateOf(false) }
 
-    ObserveLocationEnabled(
+    ObserveOnResume(
         enabled = waitingForLocationSettings,
-        onLocationEnabled = {
-            waitingForLocationSettings = false
-            onFetchLocation()
+        onResume = {
+            if (LocationPermissionHelper.isLocationEnabled(context)) {
+                waitingForLocationSettings = false
+                onFetchLocation()
+            }
         }
     )
 

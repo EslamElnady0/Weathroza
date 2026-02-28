@@ -65,6 +65,7 @@ class AlertNotificationManager(private val context: Context) {
     }
 
     // ── Channels ─────────────────────────────────────────────────
+    fun initChannels() = createChannels()
 
     private fun createChannels() {
         notificationHelper.createChannel(

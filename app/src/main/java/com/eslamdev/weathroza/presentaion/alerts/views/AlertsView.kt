@@ -25,6 +25,7 @@ import com.eslamdev.weathroza.core.components.SettingsSelector
 import com.eslamdev.weathroza.core.helpers.AppColors
 import com.eslamdev.weathroza.data.models.alert.AlertFrequency
 import com.eslamdev.weathroza.presentaion.alerts.viewmodel.AlertsViewModel
+import com.eslamdev.weathroza.presentaion.alerts.views.components.AlertPermissionsHandler
 import com.eslamdev.weathroza.presentaion.alerts.views.components.alerts_components.AlertsHeader
 import com.eslamdev.weathroza.presentaion.alerts.views.components.alerts_selector_items.AlertTab
 import com.eslamdev.weathroza.presentaion.alerts.views.components.alerts_selector_items.ContinuousSelectorItem
@@ -42,13 +43,14 @@ fun AlertsView(
     val uiState by viewModel.alerts.collectAsStateWithLifecycle()
     var selectedTab by remember { mutableStateOf(AlertTab.TIME_BASED) }
     var showCreateSheet by remember { mutableStateOf(false) }
+    var checkPermissions by remember { mutableStateOf(false) }
     val createAlertState by viewModel.createAlertState.collectAsStateWithLifecycle()
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { showCreateSheet = true },
+                onClick = { checkPermissions = true },
                 containerColor = AppColors.primary,
                 contentColor = Color.Black,
                 shape = MaterialTheme.shapes.large,
@@ -107,6 +109,15 @@ fun AlertsView(
             state = createAlertState,
             onIntent = viewModel::onCreateAlertIntent,
             onDismiss = { showCreateSheet = false },
+        )
+    }
+    if (checkPermissions) {
+        AlertPermissionsHandler(
+            onAllGranted = {
+                checkPermissions = false
+                showCreateSheet = true
+            },
+            onDismiss = { checkPermissions = false }
         )
     }
 }

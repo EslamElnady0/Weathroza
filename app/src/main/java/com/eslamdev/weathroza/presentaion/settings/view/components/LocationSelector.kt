@@ -5,7 +5,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Map
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -14,10 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.eslamdev.weathroza.R
+import com.eslamdev.weathroza.core.components.ObserveOnResume
 import com.eslamdev.weathroza.core.components.SettingSelectorItem
 import com.eslamdev.weathroza.core.components.SettingsSelector
 import com.eslamdev.weathroza.core.settings.location.LocationPermissionHelper
@@ -39,11 +36,13 @@ fun LocationSelector(
     var showPermanentlyDeniedDialog by remember { mutableStateOf(false) }
     var waitingForLocationSettings by remember { mutableStateOf(false) }
 
-    ObserveLocationEnabled(
+    ObserveOnResume(
         enabled = waitingForLocationSettings,
-        onLocationEnabled = {
-            waitingForLocationSettings = false
-            onGpsSelected()
+        onResume = {
+            if (LocationPermissionHelper.isLocationEnabled(context)) {
+                waitingForLocationSettings = false
+                onGpsSelected()
+            }
         }
     )
 
@@ -135,26 +134,3 @@ fun LocationSelector(
     }
 }
 
-@Composable
-fun ObserveLocationEnabled(
-    enabled: Boolean,
-    onLocationEnabled: () -> Unit
-) {
-    val context = LocalContext.current
-    val lifecycleOwner = LocalLifecycleOwner.current
-
-    DisposableEffect(enabled, lifecycleOwner) {
-        if (!enabled) return@DisposableEffect onDispose {}
-
-        val observer = LifecycleEventObserver { _, event ->
-            if (event == Lifecycle.Event.ON_RESUME) {
-                if (LocationPermissionHelper.isLocationEnabled(context)) {
-                    onLocationEnabled()
-                }
-            }
-        }
-
-        lifecycleOwner.lifecycle.addObserver(observer)
-        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
-    }
-}
