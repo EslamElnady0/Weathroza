@@ -34,6 +34,14 @@ class HomeViewModel(
 
     private val isConnectedFlow = settingsRepo.isConnected
 
+    val settingsState: StateFlow<SettingsState> = settingsRepo.settingsFlow
+        .map<UserSettings, SettingsState> { SettingsState.Ready(it) }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = SettingsState.Loading
+        )
+
     val settings: StateFlow<UserSettings> = settingsRepo.settingsFlow
         .stateIn(
             scope = viewModelScope,
@@ -59,7 +67,7 @@ class HomeViewModel(
         isInitialized = true
         previousCityId = settings.value.cityId
 
-        tryRefresh(showErrorIfHasCache = false)
+        tryRefresh()
 
         observeNetwork()
         observeLanguage()
@@ -77,9 +85,7 @@ class HomeViewModel(
         isConnectedFlow
             .drop(1)
             .distinctUntilChanged()
-            .onEach { isOnline ->
-                if (isOnline) tryRefresh(showErrorIfHasCache = false)
-            }
+            .onEach { isOnline -> if (isOnline) tryRefresh() }
             .launchIn(viewModelScope)
     }
 
@@ -88,7 +94,7 @@ class HomeViewModel(
             .map { it.language }
             .distinctUntilChanged()
             .drop(1)
-            .onEach { tryRefresh(showErrorIfHasCache = false) }
+            .onEach { tryRefresh() }
             .launchIn(viewModelScope)
     }
 
@@ -101,13 +107,14 @@ class HomeViewModel(
                 if (lat != null && lng != null && isInitialized) {
                     val oldCityId = previousCityId
                     previousCityId = settings.value.cityId
+                    Log.i("HomeVM", "refresh  → location")
                     onLocationChanged(oldCityId)
                 }
             }
             .launchIn(viewModelScope)
     }
 
-    private fun tryRefresh(showErrorIfHasCache: Boolean) {
+    private fun tryRefresh() {
         if (!isInitialized) return
 
         val currentSettings = settings.value
@@ -132,7 +139,7 @@ class HomeViewModel(
                     },
                     onFailure = { e ->
                         val hasCache = _uiState.value is UiState.Success
-                        if (!hasCache || showErrorIfHasCache)
+                        if (!hasCache)
                             _uiState.value =
                                 UiState.Error(ErrorHandler.handleException(e as Exception))
                     }
@@ -143,15 +150,15 @@ class HomeViewModel(
     }
 
     private fun onLocationChanged(oldCityId: Long?) {
+        Log.i("HomeVM", "onLocationChanged  → changed")
         viewModelScope.launch {
             if (oldCityId != null)
                 weatherRepo.clearCityData(oldCityId)
         }
-        _uiState.value = UiState.Loading
-        tryRefresh(showErrorIfHasCache = true)
+        tryRefresh()
     }
 
-    fun refresh() = tryRefresh(showErrorIfHasCache = false)
+    fun refresh() = tryRefresh()
 
     fun fetchAndSaveGpsLocation() {
         settingsRepo.fetchAndSaveGpsLocation()
@@ -175,4 +182,9 @@ class HomeViewModelFactory(
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }
+}
+
+sealed class SettingsState {
+    data object Loading : SettingsState()
+    data class Ready(val settings: UserSettings) : SettingsState()
 }
