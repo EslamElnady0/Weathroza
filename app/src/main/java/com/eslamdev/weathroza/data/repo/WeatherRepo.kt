@@ -24,7 +24,7 @@ interface WeatherRepo {
         latitude: Double,
         longitude: Double,
         language: AppLanguage,
-        units: Units
+        units: Units = Units.METRIC
     ): Flow<Result<Triple<WeatherEntity, List<HourlyForecastEntity>, List<DailyForecastEntity>>>>
 
     suspend fun getCachedHomeData(

@@ -110,4 +110,7 @@ dependencies {
     //work manager
     // build.gradle.kts
     implementation("androidx.work:work-runtime-ktx:2.10.0")
+    //glance for home screen widget
+    implementation("androidx.glance:glance-appwidget:1.1.0")
+    implementation("androidx.glance:glance-material3:1.1.0")
 }
