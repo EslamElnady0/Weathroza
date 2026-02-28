@@ -22,6 +22,9 @@
       <SelectionState runConfigName="updateLastWeather_updatesLastTempAndIconUrl_returnsUpdatedEntity()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
+      <SelectionState runConfigName="WeatherDaoTest">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
     </selectionStates>
   </component>
 </project>
