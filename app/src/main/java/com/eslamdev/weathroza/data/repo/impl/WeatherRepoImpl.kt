@@ -158,8 +158,14 @@ class WeatherRepoImpl(
         }
     }
 
-    override suspend fun deleteAlert(id: Long) =
+    override suspend fun deleteAlert(id: Long) {
+        val alert = localDataSource.getAlertById(id).first() ?: return
+        if (alert.frequency == AlertFrequency.TIME_BASED) {
+            alarmScheduler.cancelAlert(id)
+        }
         localDataSource.deleteAlert(id)
+    }
+
 
     override suspend fun cancelTimeBasedAlert(alertId: Long) {
         alarmScheduler.cancelAlert(alertId)

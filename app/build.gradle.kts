@@ -117,4 +117,23 @@ dependencies {
     implementation("io.insert-koin:koin-android:3.5.3")
     implementation("io.insert-koin:koin-androidx-compose:3.5.3")
     implementation("io.insert-koin:koin-androidx-workmanager:3.5.3")
+    // Unit Testing
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("org.hamcrest:hamcrest-all:1.3")
+
+    // AndroidX Test - JVM
+    testImplementation("androidx.test.ext:junit-ktx:1.2.1")
+    testImplementation("androidx.test:core-ktx:1.6.1")
+    testImplementation("org.robolectric:robolectric:4.14.1")
+    testImplementation("androidx.arch.core:core-testing:2.2.0")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0")
+
+    // MockK
+    testImplementation("io.mockk:mockk:1.14.0")
+
+    // AndroidX Test - Instrumented
+    androidTestImplementation("androidx.test.ext:junit:1.2.1")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
+    androidTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0")
+    androidTestImplementation("androidx.arch.core:core-testing:2.2.0")
 }
