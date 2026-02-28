@@ -1,7 +1,6 @@
 package com.eslamdev.weathroza
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.eslamdev.weathroza.data.repo.UserSettingsRepo
 import kotlinx.coroutines.flow.SharingStarted
@@ -18,13 +17,4 @@ class AppViewModel(
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = true
         )
-}
-
-class AppViewModelFactory(
-    private val settingsRepo: UserSettingsRepo,
-) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        @Suppress("UNCHECKED_CAST")
-        return AppViewModel(settingsRepo) as T
-    }
 }

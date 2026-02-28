@@ -2,7 +2,6 @@ package com.eslamdev.weathroza.presentaion.home.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.eslamdev.weathroza.R
 import com.eslamdev.weathroza.core.common.UiState
@@ -169,18 +168,6 @@ class HomeViewModel(
     }
 }
 
-class HomeViewModelFactory(
-    private val repo: WeatherRepo,
-    private val settingsRepo: UserSettingsRepo,
-) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(HomeViewModel::class.java)) {
-            @Suppress("UNCHECKED_CAST")
-            return HomeViewModel(repo, settingsRepo) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel class")
-    }
-}
 
 sealed class SettingsState {
     data object Loading : SettingsState()

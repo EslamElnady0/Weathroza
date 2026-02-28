@@ -1,7 +1,6 @@
 package com.eslamdev.weathroza.presentaion.map.viewmodel
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.eslamdev.weathroza.core.common.UiState
 import com.eslamdev.weathroza.core.enums.MapMode
@@ -159,19 +158,5 @@ class MapViewModel(
                 .filter { it.length >= 2 }
                 .collectLatest { query -> searchCities(query) }
         }
-    }
-}
-
-class MapViewModelFactory(
-    private val repo: WeatherRepo,
-    private val settingsRepo: UserSettingsRepo,
-    private val mode: MapMode = MapMode.SELECT_LOCATION
-) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(MapViewModel::class.java)) {
-            @Suppress("UNCHECKED_CAST")
-            return MapViewModel(repo, settingsRepo, mode) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }

@@ -12,7 +12,6 @@ interface WeatherLocalDataSource {
     // ── Weather ──────────────────────────────────────────────────
 
     suspend fun insertWeather(weather: WeatherEntity)
-    suspend fun getWeatherByCity(cityName: String): WeatherEntity?
     suspend fun getAllWeather(): List<WeatherEntity>
     suspend fun deleteAllWeather()
     suspend fun getWeatherByCityId(cityId: Long): WeatherEntity?

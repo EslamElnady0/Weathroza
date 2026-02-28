@@ -25,10 +25,7 @@ class WeatherLocalDataSourceImpl(
 
     override suspend fun insertWeather(weather: WeatherEntity) =
         weatherDao.insertWeather(weather)
-
-    override suspend fun getWeatherByCity(cityName: String): WeatherEntity? =
-        weatherDao.getWeatherByCity(cityName)
-
+    
     override suspend fun getAllWeather(): List<WeatherEntity> =
         weatherDao.getAllWeatherList()
 

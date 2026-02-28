@@ -11,10 +11,7 @@ interface WeatherDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertWeather(weather: WeatherEntity)
-
-    @Query("SELECT * FROM weather WHERE name = :cityName LIMIT 1")
-    suspend fun getWeatherByCity(cityName: String): WeatherEntity?
-
+    
     @Query("SELECT * FROM weather")
     suspend fun getAllWeatherList(): List<WeatherEntity>
 

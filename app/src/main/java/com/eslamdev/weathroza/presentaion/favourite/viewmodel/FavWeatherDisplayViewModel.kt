@@ -1,7 +1,6 @@
 package com.eslamdev.weathroza.presentaion.favourite.viewmodel
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.eslamdev.weathroza.core.common.UiState
 import com.eslamdev.weathroza.core.enums.Units
@@ -116,17 +115,4 @@ class FavWeatherDisplayViewModel(
 
     fun refresh(lat: Double, lng: Double, cityId: Long) =
         tryRefresh(lat, lng, cityId, showErrorIfHasCache = false)
-}
-
-class FavWeatherDisplayViewModelFactory(
-    private val repo: WeatherRepo,
-    private val settingsRepo: UserSettingsRepo,
-) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(FavWeatherDisplayViewModel::class.java)) {
-            @Suppress("UNCHECKED_CAST")
-            return FavWeatherDisplayViewModel(repo, settingsRepo) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel class")
-    }
 }

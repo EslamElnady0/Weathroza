@@ -7,13 +7,13 @@ import androidx.room.PrimaryKey
 data class FavouriteLocationEntity(
     @PrimaryKey
     val cityId: Long,
-    val arName: String,
-    val enName: String,
-    val country: String,
-    val lat: Double,
-    val lng: Double,
-    val lastTemp: Double?,
-    val icon: String,
-    val iconUrl: String,
+    val arName: String = "",
+    val enName: String = "",
+    val country: String = "",
+    val lat: Double = 0.0,
+    val lng: Double = 0.0,
+    val lastTemp: Double? = null,
+    val icon: String = "",
+    val iconUrl: String = "",
     val lastUpdated: Long = System.currentTimeMillis()
 )

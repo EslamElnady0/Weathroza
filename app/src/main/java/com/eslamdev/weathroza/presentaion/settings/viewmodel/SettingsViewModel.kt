@@ -2,7 +2,6 @@ package com.eslamdev.weathroza.presentaion.settings.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.eslamdev.weathroza.R
 import com.eslamdev.weathroza.core.settings.langmanager.LocaleHelper
@@ -91,14 +90,5 @@ class SettingsViewModel(
                 )
             }
             .launchIn(viewModelScope)
-    }
-}
-
-class SettingsViewModelFactory(
-    private val settingsRepo: UserSettingsRepo,
-) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        @Suppress("UNCHECKED_CAST")
-        return SettingsViewModel(settingsRepo) as T
     }
 }
