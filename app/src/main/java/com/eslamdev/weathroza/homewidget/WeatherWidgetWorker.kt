@@ -89,14 +89,6 @@ class WeatherWidgetWorker(
             )
         }
 
-        fun scheduleImmediate(context: Context) {
-            WorkManager.getInstance(context).enqueueUniquePeriodicWork(
-                WORK_NAME,
-                ExistingPeriodicWorkPolicy.UPDATE,
-                PeriodicWorkRequestBuilder<WeatherWidgetWorker>(1, TimeUnit.HOURS).build(),
-            )
-        }
-
         fun runOnce(context: Context) {
             WorkManager.getInstance(context).enqueue(
                 OneTimeWorkRequestBuilder<WeatherWidgetWorker>().build()
