@@ -21,39 +21,28 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.eslamdev.weathroza.AppViewModel
-import com.eslamdev.weathroza.AppViewModelFactory
-import com.eslamdev.weathroza.WeathrozaApp
 import com.eslamdev.weathroza.presentaion.favourite.view.FavWeatherDisplayView
 import com.eslamdev.weathroza.presentaion.favourite.viewmodel.FavWeatherDisplayViewModel
-import com.eslamdev.weathroza.presentaion.favourite.viewmodel.FavWeatherDisplayViewModelFactory
 import com.eslamdev.weathroza.presentaion.main.views.MainView
 import com.eslamdev.weathroza.presentaion.map.viewmodel.MapViewModel
-import com.eslamdev.weathroza.presentaion.map.viewmodel.MapViewModelFactory
 import com.eslamdev.weathroza.presentaion.map.views.MapView
+import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
 fun App(modifier: Modifier = Modifier) {
     val controller = rememberNavController()
-    val context = LocalContext.current
-    val appContainer = remember {
-        (context.applicationContext as WeathrozaApp).appContainer
-    }
-    val viewModel: AppViewModel =
-        viewModel(factory = AppViewModelFactory(appContainer.userSettingsRepo))
-
+    val viewModel: AppViewModel = koinViewModel()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -68,13 +57,9 @@ fun App(modifier: Modifier = Modifier) {
 
                 composable<Route.MapRoute> { backStackEntry ->
                     val args = backStackEntry.toRoute<Route.MapRoute>()
-                    val factory = remember {
-                        MapViewModelFactory(
-                            appContainer.weatherRepo,
-                            appContainer.userSettingsRepo, args.mode
-                        )
-                    }
-                    val viewModel: MapViewModel = viewModel(factory = factory)
+                    val viewModel: MapViewModel = koinViewModel(
+                        parameters = { parametersOf(args.mode) }
+                    )
                     MapView(
                         navController = controller,
                         viewModel = viewModel
@@ -83,13 +68,8 @@ fun App(modifier: Modifier = Modifier) {
 
                 composable<Route.FavWeatherRoute> { backStackEntry ->
                     val args = backStackEntry.toRoute<Route.FavWeatherRoute>()
-                    val factory = remember {
-                        FavWeatherDisplayViewModelFactory(
-                            appContainer.weatherRepo,
-                            appContainer.userSettingsRepo
-                        )
-                    }
-                    val viewModel: FavWeatherDisplayViewModel = viewModel(factory = factory)
+
+                    val viewModel: FavWeatherDisplayViewModel = koinViewModel()
                     FavWeatherDisplayView(
                         viewModel = viewModel,
                         bottomController = controller,

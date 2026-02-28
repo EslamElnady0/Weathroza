@@ -1,7 +1,6 @@
 package com.eslamdev.weathroza.presentaion.favourite.viewmodel
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.eslamdev.weathroza.core.common.UiState
 import com.eslamdev.weathroza.data.models.fav.FavouriteLocationEntity
@@ -41,18 +40,5 @@ class FavViewModel(private val repo: WeatherRepo, private val settingsRepo: User
         viewModelScope.launch {
             repo.removeFavourite(cityId)
         }
-    }
-}
-
-class FavViewModelFactory(
-    private val repo: WeatherRepo,
-    private val settingsRepo: UserSettingsRepo
-) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(FavViewModel::class.java)) {
-            @Suppress("UNCHECKED_CAST")
-            return FavViewModel(repo, settingsRepo) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }

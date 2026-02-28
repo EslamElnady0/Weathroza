@@ -1,7 +1,6 @@
 package com.eslamdev.weathroza.presentaion.alerts.viewmodel
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.eslamdev.weathroza.R
 import com.eslamdev.weathroza.core.common.UiState
@@ -179,15 +178,5 @@ class AlertsViewModel(
         ) -> R.string.error_end_before_start
 
         else -> null
-    }
-}
-
-class AlertViewModelFactory(
-    private val settingsRepo: UserSettingsRepo,
-    private val weatherRepo: WeatherRepo,
-) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        @Suppress("UNCHECKED_CAST")
-        return AlertsViewModel(settingsRepo, weatherRepo) as T
     }
 }
