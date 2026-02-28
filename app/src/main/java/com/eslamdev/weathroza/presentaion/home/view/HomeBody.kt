@@ -35,7 +35,7 @@ fun HomeBody(
     val context = LocalContext.current
 
     if (settingsState !is SettingsState.Ready) return
-    
+
     val settings = (settingsState as SettingsState.Ready).settings
 
     val shouldRequestGps =
@@ -82,7 +82,6 @@ fun HomeBody(
                 isRefreshing = isRefreshing,
                 onRefresh = viewModel::refresh
             )
-
         }
 
         UiState.Idle -> {}
