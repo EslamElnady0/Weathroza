@@ -2,9 +2,14 @@ package com.eslamdev.weathroza.presentaion.map.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.eslamdev.weathroza.R
 import com.eslamdev.weathroza.core.common.UiState
 import com.eslamdev.weathroza.core.enums.MapMode
 import com.eslamdev.weathroza.core.enums.Units
+import com.eslamdev.weathroza.core.helpers.SnackbarController
+import com.eslamdev.weathroza.core.helpers.SnackbarEvent
+import com.eslamdev.weathroza.core.helpers.SnackbarMessage
+import com.eslamdev.weathroza.core.helpers.SnackbarType
 import com.eslamdev.weathroza.core.network.ErrorHandler
 import com.eslamdev.weathroza.data.models.geocoding.CityEntity
 import com.eslamdev.weathroza.data.models.usersettings.LocationType
@@ -98,6 +103,14 @@ class MapViewModel(
                                                 weatherEntity = weatherState.data,
                                                 latLng = latLng,
                                                 cityEntity = cities[0]
+                                            )
+                                            SnackbarController.sendEvent(
+                                                SnackbarEvent(
+                                                    message = SnackbarMessage.ResourceMessage(
+                                                        R.string.city_added_name,
+                                                    ),
+                                                    type = SnackbarType.SUCCESS
+                                                )
                                             )
                                             postOperationCallBack()
                                         }
