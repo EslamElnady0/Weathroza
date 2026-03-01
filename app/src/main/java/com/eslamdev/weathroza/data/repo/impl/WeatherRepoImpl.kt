@@ -121,8 +121,18 @@ class WeatherRepoImpl(
         clearCityData(cityId)
     }
 
-    override suspend fun refreshFavouriteWeather(cityId: Long, temp: Double, iconUrl: String) {
-        localDataSource.updateLastTemp(cityId = cityId, temp = temp, iconUrl = iconUrl)
+    override suspend fun refreshFavouriteWeather(
+        cityId: Long,
+        temp: Double,
+        iconUrl: String,
+        locationName: String,
+    ) {
+        localDataSource.updateLastTemp(
+            cityId = cityId,
+            temp = temp,
+            iconUrl = iconUrl,
+            locationName
+        )
     }
 
     // ── Alert ──────────────────────────────────────────────

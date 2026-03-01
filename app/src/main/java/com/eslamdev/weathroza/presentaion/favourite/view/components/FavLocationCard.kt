@@ -36,7 +36,7 @@ fun FavLocationCard(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(20.dp),
+                .padding(16.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -48,13 +48,13 @@ fun FavLocationCard(
                 Text(
                     text = name,
                     color = Color.White,
-                    fontSize = 22.sp,
+                    fontSize = 20.sp,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = location.country,
+                    text = "(${location.locationName}), " + location.country,
                     color = AppColors.lightGray,
-                    fontSize = 14.sp
+                    fontSize = 11.sp
                 )
             }
 

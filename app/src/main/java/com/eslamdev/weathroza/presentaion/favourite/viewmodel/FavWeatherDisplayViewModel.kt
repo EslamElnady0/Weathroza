@@ -98,7 +98,8 @@ class FavWeatherDisplayViewModel(
                         repo.refreshFavouriteWeather(
                             cityId = cityId,
                             temp = weather.temp,
-                            iconUrl = weather.iconUrl
+                            iconUrl = weather.iconUrl,
+                            locationName = weather.name
                         )
                     },
                     onFailure = { e ->

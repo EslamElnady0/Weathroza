@@ -53,7 +53,12 @@ interface WeatherRepo {
 
     suspend fun removeFavourite(cityId: Long)
 
-    suspend fun refreshFavouriteWeather(cityId: Long, temp: Double, iconUrl: String)
+    suspend fun refreshFavouriteWeather(
+        cityId: Long,
+        temp: Double,
+        iconUrl: String,
+        locationName: String,
+    )
 
     // ── Alerts ──────────────────────────────────────────────
     fun getAllAlerts(): Flow<Result<List<AlertEntity>>>

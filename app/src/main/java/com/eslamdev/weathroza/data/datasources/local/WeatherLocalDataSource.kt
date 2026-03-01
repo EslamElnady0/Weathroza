@@ -39,7 +39,7 @@ interface WeatherLocalDataSource {
     fun isFavourite(cityId: Long): Flow<Boolean>
     suspend fun insertFavourite(favourite: FavouriteLocationEntity)
     suspend fun deleteFavouriteById(cityId: Long)
-    suspend fun updateLastTemp(cityId: Long, temp: Double, iconUrl: String)
+    suspend fun updateLastTemp(cityId: Long, temp: Double, iconUrl: String, locationName: String)
 
     // ── Alerts ───────────────────────────────────────────────
     fun getAllAlerts(): Flow<List<AlertEntity>>

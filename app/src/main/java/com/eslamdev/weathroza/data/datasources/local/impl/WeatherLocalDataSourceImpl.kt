@@ -25,7 +25,7 @@ class WeatherLocalDataSourceImpl(
 
     override suspend fun insertWeather(weather: WeatherEntity) =
         weatherDao.insertWeather(weather)
-    
+
     override suspend fun getAllWeather(): List<WeatherEntity> =
         weatherDao.getAllWeatherList()
 
@@ -86,8 +86,13 @@ class WeatherLocalDataSourceImpl(
     override suspend fun deleteFavouriteById(cityId: Long) =
         favouriteLocationDao.deleteFavouriteById(cityId)
 
-    override suspend fun updateLastTemp(cityId: Long, temp: Double, iconUrl: String) =
-        favouriteLocationDao.updateLastWeather(cityId, temp, iconUrl)
+    override suspend fun updateLastTemp(
+        cityId: Long,
+        temp: Double,
+        iconUrl: String,
+        locationName: String,
+    ) =
+        favouriteLocationDao.updateLastWeather(cityId, temp, iconUrl, locationName)
 
     // ── Alerts ───────────────────────────────────────────────
 

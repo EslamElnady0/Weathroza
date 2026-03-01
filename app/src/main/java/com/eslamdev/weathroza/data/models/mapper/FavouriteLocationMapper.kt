@@ -12,6 +12,7 @@ object FavouriteLocationMapper {
         cityEntity: CityEntity
     ): FavouriteLocationEntity {
         return FavouriteLocationEntity(
+            locationName = weatherEntity.name,
             cityId = weatherEntity.id.toLong(),
             enName = cityEntity.nameEn,
             arName = cityEntity.nameAr,

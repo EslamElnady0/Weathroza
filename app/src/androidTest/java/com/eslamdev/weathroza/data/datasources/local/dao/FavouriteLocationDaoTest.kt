@@ -74,13 +74,14 @@ class FavouriteLocationDaoTest {
         favDao.insertFavourite(fav1)
 
         // When updating the first one
-        favDao.updateLastWeather(1, 25.0, "icon_url_updated")
+        favDao.updateLastWeather(1, 25.0, "icon_url_updated", "new location")
 
         // Then returns the updated entity
         val result = favDao.getFavouriteById(1).first()
         assertNotNull(result)
         assertThat(result!!.lastTemp, `is`(25.0))
         assertThat(result.iconUrl, `is`("icon_url_updated"))
+        assertThat(result.locationName, `is`("new location"))
     }
 
 

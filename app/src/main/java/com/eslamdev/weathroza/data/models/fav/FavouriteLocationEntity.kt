@@ -7,6 +7,7 @@ import androidx.room.PrimaryKey
 data class FavouriteLocationEntity(
     @PrimaryKey
     val cityId: Long,
+    val locationName: String = "",
     val arName: String = "",
     val enName: String = "",
     val country: String = "",

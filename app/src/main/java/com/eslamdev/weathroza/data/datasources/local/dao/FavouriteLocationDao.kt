@@ -32,7 +32,7 @@ interface FavouriteLocationDao {
     @Query(
         """
     UPDATE favourite_locations 
-    SET lastTemp = :temp, iconUrl = :iconUrl, lastUpdated = :timestamp 
+    SET lastTemp = :temp, iconUrl = :iconUrl, lastUpdated = :timestamp , locationName = :locationName
     WHERE cityId = :cityId
 """
     )
@@ -40,6 +40,7 @@ interface FavouriteLocationDao {
         cityId: Long,
         temp: Double,
         iconUrl: String,
+        locationName: String,
         timestamp: Long = System.currentTimeMillis()
     )
 }
