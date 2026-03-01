@@ -18,12 +18,20 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.WifiOff
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
@@ -31,6 +39,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.eslamdev.weathroza.AppViewModel
+import com.eslamdev.weathroza.R
+import com.eslamdev.weathroza.core.components.AppSnackbar
+import com.eslamdev.weathroza.core.helpers.SnackbarController
+import com.eslamdev.weathroza.core.helpers.SnackbarEvent
+import com.eslamdev.weathroza.core.helpers.SnackbarType
 import com.eslamdev.weathroza.presentaion.favourite.view.FavWeatherDisplayView
 import com.eslamdev.weathroza.presentaion.favourite.viewmodel.FavWeatherDisplayViewModel
 import com.eslamdev.weathroza.presentaion.main.views.MainView
@@ -43,41 +56,64 @@ import org.koin.core.parameter.parametersOf
 fun App(modifier: Modifier = Modifier) {
     val controller = rememberNavController()
     val viewModel: AppViewModel = koinViewModel()
+    val snackbarHostState = remember { SnackbarHostState() }
+    var currentEvent by remember { mutableStateOf<SnackbarEvent?>(null) }
+
+    LaunchedEffect(Unit) {
+        SnackbarController.events.collect { event ->
+            currentEvent = event
+            snackbarHostState.showSnackbar(message = " ")
+        }
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
         Box(modifier = Modifier.weight(1f)) {
-            NavHost(navController = controller, startDestination = Route.MainRoute) {
-
-                composable<Route.MainRoute> {
-                    MainView(controller)
+            Scaffold(
+                modifier = Modifier.fillMaxSize(),
+                snackbarHost = {
+                    SnackbarHost(
+                        hostState = snackbarHostState,
+                        modifier = Modifier.padding(bottom = 80.dp),
+                        snackbar = { snackbarData ->
+                            AppSnackbar(
+                                snackbarData = snackbarData,
+                                currentEvent = currentEvent,
+                                type = currentEvent?.type ?: SnackbarType.SUCCESS
+                            )
+                        }
+                    )
                 }
+            ) { padding ->
+                NavHost(
+                    navController = controller,
+                    startDestination = Route.MainRoute,
 
-                composable<Route.MapRoute> { backStackEntry ->
-                    val args = backStackEntry.toRoute<Route.MapRoute>()
-                    val viewModel: MapViewModel = koinViewModel(
-                        parameters = { parametersOf(args.mode) }
-                    )
-                    MapView(
-                        navController = controller,
-                        viewModel = viewModel
-                    )
-                }
-
-                composable<Route.FavWeatherRoute> { backStackEntry ->
-                    val args = backStackEntry.toRoute<Route.FavWeatherRoute>()
-
-                    val viewModel: FavWeatherDisplayViewModel = koinViewModel()
-                    FavWeatherDisplayView(
-                        viewModel = viewModel,
-                        bottomController = controller,
-                        lat = args.lat,
-                        lng = args.lng,
-                        cityId = args.cityId,
-                        onNavigateBack = { controller.popBackStack() }
-                    )
+                    ) {
+                    composable<Route.MainRoute> {
+                        MainView(controller)
+                    }
+                    composable<Route.MapRoute> { backStackEntry ->
+                        val args = backStackEntry.toRoute<Route.MapRoute>()
+                        val mapViewModel: MapViewModel = koinViewModel(
+                            parameters = { parametersOf(args.mode) }
+                        )
+                        MapView(navController = controller, viewModel = mapViewModel)
+                    }
+                    composable<Route.FavWeatherRoute> { backStackEntry ->
+                        val args = backStackEntry.toRoute<Route.FavWeatherRoute>()
+                        val favViewModel: FavWeatherDisplayViewModel = koinViewModel()
+                        FavWeatherDisplayView(
+                            viewModel = favViewModel,
+                            bottomController = controller,
+                            lat = args.lat,
+                            lng = args.lng,
+                            cityId = args.cityId,
+                            onNavigateBack = { controller.popBackStack() }
+                        )
+                    }
                 }
             }
         }
@@ -115,7 +151,7 @@ fun NoInternetBanner() {
         )
         Spacer(modifier = Modifier.width(8.dp))
         Text(
-            text = "No internet connection",
+            text = stringResource(R.string.no_internet_connection),
             color = Color.White,
             style = MaterialTheme.typography.bodyMedium
         )

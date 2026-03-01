@@ -5,6 +5,10 @@ import androidx.lifecycle.viewModelScope
 import com.eslamdev.weathroza.R
 import com.eslamdev.weathroza.core.common.UiState
 import com.eslamdev.weathroza.core.helpers.AlertTimeValidator
+import com.eslamdev.weathroza.core.helpers.SnackbarController
+import com.eslamdev.weathroza.core.helpers.SnackbarEvent
+import com.eslamdev.weathroza.core.helpers.SnackbarMessage
+import com.eslamdev.weathroza.core.helpers.SnackbarType
 import com.eslamdev.weathroza.data.models.alert.AlertEntity
 import com.eslamdev.weathroza.data.models.alert.AlertFrequency
 import com.eslamdev.weathroza.data.models.mapper.AlertMapper
@@ -50,6 +54,14 @@ class AlertsViewModel(
 
     fun deleteAlert(id: Long) {
         viewModelScope.launch { weatherRepo.deleteAlert(id) }
+        SnackbarController.sendEvent(
+            SnackbarEvent(
+                message = SnackbarMessage.ResourceMessage(
+                    R.string.alert_deleted_successfully,
+                ),
+                type = SnackbarType.ERROR
+            )
+        )
     }
 
     // ── Create Alert ─────────────────────────────────────────────
@@ -162,6 +174,14 @@ class AlertsViewModel(
                 weatherRepo.insertAlert(entity)
 
                 _createAlertState.value = CreateAlertUiState()
+                SnackbarController.sendEvent(
+                    SnackbarEvent(
+                        message = SnackbarMessage.ResourceMessage(
+                            R.string.alert_added_successfully,
+                        ),
+                        type = SnackbarType.SUCCESS
+                    )
+                )
             }
         }
     }

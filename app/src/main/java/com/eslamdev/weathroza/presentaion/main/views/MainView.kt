@@ -42,9 +42,7 @@ fun MainView(
             startDestination = BottomRoute.Home,
             modifier = Modifier.padding(padding)
         ) {
-
             composable<BottomRoute.Home> {
-
                 val viewModel: HomeViewModel = koinViewModel()
                 HomeBody(
                     bottomController = controller,
