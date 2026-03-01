@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface FavouriteLocationDao {
 
-    @Query("SELECT * FROM favourite_locations ORDER BY lastUpdated ASC")
+    @Query("SELECT * FROM favourite_locations")
     fun getAllFavourites(): Flow<List<FavouriteLocationEntity>>
 
     @Query("SELECT * FROM favourite_locations WHERE cityId = :cityId")
