@@ -2,6 +2,7 @@ package com.eslamdev.weathroza.core.helpers
 
 import android.icu.text.SimpleDateFormat
 import android.icu.util.ULocale
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
@@ -33,5 +34,12 @@ object DateTimeHelper {
         val date = formatUnixTimestamp(timestamp, "EEEE, MMM dd", locale)
         val time = formatUnixTimestamp(timestamp, "hh:mm a", locale)
         return "$date • $time"
+    }
+
+    fun isToday(timestamp: Long): Boolean {
+        val forecastCal = Calendar.getInstance().apply { timeInMillis = timestamp * 1000L }
+        val todayCal = Calendar.getInstance()
+        return forecastCal.get(Calendar.DAY_OF_YEAR) == todayCal.get(Calendar.DAY_OF_YEAR) &&
+                forecastCal.get(Calendar.YEAR) == todayCal.get(Calendar.YEAR)
     }
 }

@@ -7,15 +7,22 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults.cardColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.eslamdev.weathroza.core.helpers.AppColors
 
 @Composable
-fun CardWithBoarder(modifier: Modifier = Modifier, content: @Composable (ColumnScope.() -> Unit)) {
+fun CardWithBoarder(
+    modifier: Modifier = Modifier,
+    containerColor: Color = AppColors.primary.copy(alpha = 0.1f),
+    borderColor: Color = AppColors.primary.copy(alpha = 0.2f),
+    content: @Composable (ColumnScope.() -> Unit)
+) {
     Card(
-        colors = cardColors(containerColor = AppColors.primary.copy(alpha = 0.1f)),
+        colors = cardColors(containerColor = containerColor),
         modifier = modifier.border(
-            width = 1.dp, AppColors.primary.copy(alpha = 0.2f),
+            width = 1.dp,
+            color = borderColor,
             shape = RoundedCornerShape(12.dp)
         ),
         shape = RoundedCornerShape(12.dp)

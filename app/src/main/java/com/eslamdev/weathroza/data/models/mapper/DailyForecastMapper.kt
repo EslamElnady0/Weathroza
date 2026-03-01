@@ -16,6 +16,8 @@ object DailyForecastMapper {
                 weatherMain = weather?.main ?: "",
                 weatherDescription = weather?.description ?: "",
                 weatherIcon = weather?.icon ?: "",
+                tempMin = dto.temp.min,
+                tempMax = dto.temp.max,
                 iconResId = com.eslamdev.weathroza.R.drawable.dummy_sun_image,
                 iconUrl = "https://openweathermap.org/img/wn/${weather?.icon}@4x.png"
             )

@@ -8,23 +8,19 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
-import com.eslamdev.weathroza.R
 import com.eslamdev.weathroza.core.components.CardWithBoarder
 import com.eslamdev.weathroza.core.components.DegreeText
 import com.eslamdev.weathroza.core.helpers.AppColors
 import com.eslamdev.weathroza.core.helpers.DateTimeHelper
-import com.eslamdev.weathroza.core.helpers.convertTemp
-import com.eslamdev.weathroza.core.helpers.formatLocalized
-import com.eslamdev.weathroza.core.helpers.label
 import com.eslamdev.weathroza.data.models.forecast.DailyForecastEntity
 import com.eslamdev.weathroza.data.models.usersettings.UserSettings
 import com.eslamdev.weathroza.data.models.usersettings.toLocale
@@ -38,7 +34,13 @@ fun DailyForecastItem(
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
-    CardWithBoarder(modifier = modifier.fillMaxWidth()) {
+    val isToday = remember(forecast.dt) { DateTimeHelper.isToday(forecast.dt) }
+
+    CardWithBoarder(
+        modifier = modifier.fillMaxWidth(),
+        containerColor = if (isToday) AppColors.primary.copy(alpha = 0.15f) else AppColors.cardBg,
+        borderColor = if (isToday) AppColors.primary else AppColors.primary.copy(alpha = 0.2f)
+    ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -88,25 +90,30 @@ fun DailyForecastItem(
                 verticalArrangement = Arrangement.spacedBy(2.dp)
             ) {
                 DegreeText(
-                    forecast.tempDay,
+                    degree = forecast.tempDay,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
                     settings = settings,
                     color = AppColors.gray
                 )
-                Text(
-                    text = stringResource(
-                        R.string.feels_like,
-                        forecast
-                            .feelsLikeDay
-                            .convertTemp(settings.temperatureUnit).formatLocalized(
-                                locale = settings.language.toLocale(),
-                                pattern = "%d"
-                            )
-                    ) + settings.temperatureUnit.label(context),
-                    fontSize = 10.sp,
-                    color = AppColors.lightGray
-                )
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    DegreeText(
+                        degree = forecast.tempMax,
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Medium,
+                        settings = settings,
+                        color = AppColors.tempMax
+                    )
+                    DegreeText(
+                        degree = forecast.tempMin,
+                        fontSize = 11.sp,
+                        settings = settings,
+                        color = AppColors.tempMin
+                    )
+                }
             }
         }
     }

@@ -27,7 +27,12 @@ data class DailyForecastItemDto(
 
 data class TempDto(
     @SerializedName("day")
-    val day: Double
+    val day: Double,
+    @SerializedName("max")
+    val max: Double,
+
+    @SerializedName("min")
+    val min: Double,
 )
 
 data class FeelsLikeDto(

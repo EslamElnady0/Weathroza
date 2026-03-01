@@ -12,5 +12,7 @@ data class DailyForecastEntity(
     val weatherDescription: String,
     val weatherIcon: String,
     val iconResId: Int = 0,
-    val iconUrl: String = ""
+    val iconUrl: String = "",
+    val tempMin: Double = 0.0,
+    val tempMax: Double = 0.0
 )
