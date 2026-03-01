@@ -2,7 +2,6 @@ package com.eslamdev.weathroza.data.datasources.remote.impl
 
 import com.eslamdev.weathroza.BuildConfig
 import com.eslamdev.weathroza.core.enums.Units
-import com.eslamdev.weathroza.core.helpers.asResultFlow
 import com.eslamdev.weathroza.data.datasources.remote.WeatherRemoteDataSource
 import com.eslamdev.weathroza.data.datasources.remote.service.WeatherService
 import com.eslamdev.weathroza.data.models.forecast.DailyForecastEntity
@@ -15,6 +14,8 @@ import com.eslamdev.weathroza.data.models.mapper.WeatherMapper
 import com.eslamdev.weathroza.data.models.usersettings.AppLanguage
 import com.eslamdev.weathroza.data.models.weather.WeatherEntity
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flow
 
 class WeatherRemoteDataSourceImpl(
     private val weatherService: WeatherService
@@ -26,16 +27,18 @@ class WeatherRemoteDataSourceImpl(
         language: AppLanguage,
         units: Units
     ): Flow<Result<WeatherEntity>> =
-        suspend {
-            WeatherMapper.toEntity(
-                weatherService.getWeather(
-                    apiKey = BuildConfig.WEATHER_API_KEY,
-                    latitude = latitude,
-                    longitude = longitude,
-                    language = language.code,
-                )
+        flow {
+            val response = weatherService.getWeather(
+                apiKey = BuildConfig.WEATHER_API_KEY,
+                latitude = latitude,
+                longitude = longitude,
+                language = language.code,
+                units = units.value
             )
-        }.asResultFlow()
+            emit(Result.success(WeatherMapper.toEntity(response)))
+        }.catch {
+            emit(Result.failure(it))
+        }
 
     override fun getHourlyForecast(
         latitude: Double,
@@ -44,18 +47,19 @@ class WeatherRemoteDataSourceImpl(
         units: Units,
         count: Int
     ): Flow<Result<List<HourlyForecastEntity>>> =
-        suspend {
-            HourlyForecastMapper.toEntityList(
-                weatherService.getHourlyForecast(
-                    apiKey = BuildConfig.WEATHER_API_KEY,
-                    latitude = latitude,
-                    longitude = longitude,
-                    language = language.code,
-                    units = units.value,
-                    count = count
-                )
+        flow {
+            val response = weatherService.getHourlyForecast(
+                apiKey = BuildConfig.WEATHER_API_KEY,
+                latitude = latitude,
+                longitude = longitude,
+                language = language.code,
+                units = units.value,
+                count = count
             )
-        }.asResultFlow()
+            emit(Result.success(HourlyForecastMapper.toEntityList(response)))
+        }.catch {
+            emit(Result.failure(it))
+        }
 
     override fun getDailyForecast(
         latitude: Double,
@@ -64,46 +68,49 @@ class WeatherRemoteDataSourceImpl(
         units: Units,
         count: Int
     ): Flow<Result<List<DailyForecastEntity>>> =
-        suspend {
-            DailyForecastMapper.toEntityList(
-                weatherService.getDailyForecast(
-                    apiKey = BuildConfig.WEATHER_API_KEY,
-                    latitude = latitude,
-                    longitude = longitude,
-                    language = language.code,
-                    units = units.value,
-                    count = count
-                )
+        flow {
+            val response = weatherService.getDailyForecast(
+                apiKey = BuildConfig.WEATHER_API_KEY,
+                latitude = latitude,
+                longitude = longitude,
+                language = language.code,
+                units = units.value,
+                count = count
             )
-        }.asResultFlow()
+            emit(Result.success(DailyForecastMapper.toEntityList(response)))
+        }.catch {
+            emit(Result.failure(it))
+        }
 
     override fun getPossibleCities(
         cityName: String,
         limit: Int
     ): Flow<Result<List<CityEntity>>> =
-        suspend {
-            CityMapper.toEntityList(
-                weatherService.getPossibleCities(
-                    apiKey = BuildConfig.WEATHER_API_KEY,
-                    cityName = cityName,
-                    limit = limit
-                )
+        flow {
+            val response = weatherService.getPossibleCities(
+                apiKey = BuildConfig.WEATHER_API_KEY,
+                cityName = cityName,
+                limit = limit
             )
-        }.asResultFlow()
+            emit(Result.success(CityMapper.toEntityList(response)))
+        }.catch {
+            emit(Result.failure(it))
+        }
 
     override fun getCityNamesLocalized(
         latitude: Double,
         longitude: Double,
         limit: Int
     ): Flow<Result<List<CityEntity>>> =
-        suspend {
-            CityMapper.toEntityList(
-                weatherService.getCityNamesLocalized(
-                    apiKey = BuildConfig.WEATHER_API_KEY,
-                    latitude = latitude,
-                    longitude = longitude,
-                    limit = limit
-                )
+        flow {
+            val response = weatherService.getCityNamesLocalized(
+                apiKey = BuildConfig.WEATHER_API_KEY,
+                latitude = latitude,
+                longitude = longitude,
+                limit = limit
             )
-        }.asResultFlow()
+            emit(Result.success(CityMapper.toEntityList(response)))
+        }.catch {
+            emit(Result.failure(it))
+        }
 }
