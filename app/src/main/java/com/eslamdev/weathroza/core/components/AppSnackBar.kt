@@ -1,9 +1,11 @@
 package com.eslamdev.weathroza.core.components
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.EaseInQuart
 import androidx.compose.animation.core.EaseOutQuart
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -51,6 +53,10 @@ fun AppSnackbar(
         enter = slideInVertically(
             initialOffsetY = { it },
             animationSpec = tween(durationMillis = 400, easing = EaseOutQuart)
+        ),
+        exit = slideOutVertically(
+            targetOffsetY = { it },
+            animationSpec = tween(durationMillis = 300, easing = EaseInQuart)
         )
     ) {
         Card(
