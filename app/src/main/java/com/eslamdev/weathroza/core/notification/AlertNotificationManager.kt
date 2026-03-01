@@ -30,7 +30,7 @@ class AlertNotificationManager(private val context: Context) {
             channelId = ALARM_CHANNEL_ID,
             title = title,
             body = "$body\n$durationText",
-            smallIcon = R.drawable.sunrise_ic,
+            smallIcon = R.mipmap.ic_launcher,
             priority = NotificationCompat.PRIORITY_MAX,
             ongoing = true,
             autoCancel = false,
@@ -38,7 +38,7 @@ class AlertNotificationManager(private val context: Context) {
             fullScreenIntent = buildFullScreenIntent(alertId, title, endMillis),
             actions = listOf(
                 NotificationCompat.Action(
-                    R.drawable.sunrise_ic,
+                    R.mipmap.ic_launcher,
                     context.getString(R.string.dismiss),
                     buildDismissIntent(alertId),
                 )
@@ -52,7 +52,7 @@ class AlertNotificationManager(private val context: Context) {
             channelId = CHANNEL_ID,
             title = title,
             body = body,
-            smallIcon = R.drawable.sunrise_ic,
+            smallIcon = R.mipmap.ic_launcher,
             priority = NotificationCompat.PRIORITY_HIGH,
             ongoing = false,
             autoCancel = true,
@@ -66,7 +66,7 @@ class AlertNotificationManager(private val context: Context) {
             channelId = ALARM_CHANNEL_ID,
             title = title,
             body = body,
-            smallIcon = R.drawable.sunrise_ic,
+            smallIcon = R.mipmap.ic_launcher,
             priority = NotificationCompat.PRIORITY_HIGH,
             ongoing = true,
             autoCancel = true,
