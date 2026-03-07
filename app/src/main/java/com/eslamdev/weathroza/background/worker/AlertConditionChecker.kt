@@ -1,9 +1,9 @@
-package com.eslamdev.weathroza.data.datasources.local.worker
+package com.eslamdev.weathroza.background.worker
 
 import android.content.Context
 import android.content.Intent
 import com.eslamdev.weathroza.R
-import com.eslamdev.weathroza.core.receiver.AlertReceiver
+import com.eslamdev.weathroza.background.receiver.AlertReceiver
 import com.eslamdev.weathroza.data.models.alert.AlertEntity
 import com.eslamdev.weathroza.data.models.alert.AlertNotifyType
 import com.eslamdev.weathroza.data.models.alert.WeatherParameter

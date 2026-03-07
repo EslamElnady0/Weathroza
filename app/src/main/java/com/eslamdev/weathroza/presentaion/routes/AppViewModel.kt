@@ -1,4 +1,4 @@
-package com.eslamdev.weathroza
+package com.eslamdev.weathroza.presentaion.routes
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -14,7 +14,7 @@ class AppViewModel(
     val isConnected: StateFlow<Boolean> = settingsRepo.isConnected
         .stateIn(
             scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
+            started = SharingStarted.Companion.WhileSubscribed(5_000),
             initialValue = true
         )
 }

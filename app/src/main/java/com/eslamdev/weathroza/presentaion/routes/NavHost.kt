@@ -38,7 +38,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.eslamdev.weathroza.AppViewModel
 import com.eslamdev.weathroza.R
 import com.eslamdev.weathroza.core.components.AppSnackbar
 import com.eslamdev.weathroza.core.helpers.SnackbarController

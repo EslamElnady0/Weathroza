@@ -1,5 +1,4 @@
-// core/receiver/AlertReceiver.kt
-package com.eslamdev.weathroza.core.receiver
+package com.eslamdev.weathroza.background.receiver
 
 import android.app.AlarmManager
 import android.app.PendingIntent

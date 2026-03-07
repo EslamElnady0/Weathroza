@@ -1,10 +1,11 @@
 // data/datasources/local/worker/AlertCheckWorker.kt
-package com.eslamdev.weathroza.data.datasources.local.worker
+package com.eslamdev.weathroza.background.worker
 
 import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.eslamdev.weathroza.data.datasources.local.AlarmScheduler
+import com.eslamdev.weathroza.data.models.alert.AlertEntity
 import com.eslamdev.weathroza.data.repo.UserSettingsRepo
 import com.eslamdev.weathroza.data.repo.WeatherRepo
 import kotlinx.coroutines.flow.first
@@ -41,7 +42,7 @@ class AlertCheckWorker(
         return Result.success()
     }
 
-    private suspend fun rescheduleOrCancel(alert: com.eslamdev.weathroza.data.models.alert.AlertEntity) {
+    private suspend fun rescheduleOrCancel(alert: AlertEntity) {
         val nextMillis = AlertSchedulingStrategy.nextTriggerMillis(alert)
         if (nextMillis != null) {
             val updatedAlert = alert.copy(startTimeMillis = nextMillis)

@@ -48,8 +48,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.eslamdev.weathroza.background.receiver.AlertReceiver
 import com.eslamdev.weathroza.core.helpers.AppColors
-import com.eslamdev.weathroza.core.receiver.AlertReceiver
 import com.eslamdev.weathroza.ui.theme.WeathrozaTheme
 import kotlinx.coroutines.delay
 import java.util.concurrent.TimeUnit

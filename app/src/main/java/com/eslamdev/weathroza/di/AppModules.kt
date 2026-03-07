@@ -1,6 +1,7 @@
 package com.eslamdev.weathroza.di
 
-import com.eslamdev.weathroza.AppViewModel
+import com.eslamdev.weathroza.background.worker.AlertCheckWorker
+import com.eslamdev.weathroza.background.worker.ContinuousAlertWorker
 import com.eslamdev.weathroza.data.config.db.WeatherDataBase
 import com.eslamdev.weathroza.data.config.network.RetrofitHelper
 import com.eslamdev.weathroza.data.datasources.local.AlarmScheduler
@@ -13,8 +14,6 @@ import com.eslamdev.weathroza.data.datasources.local.impl.NetworkObserverImpl
 import com.eslamdev.weathroza.data.datasources.local.impl.SettingsDataStoreImpl
 import com.eslamdev.weathroza.data.datasources.local.impl.WeatherLocalDataSourceImpl
 import com.eslamdev.weathroza.data.datasources.local.impl.WorkManagerAlertScheduler
-import com.eslamdev.weathroza.data.datasources.local.worker.AlertCheckWorker
-import com.eslamdev.weathroza.data.datasources.local.worker.ContinuousAlertWorker
 import com.eslamdev.weathroza.data.datasources.remote.WeatherRemoteDataSource
 import com.eslamdev.weathroza.data.datasources.remote.impl.WeatherRemoteDataSourceImpl
 import com.eslamdev.weathroza.data.repo.UserSettingsRepo
@@ -27,6 +26,7 @@ import com.eslamdev.weathroza.presentaion.favourite.viewmodel.FavViewModel
 import com.eslamdev.weathroza.presentaion.favourite.viewmodel.FavWeatherDisplayViewModel
 import com.eslamdev.weathroza.presentaion.home.viewmodel.HomeViewModel
 import com.eslamdev.weathroza.presentaion.map.viewmodel.MapViewModel
+import com.eslamdev.weathroza.presentaion.routes.AppViewModel
 import com.eslamdev.weathroza.presentaion.settings.viewmodel.SettingsViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel

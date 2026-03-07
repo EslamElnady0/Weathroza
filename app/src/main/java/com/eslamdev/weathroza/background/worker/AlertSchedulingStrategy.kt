@@ -1,4 +1,4 @@
-package com.eslamdev.weathroza.data.datasources.local.worker
+package com.eslamdev.weathroza.background.worker
 
 import com.eslamdev.weathroza.data.models.alert.AlertDay
 import com.eslamdev.weathroza.data.models.alert.AlertEntity
@@ -21,7 +21,7 @@ object AlertSchedulingStrategy {
 
         val nowCal = Calendar.getInstance().apply { timeInMillis = now }
         val todayDow = nowCal.get(Calendar.DAY_OF_WEEK)
-        
+
         val nextDow = sortedDays.firstOrNull { it > todayDow }
             ?: sortedDays.first()
 

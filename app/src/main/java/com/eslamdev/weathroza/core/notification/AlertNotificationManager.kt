@@ -6,7 +6,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
 import com.eslamdev.weathroza.R
-import com.eslamdev.weathroza.core.receiver.AlertReceiver
+import com.eslamdev.weathroza.background.receiver.AlertReceiver
 import com.eslamdev.weathroza.presentaion.alerts.views.FullScreenAlertActivity
 
 class AlertNotificationManager(private val context: Context) {
